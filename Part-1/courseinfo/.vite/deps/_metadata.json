@@ -1,0 +1,15 @@
+{
+  "hash": "2012530a",
+  "configHash": "00b4365b",
+  "lockfileHash": "eee365a3",
+  "browserHash": "62af2216",
+  "optimized": {
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "a1e7d312",
+      "needsInterop": true
+    }
+  },
+  "chunks": {}
+}
