@@ -10,7 +10,7 @@ const App = () => {
   return (
     <div>
       <h1>Give Feedback</h1>
-      <div>
+      <div style={{ marginBottom: '20px' }}>
         <Button handleClick={() => setGood(good + 1)} text="Good"/>
         <Button handleClick={() => setNeutral(neutral + 1)} text="Neutral"/>
         <Button handleClick={() => setBad(bad + 1)} text="Bad"/>
