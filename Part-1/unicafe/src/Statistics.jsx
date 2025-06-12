@@ -10,14 +10,16 @@ const Statistics = ({statistics: { good, neutral, bad }}) => {
   }
 
   return (
-    <div>
-      <StatisticLine text="Good" value ={good} />
-      <StatisticLine text="Neutral" value ={neutral} />
-      <StatisticLine text="Bad" value ={bad} />
-      <StatisticLine text="All" value ={total} />
-      <StatisticLine text="Average" value ={average} />
-      <StatisticLine text="Positive" value ={positive + '%'} />
-    </div>
+    <table style={{ borderCollapse: 'collapse', border: '1px solid #d3d3d3' }}>
+      <tbody>
+        <StatisticLine text="Good" value ={good} />
+        <StatisticLine text="Neutral" value ={neutral} />
+        <StatisticLine text="Bad" value ={bad} />
+        <StatisticLine text="All" value ={total} />
+        <StatisticLine text="Average" value ={average} />
+        <StatisticLine text="Positive" value ={positive + '%'} />
+      </tbody>
+    </table>
   )
 }
 
