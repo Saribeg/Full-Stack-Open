@@ -13,7 +13,7 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
-  const [votes, setVote] = useState({})
+  const [votes, setVotes] = useState({})
 
   const handleVote = () => {
     const currentVotes = {...votes};
@@ -22,7 +22,7 @@ const App = () => {
     } else {
       currentVotes[selected] = 1
     }
-    setVote(currentVotes)
+    setVotes(currentVotes)
   }
 
   const handleNextAnecdote = () => {
@@ -30,12 +30,33 @@ const App = () => {
     setSelected(randomIndex)
   }
 
+  const getMaxVoteKey = votes => {
+    const keys = Object.keys(votes)
+    if (keys.length === 0) return null
+  
+    return +keys.reduce((maxKey, currentKey) =>
+      votes[currentKey] > votes[maxKey] ? currentKey : maxKey,
+      keys[0]
+    )
+  }
+  const maxVoteKey = getMaxVoteKey(votes)
+
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>Has {votes[selected] || 0} Votes</p>
-      <button onClick={handleVote}>Vote</button>
-      <button onClick={handleNextAnecdote}>Next Anecdote</button>
+      <div>
+        <h1>Anecdote of The Day</h1>
+        <p>{anecdotes[selected]}</p>
+        <p>Has {votes[selected] || 0} Votes</p>
+        <button onClick={handleVote}>Vote</button>
+        <button onClick={handleNextAnecdote}>Next Anecdote</button>
+      </div>
+      {maxVoteKey !== null ? (
+        <div>
+          <h1>Anecdote with most votes</h1>
+          <p>{anecdotes[maxVoteKey]}</p>
+          <p>Has {votes[maxVoteKey]} votes</p>
+        </div>
+      ) : null}
     </div>
   )
 }
