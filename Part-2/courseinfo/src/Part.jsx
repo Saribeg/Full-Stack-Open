@@ -2,7 +2,7 @@ const Part = ({partData}) => {
   const {name, exercises} = partData;
   
   return (
-      <p>{name}: {exercises}</p>
+      <li>{name}: {exercises}</li>
   )
 }
 
