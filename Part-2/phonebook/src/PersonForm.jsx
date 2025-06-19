@@ -19,6 +19,8 @@ const PersonForm = ({ formState }) => {
     }
 
     setPersons(persons.concat({ name: newName, number: newPhone }))
+    setNewName('')
+    setNewPhone('')
   }
 
   return (
