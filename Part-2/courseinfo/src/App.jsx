@@ -24,6 +24,11 @@ const App = () => {
         name: "My custom new part",
         exercises: 3,
         id: 4
+      },
+      {
+        name: "Redux",
+        exercises: 11,
+        id: 5
       }
     ]
   }
