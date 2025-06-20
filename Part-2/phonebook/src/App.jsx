@@ -3,7 +3,7 @@ import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
 
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -12,10 +12,10 @@ const App = () => {
   const [filterPhrase, setFilterPhrase] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
