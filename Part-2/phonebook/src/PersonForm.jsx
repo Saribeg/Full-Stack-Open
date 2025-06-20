@@ -11,26 +11,55 @@ const PersonForm = ({ formState }) => {
     setNewPhone(event.target.value)
   }
 
+  const resetForm = () => {
+    setNewName('')
+    setNewPhone('')
+  }
+
   const addPerson = (event) => {
     event.preventDefault();
-    const isPersonAlreadyExists = persons.find(person => person.name === newName)
+    const existingPerson = persons.find(person => person.name === newName)
 
-    if (isPersonAlreadyExists) {
-      alert(`${newName} is already added to phonebook`)
+    if (existingPerson) {
+      const confirmUpdate = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      )
+
+      if (confirmUpdate) {
+        const personToUpdate = {
+          ...existingPerson,
+          number: newPhone
+        }
+
+        personService
+          .update(existingPerson.id, personToUpdate)
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
+            resetForm()
+          })
+          .catch(error => {
+            alert(`Could not update the person with id ${existingPerson.id}. ${error.message}`)
+          })
+      } else {
+        alert(`${newName} is already added to phonebook`)
+      }
+
       return
     }
 
-    const newPerson = {
+    const personObject = {
       name: newName,
       number: newPhone
     }
 
     personService
-      .create(newPerson)
+      .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewPhone('')
+        resetForm()
+      })
+      .catch(error => {
+        alert(`Could not add the person ${personObject.name}. ${error.message}`)
       })
   }
 

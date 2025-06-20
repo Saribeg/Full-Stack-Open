@@ -10,6 +10,9 @@ const DeletePerson = ({ person, setPersons }) => {
         .then(deletedPerson => {
           setPersons(prev => prev.filter(person => person.id !== deletedPerson.id))
         })
+        .catch(error => {
+          alert(`Could not delete person with id ${id}. ${error.message}`)
+        })
     }
   }
 
