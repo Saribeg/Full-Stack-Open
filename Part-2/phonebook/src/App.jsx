@@ -26,7 +26,7 @@ const App = () => {
       <h2>Add a new</h2>
       <PersonForm formState={{ newName, setNewName, newPhone, setNewPhone, persons, setPersons }} />
       <h2>Numbers</h2>
-      <Persons filterPhrase={filterPhrase} persons={persons}/>
+      <Persons filterPhrase={filterPhrase} persons={persons} setPersons={setPersons}/>
     </div>
   )
 }
