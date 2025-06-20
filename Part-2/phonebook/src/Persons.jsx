@@ -1,6 +1,6 @@
 import Person from './Person'
 
-const Persons = ({ filterPhrase, persons }) => {
+const Persons = ({ filterPhrase, persons, setPersons }) => {
   const personsToShow = filterPhrase
   ? persons.filter(person =>
       person.name.toLowerCase().includes(filterPhrase.toLowerCase())
@@ -8,7 +8,7 @@ const Persons = ({ filterPhrase, persons }) => {
   : persons
 
   return (
-    <ul>{personsToShow.map(person => <Person key={person.name} person={person}/>)}</ul>
+    <ul>{personsToShow.map(person => <Person key={person.name} person={person} setPersons={setPersons}/>)}</ul>
   )
 }
 
