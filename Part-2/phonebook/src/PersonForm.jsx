@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const PersonForm = ({ formState }) => {
   const { newName, setNewName, newPhone, setNewPhone, persons, setPersons } = formState
 
@@ -18,9 +20,18 @@ const PersonForm = ({ formState }) => {
       return
     }
 
-    setPersons(persons.concat({ name: newName, number: newPhone }))
-    setNewName('')
-    setNewPhone('')
+    const newPerson = {
+      name: newName,
+      number: newPhone
+    }
+
+    axios
+      .post('http://localhost:3001/persons', newPerson)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewPhone('')
+      })
   }
 
   return (
