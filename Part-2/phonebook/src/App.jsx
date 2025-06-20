@@ -17,6 +17,9 @@ const App = () => {
       .then(initialPersons => {
         setPersons(initialPersons)
       })
+      .catch(error => {
+        alert(`Could not retrieve persons. ${error.message}`)
+      })
   }, [])
 
   return (
