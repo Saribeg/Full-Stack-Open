@@ -47,7 +47,11 @@ const PersonForm = ({ formState }) => {
             showNotification(`Number for ${updatedPerson.name} is updated`, 'success')
           })
           .catch(error => {
-            showNotification(`Could not update the person with id ${existingPerson.id}. ${error.message}`, 'error')
+            if (error.status = 404) {
+              showNotification(`Information of ${existingPerson.name} has already been removed from server`, 'error')
+            } else {
+              showNotification(`Could not update the person with id ${existingPerson.id}. ${error.message}`, 'error')
+            }
           })
       } else {
         showNotification(`${newName} is already added to phonebook. Won't duplicate.`, 'error')
