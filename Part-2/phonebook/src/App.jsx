@@ -2,14 +2,29 @@ import { useState, useEffect } from 'react'
 import Filter from './Filter'
 import PersonForm from './PersonForm'
 import Persons from './Persons'
+import Notification from './Notification'
 
 import personService from './services/persons'
+
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterPhrase, setFilterPhrase] = useState('')
+  const [notification, setNotification] = useState('')
+  const [notificationType, setNotificationType] = useState('')
+
+  const showNotification = (message, messageType) => {
+    setNotification(message)
+    setNotificationType(messageType)
+
+    setTimeout(() => {
+      setNotification('')
+      setNotificationType('')
+    }, 5000)
+  }
 
   useEffect(() => {
     personService
@@ -18,7 +33,7 @@ const App = () => {
         setPersons(initialPersons)
       })
       .catch(error => {
-        alert(`Could not retrieve persons. ${error.message}`)
+        showNotification(`Could not retrieve persons. ${error.message}`, 'error')
       })
   }, [])
 
@@ -27,9 +42,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter filterPhrase={filterPhrase} setFilterPhrase={setFilterPhrase} />
       <h2>Add a new</h2>
-      <PersonForm formState={{ newName, setNewName, newPhone, setNewPhone, persons, setPersons }} />
+      <PersonForm formState={{ newName, setNewName, newPhone, setNewPhone, persons, setPersons, showNotification }} />
       <h2>Numbers</h2>
-      <Persons filterPhrase={filterPhrase} persons={persons} setPersons={setPersons}/>
+      <Persons filterPhrase={filterPhrase} persons={persons} setPersons={setPersons} showNotification={showNotification}/>
+      <Notification message={notification} messageType={notificationType}/>
     </div>
   )
 }
