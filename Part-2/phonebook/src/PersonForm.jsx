@@ -1,7 +1,15 @@
 import personService from './services/persons'
 
 const PersonForm = ({ formState }) => {
-  const { newName, setNewName, newPhone, setNewPhone, persons, setPersons } = formState
+  const {
+    newName,
+    setNewName,
+    newPhone,
+    setNewPhone,
+    persons,
+    setPersons,
+    showNotification
+  } = formState
 
   const onNameChange = (event) => {
     setNewName(event.target.value)
@@ -36,12 +44,13 @@ const PersonForm = ({ formState }) => {
           .then(updatedPerson => {
             setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
             resetForm()
+            showNotification(`Number for ${updatedPerson.name} is updated`, 'success')
           })
           .catch(error => {
-            alert(`Could not update the person with id ${existingPerson.id}. ${error.message}`)
+            showNotification(`Could not update the person with id ${existingPerson.id}. ${error.message}`, 'error')
           })
       } else {
-        alert(`${newName} is already added to phonebook`)
+        showNotification(`${newName} is already added to phonebook. Won't duplicate.`, 'error')
       }
 
       return
@@ -57,9 +66,10 @@ const PersonForm = ({ formState }) => {
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         resetForm()
+        showNotification(`${returnedPerson.name} is created`, 'success')
       })
       .catch(error => {
-        alert(`Could not add the person ${personObject.name}. ${error.message}`)
+        showNotification(`Could not add the person ${personObject.name}. ${error.message}`, 'error')
       })
   }
 
