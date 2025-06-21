@@ -40,12 +40,12 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} messageType={notificationType}/>
       <Filter filterPhrase={filterPhrase} setFilterPhrase={setFilterPhrase} />
       <h2>Add a new</h2>
       <PersonForm formState={{ newName, setNewName, newPhone, setNewPhone, persons, setPersons, showNotification }} />
       <h2>Numbers</h2>
       <Persons filterPhrase={filterPhrase} persons={persons} setPersons={setPersons} showNotification={showNotification}/>
-      <Notification message={notification} messageType={notificationType}/>
     </div>
   )
 }
