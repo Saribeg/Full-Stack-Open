@@ -1,6 +1,6 @@
 import personService from './services/persons'
 
-const DeletePerson = ({ person, setPersons }) => {
+const DeletePerson = ({ person, setPersons, showNotification }) => {
   const deletePerson = (person) => {
     const { id, name } = person
 
@@ -9,9 +9,10 @@ const DeletePerson = ({ person, setPersons }) => {
         .deletePerson(id)
         .then(deletedPerson => {
           setPersons(prev => prev.filter(person => person.id !== deletedPerson.id))
+          showNotification(`${deletedPerson.name} is deleted`, 'success')
         })
         .catch(error => {
-          alert(`Could not delete person with id ${id}. ${error.message}`)
+          showNotification(`Could not delete person with id ${id}. ${error.message}`, 'error')
         })
     }
   }
