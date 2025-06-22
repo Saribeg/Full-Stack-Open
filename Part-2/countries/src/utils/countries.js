@@ -3,13 +3,17 @@ const extractCountryData = (apiCountry) => {
     return null
   }
 
+  const [latitude, longitude] = apiCountry.capitalInfo?.latlng ?? []
+
   return {
     id: apiCountry.cca3,
     name: apiCountry.name?.common,
     capital: apiCountry.capital?.[0],
     area: apiCountry.area,
     languages: Object.values(apiCountry.languages ?? {}),
-    flag: apiCountry.flags?.png
+    flag: apiCountry.flags?.png,
+    latitude,
+    longitude
   }
 }
 
