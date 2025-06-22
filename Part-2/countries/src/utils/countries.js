@@ -17,4 +17,4 @@ const filterCountriesBySearchPhrase = (countries, searchPhrase) => {
   return countries.filter(country => country.name.common.toLowerCase().includes(searchPhrase.toLowerCase())).map(extractCountryData)
 }
 
-export default { filterCountriesBySearchPhrase }
+export default { extractCountryData, filterCountriesBySearchPhrase }

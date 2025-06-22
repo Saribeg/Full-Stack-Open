@@ -1,6 +1,6 @@
 import CountryList from './CountryList'
 
-const CountrySearchResults = ({ countrySearchPhrase, countries }) => {
+const CountrySearchResults = ({ countrySearchPhrase, countries, setSelectedCountry }) => {
   if (!countrySearchPhrase) return null
 
   if (countries.length > 10) {
@@ -8,7 +8,7 @@ const CountrySearchResults = ({ countrySearchPhrase, countries }) => {
   }
 
   if (countries.length > 1) {
-    return <CountryList countries={countries}/>
+    return <CountryList countries={countries} setSelectedCountry={setSelectedCountry}/>
   }
 
   return null
