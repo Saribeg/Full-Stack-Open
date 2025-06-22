@@ -40,7 +40,7 @@ function App() {
     <div>
       <CountrySearchForm countrySearchPhrase={countrySearchPhrase} setCountrySearchPhrase={setCountrySearchPhrase}/>
       <div className="country-search-result">
-        <CountrySearchResults countrySearchPhrase={countrySearchPhrase} countries={countries}/>
+        <CountrySearchResults countrySearchPhrase={countrySearchPhrase} countries={countries} setSelectedCountry={setSelectedCountry}/>
       </div>
       { selectedCountry && <CountryDetails country={selectedCountry}/>}
     </div>
