@@ -48,9 +48,11 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res) => {
   const id = req.params.id
+  const deletedPerson = persons.find(person => person.id === id)
   persons = persons.filter(person => person.id !== id)
 
-  res.status(204).end()
+  // I am sending back deleted person instead of res.status(204).end() because my frontend uses that data
+  res.status(200).json(deletedPerson)
 })
 
 app.post('/api/persons', (req, res) => {
