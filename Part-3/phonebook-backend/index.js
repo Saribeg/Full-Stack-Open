@@ -47,7 +47,19 @@ app.post('/api/persons', (req, res) => {
 
   if (!body.name) {
     return res.status(400).json({ 
-      error: 'name missing' 
+      error: 'The name of person is required' 
+    })
+  }
+
+  if (!body.number) {
+    return res.status(400).json({ 
+      error: 'The telephone number of person is required' 
+    })
+  }
+
+  if (persons.find(p => p.name.toLowerCase() === body.name.toLowerCase())) {
+    return res.status(400).json({ 
+      error: 'The name of a person must be unique' 
     })
   }
 
