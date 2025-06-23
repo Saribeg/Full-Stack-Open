@@ -9,6 +9,10 @@ let persons = [
   { id: "4", name: "Mary Poppendieck", number: "39-23-6423122" }
 ]
 
+const generateId = () => {
+  return Math.floor(Math.random() * 10000000).toString()
+}
+
 app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
@@ -36,6 +40,26 @@ app.delete('/api/persons/:id', (req, res) => {
   persons = persons.filter(person => person.id !== id)
 
   res.status(204).end()
+})
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+
+  if (!body.name) {
+    return res.status(400).json({ 
+      error: 'name missing' 
+    })
+  }
+
+  const newPerson = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  }
+
+  persons = persons.concat(newPerson)
+
+  res.status(201).json(newPerson)
 })
 
 const PORT = 3001
