@@ -11,6 +11,7 @@
   "author": "Saribeh Karakhanian",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "morgan": "^1.10.0"
   }
 }
