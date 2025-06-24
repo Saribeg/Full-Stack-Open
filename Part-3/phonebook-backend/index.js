@@ -24,8 +24,12 @@ let persons = [
 ]
 
 app.get('/api/persons', async (req, res) => {
-  const persons = await Person.find({})
-  res.json(persons)
+  try {
+    const persons = await Person.find({})
+    res.json(persons)
+  } catch (e) {
+    next(e)
+  }
 })
 
 app.get('/info', (req, res) => {
@@ -46,13 +50,19 @@ app.get('/api/persons/:id', (req, res) => {
   }
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = req.params.id
-  const deletedPerson = persons.find(person => person.id === id)
-  persons = persons.filter(person => person.id !== id)
+app.delete('/api/persons/:id', async (req, res) => {
+  try {
+    const deletedPerson = await Person.findByIdAndDelete(req.params.id)
 
-  // I am sending back deleted person instead of res.status(204).end() because my frontend uses that data
-  res.status(200).json(deletedPerson)
+    if (!deletedPerson) {
+      return res.status(404).json({ error: 'Person not found' })
+    }
+
+    // I am sending back deleted person instead of res.status(204).end() because my frontend uses that data
+    res.status(200).json(deletedPerson)
+  } catch (e) {
+    next(e)
+  }
 })
 
 app.post('/api/persons', async (req, res) => {
