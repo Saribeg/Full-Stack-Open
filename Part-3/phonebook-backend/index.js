@@ -1,6 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+require('./db/connection')()
+const Person = require('./models/person')
 
 const app = express()
 app.use(express.json())
@@ -24,7 +27,8 @@ const generateId = () => {
   return Math.floor(Math.random() * 10000000).toString()
 }
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', async (req, res) => {
+  const persons = await Person.find({})
   res.json(persons)
 })
 
@@ -87,7 +91,7 @@ app.post('/api/persons', (req, res) => {
   res.status(201).json(newPerson)
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
