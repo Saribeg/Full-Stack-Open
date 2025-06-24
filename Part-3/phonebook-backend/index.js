@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const errorHandler = require('./middlewares/errorHandler')
 require('./db/connection')()
 const Person = require('./models/person')
 
@@ -23,23 +24,23 @@ let persons = [
   { id: "4", name: "Mary Poppendieck", number: "39-23-6423122" }
 ]
 
-app.get('/api/persons', async (req, res) => {
+app.get('/api/persons', async (req, res, next) => {
   try {
     const persons = await Person.find({})
     res.json(persons)
-  } catch (e) {
-    next(e)
+  } catch (err) {
+    next(err)
   }
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
   res.send(`
     <p>Phonebook has info for ${persons.length} people.</p>
     <p>${new Date().toString()}</p>
   `)
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   const relevantPerson = persons.find(person => person.id === id)
 
@@ -50,7 +51,7 @@ app.get('/api/persons/:id', (req, res) => {
   }
 })
 
-app.delete('/api/persons/:id', async (req, res) => {
+app.delete('/api/persons/:id', async (req, res, next) => {
   try {
     const deletedPerson = await Person.findByIdAndDelete(req.params.id)
 
@@ -60,12 +61,12 @@ app.delete('/api/persons/:id', async (req, res) => {
 
     // I am sending back deleted person instead of res.status(204).end() because my frontend uses that data
     res.status(200).json(deletedPerson)
-  } catch (e) {
-    next(e)
+  } catch (err) {
+    next(err)
   }
 })
 
-app.post('/api/persons', async (req, res) => {
+app.post('/api/persons', async (req, res, next) => {
   const body = req.body
 
   if (!body.name) {
@@ -88,6 +89,8 @@ app.post('/api/persons', async (req, res) => {
 
   res.status(201).json(savedPerson)
 })
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
