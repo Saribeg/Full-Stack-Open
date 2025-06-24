@@ -17,13 +17,6 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 app.use(cors())
 app.use(express.static('dist'))
 
-let persons = [
-  { id: "1", name: "Arto Hellas", number: "040-123456" },
-  { id: "2", name: "Ada Lovelace", number: "39-44-5323523" },
-  { id: "3", name: "Dan Abramov", number: "12-43-234345" },
-  { id: "4", name: "Mary Poppendieck", number: "39-23-6423122" }
-]
-
 app.get('/api/persons', async (req, res, next) => {
   try {
     const persons = await Person.find({})
@@ -33,21 +26,30 @@ app.get('/api/persons', async (req, res, next) => {
   }
 })
 
-app.get('/info', (req, res, next) => {
-  res.send(`
-    <p>Phonebook has info for ${persons.length} people.</p>
-    <p>${new Date().toString()}</p>
-  `)
+app.get('/info', async (req, res, next) => {
+  try {
+    const count = await Person.countDocuments({})
+
+    res.send(`
+      <p>Phonebook has info for ${count} people.</p>
+      <p>${new Date().toString()}</p>
+    `)
+  } catch (err) {
+    next(err)
+  }
 })
 
-app.get('/api/persons/:id', (req, res, next) => {
-  const id = req.params.id
-  const relevantPerson = persons.find(person => person.id === id)
+app.get('/api/persons/:id', async (req, res, next) => {
+  try {
+    const person = await Person.findById(req.params.id)
 
-  if (relevantPerson) {
-    res.json(relevantPerson)
-  } else {
-    res.status(404).end()
+    if (person) {
+      res.json(person)
+    } else {
+      res.status(404).end()
+    }
+  } catch(err) {
+    next(err)
   }
 })
 
