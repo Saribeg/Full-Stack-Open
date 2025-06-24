@@ -67,27 +67,55 @@ app.delete('/api/persons/:id', async (req, res, next) => {
 })
 
 app.post('/api/persons', async (req, res, next) => {
-  const body = req.body
+  const { name, number } = req.body
 
-  if (!body.name) {
+  if (!name) {
     return res.status(400).json({ 
       error: 'The name of person is required' 
     })
   }
 
-  if (!body.number) {
+  if (!number) {
     return res.status(400).json({ 
       error: 'The telephone number of person is required' 
     })
   }
 
-  const newPerson = new Person({
-    name: body.name,
-    number: body.number
-  })
-  const savedPerson = await newPerson.save()
+  try {
+    const newPerson = new Person({
+      name,
+      number
+    })
 
-  res.status(201).json(savedPerson)
+    const savedPerson = await newPerson.save()
+  
+    res.status(201).json(savedPerson)
+  } catch (err) {
+    next(err)
+  }
+})
+
+app.put('/api/persons/:id', async (req, res, next) => {
+  const { name, number } = req.body
+
+  try {
+    const updatedPerson = await Person.findByIdAndUpdate(
+      req.params.id,
+      { name, number },
+      {
+        new: true,           // Return updated document
+        runValidators: true, // Apply schema validations when updating
+      }
+    )
+
+    if (!updatedPerson) {
+      return res.status(404).json({ error: 'Person not found' })
+    }
+
+    res.json(updatedPerson)
+  } catch (error) {
+    next(error)
+  }
 })
 
 app.use(errorHandler)
