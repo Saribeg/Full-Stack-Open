@@ -23,10 +23,6 @@ let persons = [
   { id: "4", name: "Mary Poppendieck", number: "39-23-6423122" }
 ]
 
-const generateId = () => {
-  return Math.floor(Math.random() * 10000000).toString()
-}
-
 app.get('/api/persons', async (req, res) => {
   const persons = await Person.find({})
   res.json(persons)
@@ -59,7 +55,7 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(200).json(deletedPerson)
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', async (req, res) => {
   const body = req.body
 
   if (!body.name) {
@@ -74,21 +70,13 @@ app.post('/api/persons', (req, res) => {
     })
   }
 
-  if (persons.find(p => p.name.toLowerCase() === body.name.toLowerCase())) {
-    return res.status(400).json({ 
-      error: 'The name of a person must be unique' 
-    })
-  }
-
-  const newPerson = {
+  const newPerson = new Person({
     name: body.name,
-    number: body.number,
-    id: generateId(),
-  }
+    number: body.number
+  })
+  const savedPerson = await newPerson.save()
 
-  persons = persons.concat(newPerson)
-
-  res.status(201).json(newPerson)
+  res.status(201).json(savedPerson)
 })
 
 const PORT = process.env.PORT
