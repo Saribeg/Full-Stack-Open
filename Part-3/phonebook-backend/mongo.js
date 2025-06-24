@@ -9,7 +9,7 @@ const password = process.argv[2]
 const name = process.argv[3]
 const number = process.argv[4]
 
-const url = `...` // Deleted for security reasons. Will show back when moving to ENV. 
+const url = `...` // Paste your credentials... :) 
 
 mongoose.set('strictQuery',false)
 
