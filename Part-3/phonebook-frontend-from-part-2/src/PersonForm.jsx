@@ -73,7 +73,7 @@ const PersonForm = ({ formState }) => {
         showNotification(`${returnedPerson.name} is created`, 'success')
       })
       .catch(error => {
-        showNotification(`Could not add the person ${personObject.name}. ${error.message}`, 'error')
+        showNotification(`Could not add the person ${personObject.name}. ${error.response.data.error}`, 'error')
       })
   }
 
