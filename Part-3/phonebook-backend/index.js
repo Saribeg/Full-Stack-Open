@@ -71,18 +71,6 @@ app.delete('/api/persons/:id', async (req, res, next) => {
 app.post('/api/persons', async (req, res, next) => {
   const { name, number } = req.body
 
-  if (!name) {
-    return res.status(400).json({ 
-      error: 'The name of person is required' 
-    })
-  }
-
-  if (!number) {
-    return res.status(400).json({ 
-      error: 'The telephone number of person is required' 
-    })
-  }
-
   try {
     const newPerson = new Person({
       name,
