@@ -95,6 +95,7 @@ app.put('/api/persons/:id', async (req, res, next) => {
       {
         new: true,           // Return updated document
         runValidators: true, // Apply schema validations when updating
+        context: 'query' // For correct work of custom validators
       }
     )
 
