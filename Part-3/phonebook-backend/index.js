@@ -78,7 +78,7 @@ app.post('/api/persons', async (req, res, next) => {
     })
 
     const savedPerson = await newPerson.save()
-  
+
     res.status(201).json(savedPerson)
   } catch (err) {
     next(err)
