@@ -9,7 +9,7 @@ const password = process.argv[2]
 const name = process.argv[3]
 const number = process.argv[4]
 
-const url = `...` // Paste your credentials... :) 
+const url = `...${password}...` // Paste your credentials... :)
 
 mongoose.set('strictQuery',false)
 

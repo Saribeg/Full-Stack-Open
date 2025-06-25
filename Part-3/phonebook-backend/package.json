@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
   },
   "author": "Saribeh Karakhanian",
   "license": "ISC",
@@ -16,5 +17,11 @@
     "express": "^5.1.0",
     "mongoose": "^8.16.0",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@stylistic/eslint-plugin": "^5.0.0",
+    "eslint": "^9.29.0",
+    "globals": "^16.2.0"
   }
 }
