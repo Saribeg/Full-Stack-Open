@@ -27,7 +27,7 @@ export default [
     },
   },
   {
-    files: ['logger.js'],
+    files: ['*/logger.js'],
     rules: {
       'no-console': 'off',
     },
