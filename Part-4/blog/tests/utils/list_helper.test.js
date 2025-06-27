@@ -110,3 +110,31 @@ describe('favourite blog', () => {
     });
   });
 });
+
+describe('authors with most blogs', () => {
+  test('when no array passed the result is null', () => {
+    const result = listHelper.mostBlogs('string');
+    assert.strictEqual(result, null);
+  });
+
+  test('when empty list the result is null', () => {
+    const result = listHelper.mostBlogs([]);
+    assert.strictEqual(result, null);
+  });
+
+  test('when list has only one blog equals that author', () => {
+    const result = listHelper.mostBlogs([blogs[0]]);
+    assert.deepStrictEqual (result, {
+      author: 'Michael Chan',
+      blogs: 1
+    });
+  });
+
+  test('when more than 1 author calculates right', () => {
+    const result = listHelper.mostBlogs(blogs);
+    assert.deepStrictEqual(result,   {
+      author: 'Robert C. Martin',
+      blogs: 3
+    });
+  });
+});
