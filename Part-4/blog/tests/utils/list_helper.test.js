@@ -138,3 +138,31 @@ describe('authors with most blogs', () => {
     });
   });
 });
+
+describe('authors with most likes', () => {
+  test('when no array passed the result is null', () => {
+    const result = listHelper.mostLikes('string');
+    assert.strictEqual(result, null);
+  });
+
+  test('when empty list the result is null', () => {
+    const result = listHelper.mostLikes([]);
+    assert.strictEqual(result, null);
+  });
+
+  test('when list has only one blog equals that author', () => {
+    const result = listHelper.mostLikes([blogs[0]]);
+    assert.deepStrictEqual (result, {
+      author: 'Michael Chan',
+      likes: 7
+    });
+  });
+
+  test('when more than 1 author calculates right', () => {
+    const result = listHelper.mostLikes(blogs);
+    assert.deepStrictEqual(result,   {
+      author: 'Edsger W. Dijkstra',
+      likes: 17
+    });
+  });
+});
