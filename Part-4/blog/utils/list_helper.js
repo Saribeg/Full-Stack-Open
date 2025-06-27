@@ -42,9 +42,37 @@ const mostBlogs = (blogs) => {
   return authors.reduce((acc, author) => author.blogs > acc.blogs ? author : acc, authors[0]);
 };
 
+// Let's use Map as an alternative to not repeat the previous approach with nested iterations.
+const mostLikes = (blogs) => {
+  if (!Array.isArray(blogs) || !blogs.length) {
+    return null;
+  }
+
+  const authorMap = new Map();
+
+  for (const blog of blogs) {
+    const author = blog.author;
+    const currentLikes = authorMap.get(author) || 0;
+    authorMap.set(author, currentLikes  + blog.likes);
+  }
+
+  let mostLikedAuthor = null;
+  let maxLikes = 0;
+
+  for (const [author, likes] of authorMap.entries()) {
+    if (likes > maxLikes) {
+      mostLikedAuthor = { author, likes };
+      maxLikes = likes;
+    }
+  }
+
+  return mostLikedAuthor;
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 };
