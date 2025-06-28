@@ -27,6 +27,32 @@ test('the unique identifier property of the blog posts is named id', async () =>
   assert.strictEqual(blog._id, undefined);
 });
 
+test.only('a new blog can be added ', async () => {
+  const newBlog = {
+    title: 'Node.js event loop',
+    author: 'Saribeh Karakhanian',
+    url: 'https://nodejseventloop.com/',
+    likes: 100
+  };
+
+  const blogsBefore = await helper.blogsInDb();
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  assert.strictEqual(blogsAtEnd.length, blogsBefore.length + 1);
+
+  const savedBlog = response.body;
+  const { id, title, author, url, likes } = savedBlog;
+
+  assert.ok(id);
+  assert.deepStrictEqual({ title, author, url, likes }, newBlog);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
