@@ -53,7 +53,7 @@ test('a new blog can be added ', async () => {
   assert.deepStrictEqual({ title, author, url, likes }, newBlog);
 });
 
-test.only('when adding a new blog without likes property the default value 0 is set ', async () => {
+test('when adding a new blog without likes property the default value 0 is set ', async () => {
   const newBlog = {
     title: 'React Server Components and Next.js',
     author: 'Harry Potter',
@@ -77,6 +77,50 @@ test.only('when adding a new blog without likes property the default value 0 is 
   assert.ok(id);
   assert.deepStrictEqual({ title, author, url, likes }, { ...newBlog, likes: 0 });
   assert.strictEqual(likes, 0);
+});
+
+test('when adding a new blog without title property the error is returned', async () => {
+  const newBlog = {
+    author: 'Harry Potter',
+    url: 'https://rabbitmqorkafka.com/',
+    likes: 5
+  };
+
+  const blogsBefore = await helper.blogsInDb();
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  assert.strictEqual(blogsAtEnd.length, blogsBefore.length);
+
+  assert.ok(response.body.error);
+  assert.match(response.body.error, /validation/i);
+});
+
+test('when adding a new blog without url property the error is returned', async () => {
+  const newBlog = {
+    title: 'RabbitMQ or Kafka?',
+    author: 'Harry Potter',
+    likes: 5
+  };
+
+  const blogsBefore = await helper.blogsInDb();
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  assert.strictEqual(blogsAtEnd.length, blogsBefore.length);
+
+  assert.ok(response.body.error);
+  assert.match(response.body.error, /validation/i);
 });
 
 after(async () => {
