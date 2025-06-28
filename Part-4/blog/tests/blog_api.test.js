@@ -8,7 +8,7 @@ const Blog = require('../models/blog');
 
 const api = supertest(app);
 
-describe('Testing the CRUD API for blogs', () => {
+describe('Integration tests. Testing the CRUD API for blogs', () => {
   beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(helper.initialBlogs);
@@ -39,7 +39,7 @@ describe('Testing the CRUD API for blogs', () => {
         likes: 100
       };
 
-      const blogsBefore = await helper.blogsInDb();
+      const blogsAtStart = await helper.blogsInDb();
 
       const response = await api
         .post('/api/blogs')
@@ -48,7 +48,7 @@ describe('Testing the CRUD API for blogs', () => {
         .expect('Content-Type', /application\/json/);
 
       const blogsAtEnd = await helper.blogsInDb();
-      assert.strictEqual(blogsAtEnd.length, blogsBefore.length + 1);
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1);
 
       const savedBlog = response.body;
       const { id, title, author, url, likes } = savedBlog;
@@ -64,7 +64,7 @@ describe('Testing the CRUD API for blogs', () => {
         url: 'https://reactandnextjs.com/'
       };
 
-      const blogsBefore = await helper.blogsInDb();
+      const blogsAtStart = await helper.blogsInDb();
 
       const response = await api
         .post('/api/blogs')
@@ -73,7 +73,7 @@ describe('Testing the CRUD API for blogs', () => {
         .expect('Content-Type', /application\/json/);
 
       const blogsAtEnd = await helper.blogsInDb();
-      assert.strictEqual(blogsAtEnd.length, blogsBefore.length + 1);
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1);
 
       const savedBlog = response.body;
       const { id, title, author, url, likes } = savedBlog;
@@ -90,7 +90,7 @@ describe('Testing the CRUD API for blogs', () => {
         likes: 5
       };
 
-      const blogsBefore = await helper.blogsInDb();
+      const blogsAtStart = await helper.blogsInDb();
 
       const response = await api
         .post('/api/blogs')
@@ -99,7 +99,7 @@ describe('Testing the CRUD API for blogs', () => {
         .expect('Content-Type', /application\/json/);
 
       const blogsAtEnd = await helper.blogsInDb();
-      assert.strictEqual(blogsAtEnd.length, blogsBefore.length);
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length);
 
       assert.ok(response.body.error);
       assert.match(response.body.error, /validation/i);
@@ -112,7 +112,7 @@ describe('Testing the CRUD API for blogs', () => {
         likes: 5
       };
 
-      const blogsBefore = await helper.blogsInDb();
+      const blogsAtStart = await helper.blogsInDb();
 
       const response = await api
         .post('/api/blogs')
@@ -121,7 +121,7 @@ describe('Testing the CRUD API for blogs', () => {
         .expect('Content-Type', /application\/json/);
 
       const blogsAtEnd = await helper.blogsInDb();
-      assert.strictEqual(blogsAtEnd.length, blogsBefore.length);
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length);
 
       assert.ok(response.body.error);
       assert.match(response.body.error, /validation/i);
@@ -130,14 +130,14 @@ describe('Testing the CRUD API for blogs', () => {
 
   describe('deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
-      const blogsBefore = await helper.blogsInDb();
-      const blogToDelete = blogsBefore[0];
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToDelete = blogsAtStart[0];
 
       await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
       const blogsAtEnd = await helper.blogsInDb();
 
-      assert.strictEqual(blogsAtEnd.length, blogsBefore.length - 1);
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1);
 
       const ids = blogsAtEnd.map(b => b.id);
       assert(!ids.includes(blogToDelete.id));
@@ -145,20 +145,51 @@ describe('Testing the CRUD API for blogs', () => {
       assert.strictEqual(deleted, undefined);
     });
 
-    test('returns 404 if blog is not found', async () => {
-      const blogsBefore = await helper.blogsInDb();
+    test('returns 404 if a blog for deletion is not found', async () => {
+      const blogsAtStart = await helper.blogsInDb();
       const blogIdToDelete = await helper.nonExistingId();
 
       const response = await api.delete(`/api/blogs/${blogIdToDelete}`).expect(404);
 
       const blogsAtEnd = await helper.blogsInDb();
 
-      assert.strictEqual(blogsAtEnd.length, blogsBefore.length);
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length);
       assert.ok(response.body.error);
       assert.strictEqual(response.body.error, 'Blog is not found');
     });
   });
 
+  describe('update of a blog', () => {
+    test('successfully updates likes of a blog', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToUpdate = blogsAtStart[0];
+
+      const updatedData = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
+
+      const response = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(updatedData)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      assert.strictEqual(response.body.likes, updatedData.likes);
+    });
+
+    test('returns 404 if a blog for update is not found', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const exampleData = blogsAtStart[0];
+      const updatedData = { ...exampleData, likes: exampleData.likes + 1 };
+      const blogIdToUpdate = await helper.nonExistingId();
+
+      const response = await api
+        .put(`/api/blogs/${blogIdToUpdate}`)
+        .send(updatedData)
+        .expect(404);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, 'Blog is not found');
+    });
+  });
 });
 
 after(async () => {
