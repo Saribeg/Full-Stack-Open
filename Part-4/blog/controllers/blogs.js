@@ -1,8 +1,6 @@
 const blogsRouter = require('express').Router();
-const jwt = require('jsonwebtoken');
+const middleware = require('../utils/middleware');
 const Blog = require('../models/blog');
-const User = require('../models/user');
-
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
@@ -10,18 +8,8 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs);
 });
 
-blogsRouter.post('/', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
-  }
-
-  const user = await User.findById(decodedToken.id);
-
-  if (!user) {
-    return response.status(400).json({ error: 'userId missing or not valid' });
-  }
-
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
+  const user = request.user;
   const { title, author, url, likes } = request.body;
   const blog = new Blog({ title, author, url, likes: likes || 0, user: user._id });
   const savedBlog = await blog.save();
@@ -51,23 +39,22 @@ blogsRouter.put('/:id', async (request, response) => {
   response.json(updatedBlog);
 });
 
-blogsRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' });
-  }
-
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  const user = request.user;
   const blog = await Blog.findById(request.params.id);
 
   if (!blog) {
     return response.status(404).json({ error: 'Blog is not found' });
   }
 
-  if (blog.user.toString() !== decodedToken.id.toString()) {
+  if (blog.user.toString() !== user._id.toString()) {
     return response.status(401).json({ error: 'blog can be deleted only by user who created it' });
   }
 
   await Blog.findByIdAndDelete(request.params.id);
+
+  user.blogs = user.blogs.filter(b => b.toString() !== blog._id.toString());
+  await user.save();
 
   response.status(204).end();
 });
