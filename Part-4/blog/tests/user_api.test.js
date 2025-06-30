@@ -9,7 +9,7 @@ const User = require('../models/user');
 
 const api = supertest(app);
 
-describe.only('Integration tests. Testing the CRUD API for users', () => {
+describe('Integration tests. Testing the CRUD API for users', () => {
   beforeEach(async () => {
     await User.deleteMany({});
     const passwordHash = await bcrypt.hash('sekret', 10);
@@ -57,6 +57,114 @@ describe.only('Integration tests. Testing the CRUD API for users', () => {
       // Confirm that the new user actually exists in the database
       const usernames = usersAtEnd.map(u => u.username);
       assert.ok(usernames.includes(newUser.username));
+    });
+
+    test('returns error if `username` is absent', async () => {
+      const usersAtStart = await helper.usersInDb();
+
+      const newUser = {
+        name: 'Harry Potter',
+        password: 'Voldemortloser',
+      };
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+
+      const usersAtEnd = await helper.usersInDb();
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+
+      assert.ok(response.body.error);
+      assert.match(response.body.error, /validation/i);
+    });
+
+    test('returns error if `username` length is less than 3 characters', async () => {
+      const usersAtStart = await helper.usersInDb();
+
+      const newUser = {
+        username: 'ha',
+        name: 'Harry Potter',
+        password: 'Voldemortloser',
+      };
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+
+      const usersAtEnd = await helper.usersInDb();
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+
+      assert.ok(response.body.error);
+      assert.match(response.body.error, /validation/i);
+    });
+
+    test('returns error if `username` is not unique (already exists in DB)', async () => {
+      const usersAtStart = await helper.usersInDb();
+
+      const newUser = {
+        username: 'alex',
+        name: 'Alex Smith',
+        password: 'sekret',
+      };
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+
+      const usersAtEnd = await helper.usersInDb();
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, 'expected `username` to be unique');
+    });
+
+    test('returns error if `password` is absent', async () => {
+      const usersAtStart = await helper.usersInDb();
+
+      const newUser = {
+        username: 'harrypotter',
+        name: 'Harry Potter'
+      };
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+
+      const usersAtEnd = await helper.usersInDb();
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, '`password` is required');
+    });
+
+    test('returns error if `password` length is less than 3 characters', async () => {
+      const usersAtStart = await helper.usersInDb();
+
+      const newUser = {
+        username: 'harrypotter',
+        name: 'Harry Potter',
+        password: '12'
+      };
+
+      const response = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/);
+
+      const usersAtEnd = await helper.usersInDb();
+      assert.strictEqual(usersAtEnd.length, usersAtStart.length);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, '`password` must be at least 3 characters long');
     });
   });
 });
