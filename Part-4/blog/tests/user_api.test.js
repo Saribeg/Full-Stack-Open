@@ -15,7 +15,7 @@ describe('Integration tests. Testing the CRUD API for users', () => {
   describe('GET all users', () => {
     test('all users are returned', async () => {
       const response = await api.get('/api/users');
-      assert.strictEqual(response.body.length, helper.initialUsers.length);
+      assert.strictEqual(response.body.length, helper.initialData.users.length);
     });
   });
 

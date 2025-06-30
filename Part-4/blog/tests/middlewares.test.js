@@ -10,7 +10,7 @@ const api = supertest(app);
 let authenticatedApi;
 let authenticatedUser;
 
-describe.only('Integration tests. Testing the CRUD API for blogs', () => {
+describe('Integration tests. Testing the CRUD API for blogs', () => {
   beforeEach(async () => {
     await helper.resetDb();
     await helper.createInitialUsers();
