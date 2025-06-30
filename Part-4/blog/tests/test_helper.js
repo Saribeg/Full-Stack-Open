@@ -1,4 +1,6 @@
+const mongoose = require('mongoose');
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const initialBlogs = [
   {
@@ -39,23 +41,41 @@ const initialBlogs = [
   }
 ];
 
-const nonExistingId = async () => {
-  const blog = new Blog({
-    title: 'willremovethissoon',
-    author: 'willremovethissoon',
-    url: 'willremovethissoon'
-  });
-  await blog.save();
-  await blog.deleteOne();
-
-  return blog._id.toString();
-};
-
 const blogsInDb = async () => {
   const blogs = await Blog.find({});
   return blogs.map(blog => blog.toJSON());
 };
 
+const initialUsers = [
+  {
+    username: 'alex',
+    name: 'Alex Smith'
+  },
+  {
+    username: 'john',
+    name: 'John Doe'
+  },
+  {
+    username: 'lisa',
+    name: 'Lisa Parker'
+  },
+  {
+    username: 'jessica',
+    name: 'Jessica Huston'
+  }
+];
+
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map(user => user.toJSON());
+};
+
+const nonExistingId = async () => {
+  return new mongoose.Types.ObjectId().toString();
+};
+
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb
+  initialBlogs, blogsInDb,
+  initialUsers, usersInDb,
+  nonExistingId
 };
