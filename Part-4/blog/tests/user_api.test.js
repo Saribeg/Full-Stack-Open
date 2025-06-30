@@ -167,6 +167,57 @@ describe('Integration tests. Testing the CRUD API for users', () => {
       assert.strictEqual(response.body.error, '`password` must be at least 3 characters long');
     });
   });
+
+  describe('user login', () => {
+    test('user can login', async () => {
+      const userLoginData = {
+        username: 'jessica',
+        password: 'sekret'
+      };
+
+      const response = await api
+        .post('/api/login')
+        .send(userLoginData)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      assert.ok(response.body.token);
+      assert.strictEqual(response.body.username, 'jessica');
+      assert.strictEqual(response.body.name, 'Jessica Huston');
+    });
+
+    test('error is returned if password is incorrect', async () => {
+      const userLoginData = {
+        username: 'jessica',
+        password: 'noncorrect'
+      };
+
+      const response = await api
+        .post('/api/login')
+        .send(userLoginData)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, 'invalid username or password');
+    });
+
+    test('error is returned if user is not found', async () => {
+      const userLoginData = {
+        username: 'nonexistinguser',
+        password: 'sekret'
+      };
+
+      const response = await api
+        .post('/api/login')
+        .send(userLoginData)
+        .expect(401)
+        .expect('Content-Type', /application\/json/);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, 'invalid username or password');
+    });
+  });
 });
 
 after(async () => {
