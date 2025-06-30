@@ -4,17 +4,12 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const helper = require('./test_helper');
-const bcrypt = require('bcrypt');
-const User = require('../models/user');
 
 const api = supertest(app);
 
 describe('Integration tests. Testing the CRUD API for users', () => {
   beforeEach(async () => {
-    await User.deleteMany({});
-    const passwordHash = await bcrypt.hash('sekret', 10);
-    const initialUsers = helper.initialUsers.map(user => ({ ...user, passwordHash }));
-    await User.insertMany(initialUsers);
+    await helper.handleInitialDataInDb();
   });
 
   describe('GET all users', () => {
