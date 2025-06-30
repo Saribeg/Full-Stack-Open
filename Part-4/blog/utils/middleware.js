@@ -45,12 +45,15 @@ const tokenExtractor = (request, response, next) => {
 const userExtractor = async (request, response, next) => {
   const authorization = request.get('authorization');
 
-  if (!authorization || !authorization.toLowerCase().startsWith('bearer ')) {
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     return response.status(401).json({ error: 'token missing or invalid' });
   }
 
   const token = authorization.replace('Bearer ', '');
-  const decodedToken = jwt.verify(token, process.env.SECRET);
+  const decodedToken = jwt.verify(
+    token,
+    (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') ? process.env.TEST_SECRET : process.env.SECRET
+  );
 
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid (missing id)' });
