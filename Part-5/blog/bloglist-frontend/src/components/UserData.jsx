@@ -1,5 +1,11 @@
-const UserData = ({ user }) => {
+import Logout from './Logout';
+
+const UserData = ({ user, setUser }) => {
   const { username, name } = user;
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div>
@@ -8,6 +14,7 @@ const UserData = ({ user }) => {
         <p>Username: {username}</p>
         <p>Name: {name}</p>
         <p>Status: Logged In</p>
+        <Logout setUser={setUser}/>
       </div>
     </div>
   );
