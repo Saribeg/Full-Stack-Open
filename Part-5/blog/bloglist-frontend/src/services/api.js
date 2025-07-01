@@ -5,6 +5,14 @@ import { safeParseJSON } from '../utils/commonHelpers';
 
 const api = axios.create();
 
+export function setToken(token) {
+  api.defaults.headers.common.Authorization = `Bearer ${token}`;
+}
+
+export function clearToken() {
+  delete api.defaults.headers.common.Authorization;
+}
+
 api.interceptors.response.use(
   response => response,
   error => {
