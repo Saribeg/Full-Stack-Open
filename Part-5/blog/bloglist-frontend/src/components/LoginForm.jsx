@@ -1,3 +1,4 @@
+import { setToken } from '../services/api';
 import loginService from '../services/login';
 
 const LoginForm = ({ username, setUsername, password, setPassword, setUser }) => {
@@ -8,7 +9,11 @@ const LoginForm = ({ username, setUsername, password, setPassword, setUser }) =>
 
     try {
       const userData = await loginService.login({ username, password });
+      localStorage.setItem('user', JSON.stringify(userData));
       setUser(userData);
+      setToken(userData.token);
+      setUsername('');
+      setPassword('');
     } catch (error) {
       console.log(error);
     }
