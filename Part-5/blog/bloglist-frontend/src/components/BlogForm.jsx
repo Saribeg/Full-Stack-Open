@@ -1,6 +1,6 @@
 import blogService from '../services/blogs';
 
-const BlogForm = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogUrl, setBlogUrl, setBlogs }) => {
+const BlogForm = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogUrl, setBlogUrl, setBlogs, notify }) => {
   const handleChange = (setter) => (event) => {
     setter(event.target.value);
   };
@@ -23,8 +23,15 @@ const BlogForm = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogUrl,
       var createdBlog = await blogService.create(newBlog);
       setBlogs(prev => prev.concat(createdBlog));
       resetForm();
+      notify({
+        message: `Blog ${createdBlog.title} is successfully created`,
+        type: 'success'
+      });
     } catch (error) {
-      console.log(error);
+      notify({
+        message: error.message,
+        type: 'error'
+      });
     }
   };
 

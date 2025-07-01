@@ -1,7 +1,7 @@
 import { setToken } from '../services/api';
 import loginService from '../services/login';
 
-const LoginForm = ({ username, setUsername, password, setPassword, setUser }) => {
+const LoginForm = ({ username, setUsername, password, setPassword, setUser, notify }) => {
   const handleUserNameChange = ({ target }) => setUsername(target.value);
   const handlePasswordChange = ({ target }) => setPassword(target.value);
   const handleLoginSubmit = async (event) => {
@@ -14,8 +14,15 @@ const LoginForm = ({ username, setUsername, password, setPassword, setUser }) =>
       setToken(userData.token);
       setUsername('');
       setPassword('');
+      notify({
+        message: `User ${userData.name} is successfully logged in`,
+        type: 'success'
+      });
     } catch (error) {
-      console.log(error);
+      notify({
+        message: error.message,
+        type: 'error'
+      });
     }
   };
 
