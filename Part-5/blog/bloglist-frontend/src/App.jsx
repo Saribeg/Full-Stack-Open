@@ -6,6 +6,9 @@ import blogService from './services/blogs';
 import UserData from './components/UserData';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
+import Notification from './components/Notification';
+
+import './index.css';
 
 const App = () => {
   const [username, setUsername] = useState('');
@@ -15,6 +18,12 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
+  const [notification, setNotification] = useState({ message: null, type: null });
+
+  const notify = ({ message, type = 'success' }) => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification({ message: null, type: null }), 3000);
+  };
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -34,6 +43,10 @@ const App = () => {
 
   return (
     <div>
+      <Notification
+        message={notification.message}
+        type={notification.type}
+      />
       {user
         ? (
           <>
@@ -47,6 +60,7 @@ const App = () => {
               blogUrl={blogUrl}
               setBlogUrl={setBlogUrl}
               setBlogs={setBlogs}
+              notify={notify}
             />
           </>
         )
@@ -57,6 +71,7 @@ const App = () => {
             password={password}
             setPassword={setPassword}
             setUser={setUser}
+            notify={notify}
           />
         )}
     </div>
