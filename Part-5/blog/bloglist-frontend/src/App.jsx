@@ -5,12 +5,16 @@ import LoginForm from './components/LoginForm';
 import blogService from './services/blogs';
 import UserData from './components/UserData';
 import BlogList from './components/BlogList';
+import BlogForm from './components/BlogForm';
 
 const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogAuthor, setBlogAuthor] = useState('');
+  const [blogUrl, setBlogUrl] = useState('');
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -35,6 +39,15 @@ const App = () => {
           <>
             <UserData user={user} setUser={setUser}/>
             <BlogList blogs={blogs} />
+            <BlogForm
+              blogTitle={blogTitle}
+              setBlogTitle={setBlogTitle}
+              blogAuthor={blogAuthor}
+              setBlogAuthor={setBlogAuthor}
+              blogUrl={blogUrl}
+              setBlogUrl={setBlogUrl}
+              setBlogs={setBlogs}
+            />
           </>
         )
         : (
