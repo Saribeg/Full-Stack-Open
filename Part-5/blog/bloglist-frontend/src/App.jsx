@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { safeParseJSON } from './utils/commonHelpers';
+import { setToken } from './services/api';
 import LoginForm from './components/LoginForm';
 import blogService from './services/blogs';
 import UserData from './components/UserData';
@@ -16,12 +18,22 @@ const App = () => {
     );
   }, []);
 
+  useEffect(() => {
+    const userJSON = window.localStorage.getItem('user');
+    const user = safeParseJSON(userJSON);
+
+    if (user && user.token) {
+      setUser(user);
+      setToken(user.token);
+    }
+  }, []);
+
   return (
     <div>
       {user
         ? (
           <>
-            <UserData user={user} />
+            <UserData user={user} setUser={setUser}/>
             <BlogList blogs={blogs} />
           </>
         )
