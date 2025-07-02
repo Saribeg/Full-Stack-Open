@@ -37,3 +37,11 @@
 .blog-details a:hover {
   text-decoration: underline;
 }
+
+.blog-likes {
+  display: flex;
+}
+
+.blog-like {
+  margin-left: 1rem;
+}
