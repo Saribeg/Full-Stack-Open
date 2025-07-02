@@ -56,7 +56,7 @@ const Blog = ({ blog, user, modifyBlogs, notify }) => {
               ❤️ Like
             </button>
           </div>
-          {blog.user?.name && <div>User: {blog.user.name}</div>}
+          {blog.user?.name && <div className='blog-user'>User: {blog.user.name}</div>}
           {user?.id === blog.user?.id ? <button className='btn btn-danger blog-delete' onClick={handleBlogDelete}>Delete</button> : null}
         </div>
       )}
