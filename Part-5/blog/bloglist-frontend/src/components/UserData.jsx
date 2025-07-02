@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Logout from './Logout';
 
 const UserData = ({ user, setUser }) => {
@@ -21,3 +22,8 @@ const UserData = ({ user, setUser }) => {
 };
 
 export default UserData;
+
+UserData.propTypes = {
+  user: PropTypes.object.isRequired,
+  setUser: PropTypes.func.isRequired
+};
