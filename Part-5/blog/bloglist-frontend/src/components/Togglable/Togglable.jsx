@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, forwardRef, useImperativeHandle } from 'react';
-import './togglable.css';
+import './Togglable.css';
 
 const Togglable = forwardRef((props, refs) => {
   const [visible, setVisible] = useState(false);
