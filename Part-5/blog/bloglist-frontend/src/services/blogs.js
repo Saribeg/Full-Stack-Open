@@ -11,4 +11,10 @@ const create = async ({ title, author, url }) => {
   return response.data;
 };
 
-export default { getAll, create };
+const update = async (blog) => {
+  const { id, title, author, url, likes } = blog;
+  const response = await api.put(`${baseUrl}/${id}`, { title, author, url, likes });
+  return response.data;
+};
+
+export default { getAll, create, update };

@@ -25,6 +25,12 @@ const App = () => {
     setTimeout(() => setNotification({ message: null, type: null }), 3000);
   };
 
+  const updateBlog = (updatedBlog) => {
+    setBlogs(prevBlogs =>
+      prevBlogs.map(b => b.id === updatedBlog.id ? updatedBlog : b)
+    );
+  };
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -51,7 +57,7 @@ const App = () => {
         ? (
           <>
             <UserData user={user} setUser={setUser}/>
-            <BlogList blogs={blogs} />
+            <BlogList blogs={blogs} updateBlog={updateBlog} notify={notify}/>
             <Togglable buttonLabel="New Blog" ref={blogFormRef}>
               <BlogForm
                 setBlogs={setBlogs}

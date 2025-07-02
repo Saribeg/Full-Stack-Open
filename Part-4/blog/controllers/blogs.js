@@ -20,11 +20,12 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
 });
 
 blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
+  const user = request.user;
   const { title, author, url, likes } = request.body;
 
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
-    { title, author, url, likes },
+    { title, author, url, likes, user: user._id },
     {
       new: true,           // Return updated document
       runValidators: true, // Apply schema validations when updating
