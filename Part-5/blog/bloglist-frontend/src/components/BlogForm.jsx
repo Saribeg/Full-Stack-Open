@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
 
-const BlogForm = ({ setBlogs, notify, toggleForm }) => {
+const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
@@ -26,7 +26,7 @@ const BlogForm = ({ setBlogs, notify, toggleForm }) => {
 
     try {
       var createdBlog = await blogService.create(newBlog);
-      setBlogs(prev => prev.concat(createdBlog));
+      modifyBlogs('add', createdBlog);
       resetForm();
       notify({
         message: `Blog ${createdBlog.title} is successfully created`,

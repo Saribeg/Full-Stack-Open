@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { safeParseJSON } from './utils/commonHelpers';
+import { safeParseJSON, modifyArray } from './utils/commonHelpers';
 import { setToken } from './services/api';
 import LoginForm from './components/LoginForm';
 import blogService from './services/blogs';
@@ -25,13 +25,7 @@ const App = () => {
     setTimeout(() => setNotification({ message: null, type: null }), 3000);
   };
 
-  const updateBlog = (updatedBlog) => {
-    setBlogs(prevBlogs =>
-      prevBlogs
-        .map(b => b.id === updatedBlog.id ? updatedBlog : b)
-        .sort((a, b) => b.likes - a.likes)
-    );
-  };
+  const modifyBlogs = (operationType, blogData) => setBlogs(prevBlogs => modifyArray(prevBlogs, operationType, blogData));
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
@@ -60,10 +54,15 @@ const App = () => {
         ? (
           <>
             <UserData user={user} setUser={setUser}/>
-            <BlogList blogs={blogs} updateBlog={updateBlog} notify={notify}/>
+            <BlogList
+              blogs={blogs}
+              user={user}
+              modifyBlogs={modifyBlogs}
+              notify={notify}
+            />
             <Togglable buttonLabel="New Blog" ref={blogFormRef}>
               <BlogForm
-                setBlogs={setBlogs}
+                modifyBlogs={modifyBlogs}
                 notify={notify}
                 toggleForm={() => blogFormRef.current.toggleVisibility()}
               />
