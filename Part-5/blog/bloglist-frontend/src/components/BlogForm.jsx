@@ -1,6 +1,6 @@
 import blogService from '../services/blogs';
 
-const BlogForm = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogUrl, setBlogUrl, setBlogs, notify }) => {
+const BlogForm = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogUrl, setBlogUrl, setBlogs, notify, toggleForm }) => {
   const handleChange = (setter) => (event) => {
     setter(event.target.value);
   };
@@ -27,6 +27,7 @@ const BlogForm = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogUrl,
         message: `Blog ${createdBlog.title} is successfully created`,
         type: 'success'
       });
+      toggleForm();
     } catch (error) {
       notify({
         message: error.message,
