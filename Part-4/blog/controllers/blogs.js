@@ -31,7 +31,7 @@ blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
       runValidators: true, // Apply schema validations when updating
       context: 'query'     // For correct work of custom validators
     }
-  );
+  ).populate('user');
 
   if (!updatedBlog) {
     return response.status(404).json({ error: 'Blog is not found' });
