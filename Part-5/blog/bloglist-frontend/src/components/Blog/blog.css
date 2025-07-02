@@ -1,0 +1,39 @@
+.blog-card {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #fdfdfd;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.blog-title {
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: #222;
+  margin-bottom: 0.25rem;
+}
+
+.blog-author {
+  color: #666;
+  font-weight: 400;
+  font-size: 1rem;
+  margin-left: 0.3rem;
+}
+
+.blog-details {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+.blog-details a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.blog-details a:hover {
+  text-decoration: underline;
+}
