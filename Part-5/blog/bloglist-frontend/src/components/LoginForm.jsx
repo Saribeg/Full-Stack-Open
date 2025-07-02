@@ -32,21 +32,37 @@ const LoginForm = ({ setUser, notify }) => {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Log In to see blogs and work with them</h2>
       <form onSubmit={handleLoginSubmit}>
         <div className="form-group">
           <label htmlFor="username">Username:</label>
-          <input type="text" id="username" name="username" required value={username} onChange={handleUserNameChange}/>
+          <input
+            className="form-input"
+            type="text"
+            id="username"
+            name="username"
+            required
+            value={username}
+            onChange={handleUserNameChange}
+          />
         </div>
 
         <div className="form-group">
           <label htmlFor="password">Password:</label>
-          <input type="password" id="password" name="password" required value={password} onChange={handlePasswordChange}/>
+          <input
+            className="form-input"
+            type="password"
+            id="password"
+            name="password"
+            required
+            value={password}
+            onChange={handlePasswordChange}
+          />
         </div>
 
         <div className="form-actions">
-          <button type="submit">Login</button>
+          <button className="btn btn-primary" type="submit">Login</button>
         </div>
       </form>
     </div>
