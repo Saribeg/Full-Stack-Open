@@ -16,9 +16,7 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
-  const [blogTitle, setBlogTitle] = useState('');
-  const [blogAuthor, setBlogAuthor] = useState('');
-  const [blogUrl, setBlogUrl] = useState('');
+
   const [notification, setNotification] = useState({ message: null, type: null });
   const blogFormRef = useRef();
 
@@ -56,12 +54,6 @@ const App = () => {
             <BlogList blogs={blogs} />
             <Togglable buttonLabel="New Blog" ref={blogFormRef}>
               <BlogForm
-                blogTitle={blogTitle}
-                setBlogTitle={setBlogTitle}
-                blogAuthor={blogAuthor}
-                setBlogAuthor={setBlogAuthor}
-                blogUrl={blogUrl}
-                setBlogUrl={setBlogUrl}
                 setBlogs={setBlogs}
                 notify={notify}
                 toggleForm={() => blogFormRef.current.toggleVisibility()}
