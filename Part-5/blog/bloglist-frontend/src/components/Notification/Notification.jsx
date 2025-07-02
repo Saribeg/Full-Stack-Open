@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import './notification.css';
+import './Notification.css';
 
 const Notification = ({ message, type }) => {
   if (!message || typeof message !== 'string') return null;
