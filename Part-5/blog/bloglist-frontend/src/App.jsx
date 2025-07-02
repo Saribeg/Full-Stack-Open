@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { safeParseJSON } from './utils/commonHelpers';
 import { setToken } from './services/api';
 import LoginForm from './components/LoginForm';
@@ -7,6 +7,7 @@ import UserData from './components/UserData';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification';
+import Togglable from './components/Togglable';
 
 import './index.css';
 
@@ -19,6 +20,7 @@ const App = () => {
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
   const [notification, setNotification] = useState({ message: null, type: null });
+  const blogFormRef = useRef();
 
   const notify = ({ message, type = 'success' }) => {
     setNotification({ message, type });
@@ -52,16 +54,19 @@ const App = () => {
           <>
             <UserData user={user} setUser={setUser}/>
             <BlogList blogs={blogs} />
-            <BlogForm
-              blogTitle={blogTitle}
-              setBlogTitle={setBlogTitle}
-              blogAuthor={blogAuthor}
-              setBlogAuthor={setBlogAuthor}
-              blogUrl={blogUrl}
-              setBlogUrl={setBlogUrl}
-              setBlogs={setBlogs}
-              notify={notify}
-            />
+            <Togglable buttonLabel="New Blog" ref={blogFormRef}>
+              <BlogForm
+                blogTitle={blogTitle}
+                setBlogTitle={setBlogTitle}
+                blogAuthor={blogAuthor}
+                setBlogAuthor={setBlogAuthor}
+                blogUrl={blogUrl}
+                setBlogUrl={setBlogUrl}
+                setBlogs={setBlogs}
+                notify={notify}
+                toggleForm={() => blogFormRef.current.toggleVisibility()}
+              />
+            </Togglable>
           </>
         )
         : (
