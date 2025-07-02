@@ -1,6 +1,11 @@
+import { useState } from 'react';
 import blogService from '../services/blogs';
 
-const BlogForm = ({ blogTitle, setBlogTitle, blogAuthor, setBlogAuthor, blogUrl, setBlogUrl, setBlogs, notify, toggleForm }) => {
+const BlogForm = ({ setBlogs, notify, toggleForm }) => {
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogAuthor, setBlogAuthor] = useState('');
+  const [blogUrl, setBlogUrl] = useState('');
+
   const handleChange = (setter) => (event) => {
     setter(event.target.value);
   };
