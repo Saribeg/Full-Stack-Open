@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { clearToken } from '../services/api';
 
 const Logout = ({ setUser }) => {
@@ -10,3 +11,7 @@ const Logout = ({ setUser }) => {
 };
 
 export default Logout;
+
+Logout.propTypes = {
+  setUser: PropTypes.func.isRequired
+};

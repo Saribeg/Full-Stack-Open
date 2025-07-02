@@ -20,6 +20,11 @@ export default [
         },
       },
     },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     plugins: {
       stylistic,
       react,
@@ -32,7 +37,7 @@ export default [
       'stylistic/linebreak-style': ['error', 'unix'],
       'stylistic/object-curly-spacing': ['error', 'always'],
       'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
+      'react/prop-types': 'error',
       'react/jsx-uses-react': 'off',
       'react/jsx-uses-vars': 'error',
       'react-hooks/rules-of-hooks': 'error',
