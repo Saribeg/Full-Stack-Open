@@ -27,14 +27,17 @@ const App = () => {
 
   const updateBlog = (updatedBlog) => {
     setBlogs(prevBlogs =>
-      prevBlogs.map(b => b.id === updatedBlog.id ? updatedBlog : b)
+      prevBlogs
+        .map(b => b.id === updatedBlog.id ? updatedBlog : b)
+        .sort((a, b) => b.likes - a.likes)
     );
   };
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    );
+    blogService.getAll().then(blogs => {
+      const sorted = [...blogs].sort((a, b) => b.likes - a.likes);
+      setBlogs(sorted);
+    });
   }, []);
 
   useEffect(() => {
