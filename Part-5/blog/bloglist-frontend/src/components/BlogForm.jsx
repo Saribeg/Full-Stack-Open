@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import blogService from '../services/blogs';
 
@@ -69,3 +70,9 @@ const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
 };
 
 export default BlogForm;
+
+BlogForm.propTypes = {
+  modifyBlogs: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired,
+  toggleForm: PropTypes.func.isRequired
+};

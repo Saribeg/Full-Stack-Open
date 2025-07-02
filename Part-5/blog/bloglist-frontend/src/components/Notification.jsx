@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 const Notification = ({ message, type }) => {
   if (!message || typeof message !== 'string') return null;
 
@@ -5,3 +7,8 @@ const Notification = ({ message, type }) => {
 };
 
 export default Notification;
+
+Notification.propTypes = {
+  message: PropTypes.string,
+  type: PropTypes.string
+};

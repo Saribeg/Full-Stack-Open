@@ -1,7 +1,12 @@
+import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { setToken } from '../services/api';
 import loginService from '../services/login';
 
-const LoginForm = ({ username, setUsername, password, setPassword, setUser, notify }) => {
+const LoginForm = ({ setUser, notify }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
   const handleUserNameChange = ({ target }) => setUsername(target.value);
   const handlePasswordChange = ({ target }) => setPassword(target.value);
   const handleLoginSubmit = async (event) => {
@@ -49,3 +54,8 @@ const LoginForm = ({ username, setUsername, password, setPassword, setUser, noti
 };
 
 export default LoginForm;
+
+LoginForm.propTypes = {
+  setUser: PropTypes.func.isRequired,
+  notify: PropTypes.func.isRequired
+};
