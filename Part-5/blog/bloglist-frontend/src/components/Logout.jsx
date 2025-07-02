@@ -7,7 +7,7 @@ const Logout = ({ setUser }) => {
     clearToken();
     setUser(null);
   };
-  return <button onClick={handleLogout}>Logout</button>;
+  return <button className="btn btn-secondary" onClick={handleLogout}>Logout</button>;
 };
 
 export default Logout;

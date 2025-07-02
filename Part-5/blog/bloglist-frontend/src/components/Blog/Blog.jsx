@@ -51,11 +51,13 @@ const Blog = ({ blog, user, modifyBlogs, notify }) => {
           <div>Author: {blog.author || 'unknown'}</div>
           <div>URL: <a href={blog.url}>{blog.url}</a></div>
           <div className='blog-likes'>
-            <div>Likes: {blog.likes}</div>
-            <button className='blog-like' onClick={handleBlogUpdate}>❤️ Like</button>
+            <span>Likes: {blog.likes}</span>
+            <button className="blog-like" onClick={handleBlogUpdate}>
+              ❤️ Like
+            </button>
           </div>
           {blog.user?.name && <div>User: {blog.user.name}</div>}
-          {user?.id === blog.user?.id ? <button onClick={handleBlogDelete}>Delete</button> : null}
+          {user?.id === blog.user?.id ? <button className='btn btn-danger blog-delete' onClick={handleBlogDelete}>Delete</button> : null}
         </div>
       )}
     </div>

@@ -6,10 +6,8 @@ import blogService from './services/blogs';
 import UserData from './components/UserData';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
-import Notification from './components/Notification';
-import Togglable from './components/Togglable';
-
-import './index.css';
+import Notification from './Notification/Notification';
+import Togglable from './components/Togglable/Togglable';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -44,6 +42,7 @@ const App = () => {
 
   return (
     <div>
+      <h1 className="logo"><a className="logo-link" href="/">BlogsApp</a></h1>
       <Notification
         message={notification.message}
         type={notification.type}

@@ -5,7 +5,6 @@
   background-color: #fdfdfd;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   transition: all 0.2s ease-in-out;
-  cursor: pointer;
 }
 
 .blog-title {
@@ -13,6 +12,7 @@
   font-size: 1.1rem;
   color: #222;
   margin-bottom: 0.25rem;
+  cursor: pointer;
 }
 
 .blog-author {
@@ -40,8 +40,15 @@
 
 .blog-likes {
   display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 .blog-like {
   margin-left: 1rem;
+}
+
+.blog-delete {
+  margin-top: 1rem;
 }
