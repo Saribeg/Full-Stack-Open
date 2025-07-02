@@ -17,4 +17,8 @@ const update = async (blog) => {
   return response.data;
 };
 
-export default { getAll, create, update };
+const deleteBlog = async (id) => {
+  await api.delete(`${baseUrl}/${id}`);
+};
+
+export default { getAll, create, update, deleteBlog };
