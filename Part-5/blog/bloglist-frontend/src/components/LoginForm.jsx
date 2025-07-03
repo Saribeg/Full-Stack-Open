@@ -45,6 +45,7 @@ const LoginForm = ({ setUser, notify }) => {
             required
             value={username}
             onChange={handleUserNameChange}
+            data-testid="username"
           />
         </div>
 
@@ -58,11 +59,12 @@ const LoginForm = ({ setUser, notify }) => {
             required
             value={password}
             onChange={handlePasswordChange}
+            data-testid="password"
           />
         </div>
 
         <div className="form-actions">
-          <button className="btn btn-primary" type="submit">Login</button>
+          <button className="btn btn-primary" type="submit" data-testid="login">Login</button>
         </div>
       </form>
     </div>
