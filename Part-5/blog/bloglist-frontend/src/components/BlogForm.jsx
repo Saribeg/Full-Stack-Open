@@ -56,6 +56,7 @@ const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
             required
             value={blogTitle}
             onChange={handleChange(setBlogTitle)}
+            data-testid="blogTitle"
           />
         </div>
 
@@ -69,6 +70,7 @@ const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
             required
             value={blogAuthor}
             onChange={handleChange(setBlogAuthor)}
+            data-testid="blogAuthor"
           />
         </div>
 
@@ -82,11 +84,12 @@ const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
             required
             value={blogUrl}
             onChange={handleChange(setBlogUrl)}
+            data-testid="blogUrl"
           />
         </div>
 
         <div className="form-actions">
-          <button className="btn btn-primary" type="submit">Create</button>
+          <button className="btn btn-primary" type="submit" data-testid="createBlog">Create</button>
         </div>
       </form>
     </div>
