@@ -46,10 +46,30 @@ describe('Blog app', () => {
       await page.getByTestId('blogUrl').fill('https://reactcustomhooks.com/');
       await page.getByTestId('createBlog').click();
 
-      const blog = page.locator('.blog-title', {
-        hasText: 'Custom hooks in React by Albus Dumbledore',
+      const blogTitle = page.locator('.blog-title', {
+        hasText: 'Custom hooks in React by Albus Dumbledore'
       });
-      await expect(blog).toBeVisible();
+      await expect(blogTitle).toBeVisible();
+    })
+
+    test('a blog can be liked', async ({ page }) => {
+      const blogTitle = page.locator('.blog-title', {
+        hasText: 'Type wars by Robert C. Martin',
+      });
+      // Start from the element blogTitle, and search upwards (ancestor) in the DOM hierarchy for the nearest <div> element
+      // whose class includes "blog-card".
+      const blogCard = blogTitle.locator('xpath=ancestor::div[contains(@class, "blog-card")]');
+
+      await blogTitle.click();
+      await expect(blogCard.locator('.blog-details')).toBeVisible();
+      await expect(blogCard.locator('.blog-likes')).toContainText('Likes: 2');
+      await expect(blogCard.locator('.blog-user')).toContainText('Jessica Huston');
+      await blogCard.locator('.blog-like').click();
+      await expect(blogCard.locator('.blog-likes')).toContainText('Likes: 3');
+      await expect(blogCard.locator('.blog-user')).toContainText('Harry Potter');
+      await blogCard.locator('.blog-like').click();
+      await expect(blogCard.locator('.blog-likes')).toContainText('Likes: 4');
+      await expect(blogCard.locator('.blog-user')).toContainText('Harry Potter');
     })
   })
 });
