@@ -1,8 +1,10 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test');
+const helper = require('./helper');
 
-describe.only('Blog app', () => {
-  beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:5173');
+describe('Blog app', () => {
+  beforeEach(async ({ page, request }) => {
+    await request.post('/api/test/initiate-db');
+    await page.goto('/');
   });
 
   test('Login form is shown', async ({ page }) => {
@@ -10,5 +12,23 @@ describe.only('Blog app', () => {
     await expect(page.getByTestId('username')).toBeVisible();
     await expect(page.getByTestId('password')).toBeVisible();
     await expect(page.getByTestId('login')).toBeVisible();
+  });
+
+  describe('Login', () => {
+    test('succeeds with correct credentials', async ({ page }) => {
+      await helper.fillAndSubmitLoginForm(page, 'harrypotter', 'sekret');
+
+      await expect(page.locator('.notification.success')).toHaveText(/User Harry Potter is successfully logged in/);
+      await expect(page.locator('.user')).toBeVisible();
+      await expect(page.locator('.user-name')).toHaveText(/Harry Potter/);
+      await expect(page.locator('.user-status')).toHaveText('Status: Logged In');
+    });
+
+    test('fails with wrong credentials', async ({ page }) => {
+      await helper.fillAndSubmitLoginForm(page, 'harrypotter', 'wrong');
+
+      await expect(page.locator('.user')).toHaveCount(0);
+      await expect(page.locator('.notification.error')).toHaveText(/invalid username or password/);
+    });
   });
 });
