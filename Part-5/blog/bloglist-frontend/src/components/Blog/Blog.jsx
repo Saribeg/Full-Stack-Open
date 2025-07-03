@@ -23,6 +23,12 @@ const Blog = ({ blog, user, modifyBlogs, notify }) => {
   };
 
   const handleBlogDelete = async () => {
+    const isToBeDeleted = window.confirm(`Are you sure you want to delete the blog ${blog.title}?`);
+
+    if (!isToBeDeleted) {
+      return;
+    }
+
     try {
       await blogService.deleteBlog(blog.id);
       modifyBlogs('delete', { id: blog.id });
