@@ -31,4 +31,25 @@ describe('Blog app', () => {
       await expect(page.locator('.notification.error')).toHaveText(/invalid username or password/);
     });
   });
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page, request }) => {
+      await helper.loginByLocalStorage(page, request, 'harrypotter', 'sekret');
+    })
+  
+    test('a new blog can be created', async ({ page }) => {
+      await expect(page.locator('.user')).toBeVisible();
+
+      await page.getByRole('button', { name: /new blog/i }).click()
+      await page.getByTestId('blogTitle').fill('Custom hooks in React');
+      await page.getByTestId('blogAuthor').fill('Albus Dumbledore');
+      await page.getByTestId('blogUrl').fill('https://reactcustomhooks.com/');
+      await page.getByTestId('createBlog').click();
+
+      const blog = page.locator('.blog-title', {
+        hasText: 'Custom hooks in React by Albus Dumbledore',
+      });
+      await expect(blog).toBeVisible();
+    })
+  })
 });
