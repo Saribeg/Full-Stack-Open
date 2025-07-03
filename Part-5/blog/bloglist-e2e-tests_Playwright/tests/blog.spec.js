@@ -40,11 +40,11 @@ describe('Blog app', () => {
     test('a new blog can be created', async ({ page }) => {
       await expect(page.locator('.user')).toBeVisible();
 
-      await page.getByRole('button', { name: /new blog/i }).click()
-      await page.getByTestId('blogTitle').fill('Custom hooks in React');
-      await page.getByTestId('blogAuthor').fill('Albus Dumbledore');
-      await page.getByTestId('blogUrl').fill('https://reactcustomhooks.com/');
-      await page.getByTestId('createBlog').click();
+      await helper.createBlog(page, {
+        title: 'Custom hooks in React',
+        author: 'Albus Dumbledore',
+        url: 'https://reactcustomhooks.com/',
+      });
 
       const blogTitle = page.locator('.blog-title', {
         hasText: 'Custom hooks in React by Albus Dumbledore'
@@ -70,6 +70,33 @@ describe('Blog app', () => {
       await blogCard.locator('.blog-like').click();
       await expect(blogCard.locator('.blog-likes')).toContainText('Likes: 4');
       await expect(blogCard.locator('.blog-user')).toContainText('Harry Potter');
-    })
-  })
+    });
+
+    test('a blog can be deleted by the user who created it', async ({ page }) => {
+      page.on('dialog', async (dialog) => {
+        expect(dialog.type()).toBe('confirm');
+        expect(dialog.message()).toContain('Are you sure');
+        await dialog.accept();
+      });
+      await helper.createBlog(page, {
+        title: 'Custom hooks in React',
+        author: 'Albus Dumbledore',
+        url: 'https://reactcustomhooks.com/',
+      });
+
+      const blogTitle = page.locator('.blog-title', {
+        hasText: 'Custom hooks in React by Albus Dumbledore',
+      });
+      await blogTitle.click();
+      const blogCard = blogTitle.locator('xpath=ancestor::div[contains(@class, "blog-card")]');
+      // const deleteButton = blogCard.locator('.blog-delete');
+      const deleteButton = blogCard.getByRole('button', { name: /delete/i });
+      await expect(deleteButton).toBeVisible();
+      await deleteButton.click();
+      const deletedBlog = page.locator('.blog-title', {
+        hasText: 'Custom hooks in React by Albus Dumbledore'
+      });
+      await expect(deletedBlog).toHaveCount(0);
+    });
+  });
 });

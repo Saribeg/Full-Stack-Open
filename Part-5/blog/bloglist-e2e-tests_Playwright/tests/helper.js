@@ -19,4 +19,12 @@ const loginByLocalStorage = async (page, request, username, password) => {
   await page.reload();
 };
 
-export { fillAndSubmitLoginForm, loginByLocalStorage }
+const createBlog = async (page, { title, author, url }) => {
+  await page.getByRole('button', { name: /new blog/i }).click()
+  await page.getByTestId('blogTitle').fill(title);
+  await page.getByTestId('blogAuthor').fill(author);
+  await page.getByTestId('blogUrl').fill(url);
+  await page.getByTestId('createBlog').click();
+}
+
+export { fillAndSubmitLoginForm, loginByLocalStorage, createBlog }

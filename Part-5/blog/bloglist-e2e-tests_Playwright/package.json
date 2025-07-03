@@ -9,7 +9,7 @@
     "start:test:e2e": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx playwright test\"",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "test:debug": "playwright test --debug",
+    "test:debug": "playwright test --project=chromium --debug",
     "test:trace": "playwright test --trace on",
     "test:report": "playwright show-report",
     "test:chromium": "playwright test --project=chromium",
