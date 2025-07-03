@@ -4,18 +4,19 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const helper = require('./test_helper');
+const { initialData, handleInitialDataInDb } = require('../utils/testDbSetup');
 
 const api = supertest(app);
 
 describe('Integration tests. Testing the CRUD API for users', () => {
   beforeEach(async () => {
-    await helper.handleInitialDataInDb();
+    await handleInitialDataInDb();
   });
 
   describe('GET all users', () => {
     test('all users are returned', async () => {
       const response = await api.get('/api/users');
-      assert.strictEqual(response.body.length, helper.initialData.users.length);
+      assert.strictEqual(response.body.length, initialData.users.length);
     });
   });
 
