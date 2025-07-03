@@ -5,6 +5,7 @@ const supertest = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../app');
 const helper = require('./test_helper');
+const { resetDb, createInitialUsers } = require('../utils/testDbSetup');
 
 const api = supertest(app);
 let authenticatedApi;
@@ -12,8 +13,8 @@ let authenticatedUser;
 
 describe('Integration tests. Testing the CRUD API for blogs', () => {
   beforeEach(async () => {
-    await helper.resetDb();
-    await helper.createInitialUsers();
+    await resetDb();
+    await createInitialUsers();
     const { agent, user } = await helper.getAuthenticatedAgent({
       username: 'jessica',
       password: 'sekret',
