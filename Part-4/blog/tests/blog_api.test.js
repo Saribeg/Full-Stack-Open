@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const helper = require('./test_helper');
+const { initialData, handleInitialDataInDb } = require('../utils/testDbSetup');
 
 const api = supertest(app);
 let authenticatedApi;
@@ -11,7 +12,7 @@ let authenticatedUser;
 
 describe('Integration tests. Testing the CRUD API for blogs', () => {
   beforeEach(async () => {
-    await helper.handleInitialDataInDb();
+    await handleInitialDataInDb();
     const { agent, user } = await helper.getAuthenticatedAgent({
       username: 'jessica',
       password: 'sekret',
@@ -25,7 +26,7 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
     test('all blogs are returned', async () => {
       const response = await api.get('/api/blogs');
 
-      assert.strictEqual(response.body.length, helper.initialData.blogs.length);
+      assert.strictEqual(response.body.length, initialData.blogs.length);
     });
 
     test('the unique identifier property of the blog posts is named id', async () => {
@@ -62,7 +63,7 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
 
       assert.ok(id);
       assert.deepStrictEqual({ title, author, url, likes }, newBlog);
-      assert.strictEqual(user, authenticatedUser.id);
+      assert.deepStrictEqual(user, authenticatedUser);
     });
 
     test('when adding a new blog without likes property the default value 0 is set ', async () => {

@@ -9,12 +9,12 @@ const UserData = ({ user, setUser }) => {
   }
 
   return (
-    <div>
-      <h2>User Information</h2>
+    <div className='user'>
+      <h2 className='user-title'>User Information</h2>
       <div>
-        <p>Username: {username}</p>
-        <p>Name: {name}</p>
-        <p>Status: Logged In</p>
+        <p className='user-username'>Username: {username}</p>
+        <p className='user-name'>Name: {name}</p>
+        <p className='user-status'>Status: Logged In</p>
         <Logout setUser={setUser}/>
       </div>
     </div>
