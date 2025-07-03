@@ -1,0 +1,28 @@
+{
+  "name": "bloglist-e2e-tests_playwright",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start:backend": "cd ../../../Part-4/blog && npm run start:test",
+    "start:frontend": "cd ../bloglist-frontend && npm run dev",
+    "start:app": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:test:e2e": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx playwright test\"",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:trace": "playwright test --trace on",
+    "test:report": "playwright show-report",
+    "test:chromium": "playwright test --project=chromium",
+    "codegen": "playwright codegen http://localhost:5173/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.53.2",
+    "@types/node": "^24.0.10",
+    "concurrently": "^9.2.0",
+    "wait-on": "^8.0.3"
+  }
+}
