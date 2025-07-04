@@ -117,7 +117,9 @@ const createInitialBlogs = async (users) => {
 const handleInitialDataInDb = async () => {
   await resetDb();
   const users = await createInitialUsers();
-  await createInitialBlogs(users);
+  const blogs = await createInitialBlogs(users);
+
+  return { users, blogs };
 };
 
 module.exports = {

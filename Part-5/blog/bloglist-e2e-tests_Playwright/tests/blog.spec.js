@@ -1,9 +1,12 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test');
 const helper = require('./helper');
+let blogs = [];
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('/api/test/initiate-db');
+    const response = await request.post('/api/test/initiate-db');
+    const savedTestData = await response.json();
+    blogs = savedTestData.blogs;
     await page.goto('/');
   });
 
@@ -113,7 +116,19 @@ describe('Blog app', () => {
       await blogTitleFromMe.click();
       const blogCardFromMe = blogTitleFromMe.locator('xpath=ancestor::div[contains(@class, "blog-card")]');
       const deleteButtonFromMe = blogCardFromMe.getByRole('button', { name: /delete/i });
-      await expect(blogCardFromMe).toBeVisible();
+      await expect(deleteButtonFromMe).toBeVisible();
+    });
+
+    test('blogs are sorted in correct order', async ({ page }) => {
+      const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+      const expectedTitles = sortedBlogs.map(blog => `${blog.title} by ${blog.author}`);
+
+      await expect(page.locator('.blog-title')).toHaveCount(expectedTitles.length);
+      const actualTitlesLocators = page.locator('.blog-title');
+      const actualTitles  = await actualTitlesLocators.allTextContents();
+
+      expect(actualTitles).toEqual(expectedTitles);
+      await expect(actualTitlesLocators).toHaveText(expectedTitles);
     });
   });
 });
