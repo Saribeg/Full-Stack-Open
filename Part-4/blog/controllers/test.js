@@ -13,9 +13,9 @@ testRouter.post('/reset', async (request, response) => {
 });
 
 testRouter.post('/initiate-db', async (request, response) => {
-  await handleInitialDataInDb();
+  const savedData = await handleInitialDataInDb();
 
-  response.status(201).json({ message: 'Initial Data is added to DB' });
+  response.status(201).json(savedData);
 });
 
 module.exports = testRouter;
