@@ -89,7 +89,6 @@ describe('Blog app', () => {
       });
       await blogTitle.click();
       const blogCard = blogTitle.locator('xpath=ancestor::div[contains(@class, "blog-card")]');
-      // const deleteButton = blogCard.locator('.blog-delete');
       const deleteButton = blogCard.getByRole('button', { name: /delete/i });
       await expect(deleteButton).toBeVisible();
       await deleteButton.click();
@@ -97,6 +96,24 @@ describe('Blog app', () => {
         hasText: 'Custom hooks in React by Albus Dumbledore'
       });
       await expect(deletedBlog).toHaveCount(0);
+    });
+
+    test('only creator of a blog can see the delete button', async ({ page }) => {
+      const blogTitleFromOther = page.locator('.blog-title', {
+        hasText: 'React patterns by Michael Chan',
+      });
+      await blogTitleFromOther.click();
+      const blogCardFromOther = blogTitleFromOther.locator('xpath=ancestor::div[contains(@class, "blog-card")]');
+      const deleteButtonFromOther = blogCardFromOther.getByRole('button', { name: /delete/i });
+      await expect(deleteButtonFromOther).toHaveCount(0);
+
+      const blogTitleFromMe = page.locator('.blog-title', {
+        hasText: 'Full Stack Open by Albus Dumbledore',
+      });
+      await blogTitleFromMe.click();
+      const blogCardFromMe = blogTitleFromMe.locator('xpath=ancestor::div[contains(@class, "blog-card")]');
+      const deleteButtonFromMe = blogCardFromMe.getByRole('button', { name: /delete/i });
+      await expect(blogCardFromMe).toBeVisible();
     });
   });
 });
