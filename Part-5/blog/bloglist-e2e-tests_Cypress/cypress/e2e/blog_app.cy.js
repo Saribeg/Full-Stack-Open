@@ -36,6 +36,25 @@ describe('Blog app', function() {
         .should('contain', 'invalid username or password')
         .and('have.css', 'color', 'rgb(255, 0, 0)');
       cy.get('.user').should('not.exist');
-    })
-  })
+    });
+  });
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.login({
+        username: 'harrypotter',
+        password: 'sekret'
+      });
+    });
+
+    it('A blog can be created', function() {
+      cy.get('.btn.toggler.toggler-closed').click();
+      cy.get('#blogTitle').type('Custom hooks in React');
+      cy.get('#blogAuthor').type('Albus Dumbledore');
+      cy.get('#blogUrl').type('https://reactcustomhooks.com/');
+      cy.get('#createBlog').contains('Create').click();
+
+      cy.contains('.blog-title', 'Custom hooks in React by Albus Dumbledore').should('be.visible');
+    });
+  });
 });
