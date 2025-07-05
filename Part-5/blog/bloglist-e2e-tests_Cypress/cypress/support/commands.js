@@ -29,3 +29,12 @@ Cypress.Commands.add('fillAndSubmitLoginForm', ({ username, password }) => {
   cy.get('#password').type(password);
   cy.get('#login').click();
 });
+
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
+    username, password
+  }).then(({ body }) => {
+    localStorage.setItem('user', JSON.stringify(body));
+    cy.visit('/');
+  });
+});
