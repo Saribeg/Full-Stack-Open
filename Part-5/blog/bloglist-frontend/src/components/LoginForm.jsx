@@ -64,7 +64,7 @@ const LoginForm = ({ setUser, notify }) => {
         </div>
 
         <div className="form-actions">
-          <button className="btn btn-primary" type="submit" data-testid="login">Login</button>
+          <button className="btn btn-primary" type="submit" id="login" data-testid="login">Login</button>
         </div>
       </form>
     </div>
