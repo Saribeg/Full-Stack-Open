@@ -1,0 +1,26 @@
+{
+  "name": "bloglist-e2e-tests_cypress",
+  "version": "1.0.0",
+  "description": "E2E test with use of Cypress (Full Stack Open)",
+  "main": "index.js",
+  "scripts": {
+    "start:backend": "cd ../../../Part-4/blog && npm run start:test",
+    "start:frontend": "cd ../bloglist-frontend && npm run dev",
+    "start:app": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:test:e2e": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx cypress run\"",
+    "start:test:e2e:gui": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx cypress open\"",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:run:spec": "npx cypress run --spec \"cypress/e2e/notes.cy.js\"",
+    "cypress:run:headed": "npx cypress run --headed --browser chrome",
+    "cypress:verify": "npx cypress verify",
+    "cypress:clear": "rm -rf cypress/screenshots cypress/videos"
+  },
+  "author": "Saribeh Karakhanian",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "cypress": "^14.5.1",
+    "wait-on": "^8.0.3"
+  }
+}
