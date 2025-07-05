@@ -89,7 +89,7 @@ const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
         </div>
 
         <div className="form-actions">
-          <button className="btn btn-primary" type="submit" data-testid="createBlog">Create</button>
+          <button className="btn btn-primary" type="submit" id="createBlog" data-testid="createBlog">Create</button>
         </div>
       </form>
     </div>
