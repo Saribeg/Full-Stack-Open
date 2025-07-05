@@ -56,5 +56,27 @@ describe('Blog app', function() {
 
       cy.contains('.blog-title', 'Custom hooks in React by Albus Dumbledore').should('be.visible');
     });
+
+    it('A blog can be liked', function() {
+      cy.contains('.blog-title', 'Type wars by Robert C. Martin')
+        .parent()
+        .as('targetBlog');
+    
+      cy.get('@targetBlog').click();
+    
+      cy.get('@targetBlog').within(() => {
+        cy.get('.blog-likes').should('contain', 'Likes: 2');
+        cy.get('.blog-user').should('contain', 'Jessica Huston');
+    
+        cy.get('.blog-like').click();
+        cy.get('.blog-likes').should('contain', 'Likes: 3');
+        cy.get('.blog-user').should('contain', 'Harry Potter');
+    
+        cy.get('.blog-like').click();
+        cy.get('.blog-likes').should('contain', 'Likes: 4');
+        cy.get('.blog-user').should('contain', 'Harry Potter');
+      });
+    });
+    
   });
 });
