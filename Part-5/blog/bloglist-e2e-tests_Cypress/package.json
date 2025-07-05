@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:backend": "cd ../../../Part-4/blog && npm run start:test",
-    "start:frontend": "cd ../bloglist-frontend && npm run dev",
+    "start:frontend": "cd ../bloglist-frontend && npm run dev -- --host=127.0.0.1",
     "start:app": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend\" \"npm run start:frontend\"",
     "start:test:e2e": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx cypress run\"",
     "start:test:e2e:gui": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx cypress open\"",
