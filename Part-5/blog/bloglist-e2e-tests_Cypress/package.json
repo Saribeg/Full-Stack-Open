@@ -7,12 +7,12 @@
     "start:backend": "cd ../../../Part-4/blog && npm run start:test",
     "start:frontend": "cd ../bloglist-frontend && npm run dev -- --host=127.0.0.1",
     "start:app": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:test:e2e": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx cypress run\"",
-    "start:test:e2e:gui": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx cypress open\"",
+    "start:test:e2e": "start-server-and-test start:app http://127.0.0.1:5173 cypress:test",
+    "start:test:e2e:gui": "start-server-and-test start:app http://127.0.0.1:5173 cypress:open",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:run:spec": "npx cypress run --spec \"cypress/e2e/notes.cy.js\"",
-    "cypress:run:headed": "npx cypress run --headed --browser chrome",
+    "cypress:test": "cypress run",
+    "cypress:test:spec": "npx cypress run --spec \"cypress/e2e/notes.cy.js\"",
+    "cypress:test:headed": "npx cypress run --headed --browser chrome",
     "cypress:verify": "npx cypress verify",
     "cypress:clear": "rm -rf cypress/screenshots cypress/videos"
   },
@@ -21,6 +21,7 @@
   "devDependencies": {
     "concurrently": "^9.2.0",
     "cypress": "^14.5.1",
+    "start-server-and-test": "^2.0.12",
     "wait-on": "^8.0.3"
   }
 }
