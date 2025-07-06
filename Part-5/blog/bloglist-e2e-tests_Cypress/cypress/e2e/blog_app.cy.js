@@ -77,6 +77,30 @@ describe('Blog app', function() {
         cy.get('.blog-user').should('contain', 'Harry Potter');
       });
     });
+
+    it('A blog can be deleted by user who created or edited it', function() {
+      cy.createBlog({
+        title: 'Custom hooks in React',
+        author: 'Albus Dumbledore',
+        url: 'https://reactcustomhooks.com/'
+      });
+
+      cy.on('window:confirm', (message) => {
+        expect(message).to.contain('Are you sure you want to delete the blog Custom hooks in React?');
+        return true;
+      });
+
+      cy.contains('.blog-title', 'Custom hooks in React by Albus Dumbledore').should('exist').as('targetBlogTitle');
+      cy.get('@targetBlogTitle').parent().as('targetBlog');
     
+      cy.get('@targetBlogTitle').click();
+    
+      cy.get('@targetBlog').within(() => {
+        cy.get('.blog-delete').should('contain', 'Delete').click();
+      });
+
+      cy.contains('.blog-title', 'Custom hooks in React by Albus Dumbledore').should('not.exist');
+      cy.get('.blog-card').should('not.contain', 'Custom hooks in React by Albus Dumbledore');
+    });
   });
 });
