@@ -1,6 +1,8 @@
 describe('Blog app', function() {
   beforeEach(function() {
-    cy.request('POST', `${Cypress.env('BACKEND')}/test/initiate-db`);
+    cy.request('POST', `${Cypress.env('BACKEND')}/test/initiate-db`).then((response) => {
+      this.initData = response.body;
+    });
     cy.visit('/');
   });
 
@@ -101,6 +103,14 @@ describe('Blog app', function() {
 
       cy.contains('.blog-title', 'Custom hooks in React by Albus Dumbledore').should('not.exist');
       cy.get('.blog-card').should('not.contain', 'Custom hooks in React by Albus Dumbledore');
+    });
+
+    it('Only creator of a blog can see the delete button', function() {
+      cy.contains('.blog-title', 'React patterns by Michael Chan').as('notMyBlog').click();
+      cy.get('@notMyBlog').parent().get('.blog-delete').should('not.exist');
+    
+      cy.contains('.blog-title', 'Full Stack Open by Albus Dumbledore').as('myBlog').click();
+      cy.get('@myBlog').parent().get('.blog-delete').should('exist');
     });
   });
 });
