@@ -6,7 +6,7 @@
     "start:backend": "cd ../../../Part-4/blog && npm run start:test",
     "start:frontend": "cd ../bloglist-frontend && npm run dev",
     "start:app": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:test:e2e": "concurrently -k -n BACKEND,FRONTEND,TESTS -c yellow,cyan,green \"npm run start:backend\" \"npm run start:frontend\" \"wait-on http://localhost:5173 && npx playwright test\"",
+    "start:test:e2e": "start-server-and-test start:app http://localhost:5173 test",
     "test": "playwright test --project=chromium",
     "test:ui": "playwright test --project=chromium --ui",
     "test:debug": "playwright test --project=chromium --debug",
@@ -22,6 +22,7 @@
     "@playwright/test": "^1.53.2",
     "@types/node": "^24.0.10",
     "concurrently": "^9.2.0",
+    "start-server-and-test": "^2.0.12",
     "wait-on": "^8.0.3"
   }
 }
