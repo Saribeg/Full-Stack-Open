@@ -119,7 +119,8 @@ describe('Blog app', () => {
       await expect(deleteButtonFromMe).toBeVisible();
     });
 
-    test('blogs are sorted in correct order', async ({ page }) => {
+    test('blogs are sorted in correct order by likes count', async ({ page }) => {
+      // Check initial sorting
       const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
       const expectedTitles = sortedBlogs.map(blog => `${blog.title} by ${blog.author}`);
 
@@ -129,6 +130,31 @@ describe('Blog app', () => {
 
       expect(actualTitles).toEqual(expectedTitles);
       await expect(actualTitlesLocators).toHaveText(expectedTitles);
+
+      // Click 3 times to a blog to change the general order
+      const blogTitle = page.locator('.blog-title', {
+        hasText: 'First class tests by Robert C. Martin',
+      });
+      const blogCard = blogTitle.locator('xpath=ancestor::div[contains(@class, "blog-card")]');
+      await blogTitle.click();
+      await blogCard.locator('.blog-like').click();
+      await expect(blogCard.locator('.blog-likes')).toContainText('Likes: 11');
+      await blogCard.locator('.blog-like').click();
+      await expect(blogCard.locator('.blog-likes')).toContainText('Likes: 12');
+      await blogCard.locator('.blog-like').click();
+      await expect(blogCard.locator('.blog-likes')).toContainText('Likes: 13');
+
+      // Check new order after new likes
+      const updatedSortedBlogs = [...blogs]
+        .map(blog => blog.title === 'First class tests' ? { ...blog, likes: 13 } : blog)
+        .sort((a, b) => b.likes - a.likes);
+      const updatedExpectedTitles = updatedSortedBlogs.map(blog => `${blog.title} by ${blog.author}`);
+
+      const updatedActualTitlesLocators = page.locator('.blog-title');
+      const updatedActualTitles  = await updatedActualTitlesLocators.allTextContents();
+
+      expect(updatedActualTitles).toEqual(updatedExpectedTitles);
+      await expect(updatedActualTitlesLocators).toHaveText(updatedExpectedTitles);
     });
   });
 });

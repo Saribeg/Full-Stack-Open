@@ -112,5 +112,46 @@ describe('Blog app', function() {
       cy.contains('.blog-title', 'Full Stack Open by Albus Dumbledore').as('myBlog').click();
       cy.get('@myBlog').parent().get('.blog-delete').should('exist');
     });
+
+    it('Blogs are sorted in correct order by likes count', function() {
+      cy.get('.blog-title').should(($blogTitle) => {
+        let actualTitles = $blogTitle.map((i, el) => {
+          return Cypress.$(el).text()
+        }).get();
+        const { blogs } = this.initData;
+        const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+        const expectedTitles = sortedBlogs.map(blog => `${blog.title} by ${blog.author}`); 
+      
+        expect(actualTitles).to.have.length(expectedTitles.length);
+        expect(actualTitles).to.deep.eq(expectedTitles);
+      });
+
+      cy.contains('.blog-title', 'First class tests by Robert C. Martin').parent().as('targetBlog')
+      cy.get('@targetBlog').click();
+      cy.get('@targetBlog').within(() => {
+        cy.get('.blog-like').click();
+        cy.get('.blog-likes').should('contain', 'Likes: 11');
+      
+        cy.get('.blog-like').click();
+        cy.get('.blog-likes').should('contain', 'Likes: 12');
+      
+        cy.get('.blog-like').click();
+        cy.get('.blog-likes').should('contain', 'Likes: 13');
+      });
+
+      cy.get('.blog-title').should(($blogTitle) => {
+        let actualTitles = $blogTitle.map((i, el) => {
+          return Cypress.$(el).text()
+        }).get();
+        const { blogs } = this.initData;
+        const sortedBlogs = [...blogs]
+          .map(blog => blog.title === 'First class tests' ? { ...blog, likes: 13 } : blog)
+          .sort((a, b) => b.likes - a.likes);
+        const expectedTitles = sortedBlogs.map(blog => `${blog.title} by ${blog.author}`); 
+      
+        expect(actualTitles).to.have.length(expectedTitles.length);
+        expect(actualTitles).to.deep.eq(expectedTitles);
+      });
+    });
   });
 });
