@@ -2,11 +2,15 @@ import { useSelector, useDispatch } from 'react-redux'
 import { vote } from '../reducers/anecdoteReducer';
 
 const AnecdoteList = () => {
-  // There are three possible places to handle sorting: in the reducer, in the selector, or in the component.
-  // Sorting in the reducer mixes UI logic with state logic, which breaks separation of concerns.
-  // Using a selector function is ideal for reuse, but here we sort inline for simplicity and readability,
-  // as this is the only place where sorted anecdotes are needed.
-  const anecdotes = useSelector(state => [...state].sort((a, b) => b.votes - a.votes))
+  const anecdotes = useSelector(state => {
+    if (!state.filter) {
+      return [...state.anecdotes].sort((a, b) => b.votes - a.votes)
+    }
+
+    return [...state.anecdotes]
+      .filter(a => a.content.toLowerCase().includes(state.filter.toLowerCase()))
+      .sort((a, b) => b.votes - a.votes)
+  })
   const dispatch = useDispatch()
 
   return (
