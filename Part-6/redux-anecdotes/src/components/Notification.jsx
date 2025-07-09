@@ -5,13 +5,19 @@ const Notification = () => {
   const style = {
     border: 'solid',
     padding: 10,
-    borderWidth: 1
+    borderWidth: 1,
+    marginBottom: 20
   }
-  return (
-    <div style={style}>
-      {notification}
-    </div>
-  )
+
+  if (notification) {
+    return (
+      <div style={style}>
+        {notification}
+      </div>
+    )
+  }
+
+  return null
 }
 
 export default Notification
