@@ -1,0 +1,32 @@
+{
+  "hash": "88af345c",
+  "browserHash": "9519f64e",
+  "optimized": {
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "4aa2b367",
+      "needsInterop": true
+    },
+    "redux": {
+      "src": "../../node_modules/redux/es/redux.js",
+      "file": "redux.js",
+      "fileHash": "15eabe7b",
+      "needsInterop": false
+    },
+    "react-redux": {
+      "src": "../../node_modules/react-redux/es/index.js",
+      "file": "react-redux.js",
+      "fileHash": "5fecffac",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-ZWHG73BD": {
+      "file": "chunk-ZWHG73BD.js"
+    },
+    "chunk-UXIASGQL": {
+      "file": "chunk-UXIASGQL.js"
+    }
+  }
+}
