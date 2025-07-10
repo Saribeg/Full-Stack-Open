@@ -4,14 +4,31 @@ import { createAnecdote } from '../queries/requests'
 import NotificationContext from '../contexts/NotificationContext'
 
 const AnecdoteForm = () => {
+  const { notificationDispatch } = useContext(NotificationContext)
   const queryClient = useQueryClient()
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+
+      notificationDispatch({
+        type: 'SHOW_MESSAGE',
+        payload: { type: 'info', message: `Anecdote created! The content is "${data.content}"` }
+      })
+      setTimeout(() => {
+        notificationDispatch({ type: 'HIDE_MESSAGE' })
+      }, 5000)
+    },
+    onError: (err, { content }) => {
+      notificationDispatch({
+        type: 'SHOW_MESSAGE',
+        payload: { type: 'error', message: `${err.response.data.error}. Your input is "${content}"` }
+      })
+      setTimeout(() => {
+        notificationDispatch({ type: 'HIDE_MESSAGE' })
+      }, 5000)
     }
   })
-  const { notificationDispatch } = useContext(NotificationContext)
 
   const onCreate = (event) => {
     event.preventDefault()
@@ -21,13 +38,6 @@ const AnecdoteForm = () => {
       content,
       votes: 0
     })
-    notificationDispatch({
-      type: 'SHOW_MESSAGE',
-      payload: { type: 'info', message: `Anecdote created! The content is "${content}"` }
-    })
-    setTimeout(() => {
-      notificationDispatch({ type: 'HIDE_MESSAGE' })
-    }, 5000)
   }
 
   return (
