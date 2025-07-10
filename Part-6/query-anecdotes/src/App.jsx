@@ -9,8 +9,16 @@ const App = () => {
   const queryClient = useQueryClient()
   const updateAnecdoteMutation = useMutation({
     mutationFn: updateAnecdote,
-    onSuccess: () => {
+    onSuccess: (updatedAnecdote) => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+
+      notificationDispatch({
+        type: 'SHOW_MESSAGE',
+        payload: { type: 'info', message: `Anecdote "${updatedAnecdote.content}" is voted for! Now there are ${updatedAnecdote.votes} votes!` }
+      })
+      setTimeout(() => {
+        notificationDispatch({ type: 'HIDE_MESSAGE' })
+      }, 5000)
     }
   })
 
@@ -24,13 +32,6 @@ const App = () => {
   const handleVote = (anecdote) => {
     const updatedAnecdote = {...anecdote, votes: anecdote.votes + 1 }
     updateAnecdoteMutation.mutate(updatedAnecdote)
-    notificationDispatch({
-      type: 'SHOW_MESSAGE',
-      payload: { type: 'info', message: `Anecdote "${updatedAnecdote.content}" is voted for!` }
-    })
-    setTimeout(() => {
-      notificationDispatch({ type: 'HIDE_MESSAGE' })
-    }, 5000)
   }
 
   const anecdotes = result.data
