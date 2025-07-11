@@ -78,28 +78,32 @@ const CreateNew = (props) => {
     })
   }
 
+  const resetForm = (event) => {
+    event.preventDefault();
+    [content, author, info].forEach(field => field.reset())
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' { ...content } />
+          <input name='content' { ...content.inputProps } />
         </div>
         <div>
           author
-          <input name='author' { ...author } />
+          <input name='author' { ...author.inputProps } />
         </div>
         <div>
           url for more info
-          <input name='info' { ...info } />
+          <input name='info' { ...info.inputProps } />
         </div>
-        <button>create</button>
-        <button>reset</button>
+        <button type='submit'>create</button>
+        <button type="button" onClick={resetForm}>reset</button>
       </form>
     </div>
   )
-
 }
 
 const App = () => {
