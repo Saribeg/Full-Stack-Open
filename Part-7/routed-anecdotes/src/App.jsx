@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, NavLink, Navigate, Link, useParams } from 'react-router-dom'
+import { Routes, Route, NavLink, Navigate, Link, useParams, useNavigate } from 'react-router-dom'
 
 const getNavLinkClassName = ({ isActive }) => isActive ? 'nav-link active' : 'nav-link'
 
@@ -101,6 +101,7 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  const navigate = useNavigate()
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -123,6 +124,9 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    navigate('/')
+    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setTimeout(() => setNotification(''), 5000)
   }
 
   const anecdoteById = (id) =>
@@ -142,8 +146,8 @@ const App = () => {
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <BrowserRouter>
         <Menu />
+        {notification && <p className='notification'>{notification}</p>}
         <Routes>
           <Route path="/anecdotes" element={<AnecdoteList anecdotes={anecdotes} />} />
           <Route path="/anecdotes/:id" element={<AnecdoteDetail anecdotes={anecdotes} />} />
@@ -152,7 +156,6 @@ const App = () => {
           <Route path="/" element={<Navigate to="/anecdotes" />} />
         </Routes>
         <Footer />
-      </BrowserRouter>
     </div>
   )
 }
