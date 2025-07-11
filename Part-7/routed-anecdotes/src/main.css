@@ -1,0 +1,18 @@
+.nav-link {
+  padding: 10px;
+  border: 1px solid gray;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+.nav-link:hover {
+  background-color: lightgray;
+}
+
+.nav-link.active {
+  background-color: lightgray;
+}
+
+.footer {
+  margin-top: 50px;
+}
