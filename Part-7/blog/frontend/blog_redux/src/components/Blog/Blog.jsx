@@ -1,14 +1,16 @@
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import blogService from '../../services/blogs';
+import { likeBlog, deleteBlog } from '../../store/reducers/blogsReducer';
 import './Blog.css';
 
 const Blog = ({ blog, user, notify }) => {
   const [expanded, setExpanded] = useState(false);
+  const dispatch = useDispatch();
 
   const handleBlogUpdate = async () => {
     try {
-      const updatedBlog = await blogService.update({ ...blog, likes: blog.likes + 1 });
+      const updatedBlog = await dispatch(likeBlog(blog));
       notify({
         message: `Blog ${updatedBlog.title} is successfully updated`,
         type: 'success'
@@ -29,7 +31,7 @@ const Blog = ({ blog, user, notify }) => {
     }
 
     try {
-      await blogService.deleteBlog(blog.id);
+      await dispatch(deleteBlog(blog.id));
       notify({
         message: `Blog ${blog.title} is successfully deleted`,
         type: 'success'
