@@ -1,9 +1,9 @@
 import api from './api';
 const baseUrl = '/api/blogs';
 
-const getAll = () => {
-  const request = api.get(baseUrl);
-  return request.then((response) => response.data);
+const getAll = async () => {
+  const response = await api.get(baseUrl);
+  return response.data;
 };
 
 const create = async ({ title, author, url }) => {
