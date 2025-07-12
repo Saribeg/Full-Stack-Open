@@ -26,6 +26,8 @@ export const NotificationContextProvider = (props) => {
   );
 };
 
+NotificationContext.displayName = 'NotificationContext';
+
 export default NotificationContext;
 
 NotificationContextProvider.propTypes = {
