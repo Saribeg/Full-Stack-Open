@@ -1,0 +1,35 @@
+/* .togglable-container {
+  height: 450px;
+} */
+
+.btn.toggler {
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+.btn.toggler.toggler-open {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+.btn.toggler.toggler-closed {
+  background-color: #d6eaff;
+  color: #0053a0;
+}
+
+.togglable-content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition:
+    max-height 1s ease,
+    opacity 1s ease;
+}
+
+.togglable-content.open {
+  max-height: 500px;
+  opacity: 1;
+}
