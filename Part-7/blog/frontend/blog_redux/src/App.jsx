@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeUser());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
