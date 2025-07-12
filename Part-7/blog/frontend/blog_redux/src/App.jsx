@@ -12,7 +12,6 @@ import { setNotification } from './store/reducers/notificationReducer';
 
 const App = () => {
   const [user, setUser] = useState(null);
-  // const [blogs, setBlogs] = useState([]);
 
   const blogFormRef = useRef();
 
