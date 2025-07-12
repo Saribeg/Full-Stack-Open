@@ -13,13 +13,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
 
-  const [notification, setNotification] = useState({ message: null, type: null });
   const blogFormRef = useRef();
-
-  const notify = ({ message, type = 'success' }) => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification({ message: null, type: null }), 3000);
-  };
 
   const modifyBlogs = (operationType, blogData) => setBlogs(prevBlogs => modifyArray(prevBlogs, operationType, blogData));
 
@@ -43,10 +37,7 @@ const App = () => {
   return (
     <div>
       <h1 className="logo"><a className="logo-link" href="/">BlogsApp</a></h1>
-      <Notification
-        message={notification.message}
-        type={notification.type}
-      />
+      <Notification />
       {user
         ? (
           <>
@@ -55,12 +46,10 @@ const App = () => {
               blogs={blogs}
               user={user}
               modifyBlogs={modifyBlogs}
-              notify={notify}
             />
             <Togglable buttonLabel="New Blog" ref={blogFormRef}>
               <BlogForm
                 modifyBlogs={modifyBlogs}
-                notify={notify}
                 toggleForm={() => blogFormRef.current.toggleVisibility()}
               />
             </Togglable>
@@ -69,7 +58,6 @@ const App = () => {
         : (
           <LoginForm
             setUser={setUser}
-            notify={notify}
           />
         )}
     </div>

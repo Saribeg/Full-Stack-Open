@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start:backend:dev": "cd ../../../Part-4/blog && npm run dev",
+    "start:backend:dev": "cd ../../backend && npm run dev",
     "start:full:dev": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend:dev\" \"npm run dev\"",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
