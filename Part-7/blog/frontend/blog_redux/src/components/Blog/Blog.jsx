@@ -1,11 +1,13 @@
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { likeBlog, deleteBlog } from '../../store/reducers/blogsReducer';
 import './Blog.css';
 
-const Blog = ({ blog, user, notify }) => {
+const Blog = ({ blog, notify }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const handleBlogUpdate = async () => {
@@ -78,6 +80,5 @@ export default Blog;
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
   notify: PropTypes.func.isRequired
 };
