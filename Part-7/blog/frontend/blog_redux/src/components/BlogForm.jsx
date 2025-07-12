@@ -2,13 +2,15 @@ import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { createBlog } from '../store/reducers/blogsReducer';
+import { useNotification } from '../hooks';
 
-const BlogForm = ({ notify, toggleForm }) => {
+const BlogForm = ({ toggleForm }) => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
 
   const dispatch = useDispatch();
+  const notify = useNotification();
 
   const handleChange = (setter) => (event) => {
     setter(event.target.value);
@@ -108,6 +110,5 @@ const BlogForm = ({ notify, toggleForm }) => {
 export default BlogForm;
 
 BlogForm.propTypes = {
-  notify: PropTypes.func.isRequired,
   toggleForm: PropTypes.func.isRequired
 };
