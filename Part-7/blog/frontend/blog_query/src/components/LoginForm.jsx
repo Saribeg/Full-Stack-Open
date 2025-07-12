@@ -2,10 +2,12 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { setToken } from '../services/api';
 import loginService from '../services/login';
+import { useNotification } from '../hooks';
 
-const LoginForm = ({ setUser, notify }) => {
+const LoginForm = ({ setUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const notify = useNotification();
 
   const handleUserNameChange = ({ target }) => setUsername(target.value);
   const handlePasswordChange = ({ target }) => setPassword(target.value);
@@ -74,6 +76,5 @@ const LoginForm = ({ setUser, notify }) => {
 export default LoginForm;
 
 LoginForm.propTypes = {
-  setUser: PropTypes.func.isRequired,
-  notify: PropTypes.func.isRequired
+  setUser: PropTypes.func.isRequired
 };
