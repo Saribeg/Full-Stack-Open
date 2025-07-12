@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start:backend:dev": "cd ../backend && npm run dev",
+    "start:backend:dev": "cd ../../backend && npm run dev",
     "start:full:dev": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend:dev\" \"npm run dev\"",
     "build": "vite build",
     "format": "prettier --write .",
@@ -15,10 +15,12 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.4.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
