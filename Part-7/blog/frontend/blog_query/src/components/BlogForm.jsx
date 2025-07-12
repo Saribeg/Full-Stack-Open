@@ -1,18 +1,13 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useNotification } from '../hooks';
 import blogService from '../services/blogs';
 
-const BlogForm = ({ modifyBlogs, toggleForm }) => {
+const BlogForm = ({ toggleForm }) => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
-
-  const notify = useNotification();
-
-  const handleChange = (setter) => (event) => {
-    setter(event.target.value);
-  };
 
   const resetForm = () => {
     setBlogTitle('');
@@ -20,7 +15,33 @@ const BlogForm = ({ modifyBlogs, toggleForm }) => {
     setBlogUrl('');
   };
 
-  const handleBlogCreation = async (event) => {
+  const notify = useNotification();
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+
+      notify({
+        type: 'info',
+        message: `Blog "${data.title}" is successfully created`
+      });
+      resetForm();
+      toggleForm();
+    },
+    onError: (err, { title }) => {
+      notify({
+        type: 'error',
+        message: `${err.response?.data?.error || err.message}. Your input is "${title}"`
+      });
+    }
+  });
+
+  const handleChange = (setter) => (event) => {
+    setter(event.target.value);
+  };
+
+  const handleBlogCreation = (event) => {
     event.preventDefault();
     const newBlog = {
       title: blogTitle,
@@ -28,21 +49,7 @@ const BlogForm = ({ modifyBlogs, toggleForm }) => {
       url: blogUrl
     };
 
-    try {
-      var createdBlog = await blogService.create(newBlog);
-      modifyBlogs('add', createdBlog);
-      resetForm();
-      notify({
-        message: `Blog ${createdBlog.title} is successfully created`,
-        type: 'success'
-      });
-      toggleForm();
-    } catch (error) {
-      notify({
-        message: error.message,
-        type: 'error'
-      });
-    }
+    mutate(newBlog);
   };
 
   return (
@@ -92,7 +99,15 @@ const BlogForm = ({ modifyBlogs, toggleForm }) => {
         </div>
 
         <div className="form-actions">
-          <button className="btn btn-primary" type="submit" id="createBlog" data-testid="createBlog">Create</button>
+          <button
+            className={`btn btn-primary${isPending ? ' btn-blocked' : ''}`}
+            type="submit"
+            id="createBlog"
+            data-testid="createBlog"
+            disabled={isPending}
+          >
+            {isPending ? 'Creating...' : 'Create'}
+          </button>
         </div>
       </form>
     </div>
@@ -102,6 +117,5 @@ const BlogForm = ({ modifyBlogs, toggleForm }) => {
 export default BlogForm;
 
 BlogForm.propTypes = {
-  modifyBlogs: PropTypes.func.isRequired,
   toggleForm: PropTypes.func.isRequired
 };
