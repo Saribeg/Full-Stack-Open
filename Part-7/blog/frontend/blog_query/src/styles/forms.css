@@ -63,3 +63,15 @@ button.btn-secondary {
 button.btn-secondary:hover {
   background: #ccc;
 }
+
+button.btn-blocked {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.8;
+  border-color: #aaa;
+}
+
+button.btn-blocked:hover {
+  background: #ccc;
+}
