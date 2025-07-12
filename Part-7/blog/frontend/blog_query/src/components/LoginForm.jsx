@@ -1,33 +1,34 @@
-import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { setToken } from '../services/api';
-import loginService from '../services/login';
+import { useState, useContext } from 'react';
 import { useNotification } from '../hooks';
+import UserContext from '../contexts/UserContext';
+import { loginUser } from '../utils/user';
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const notify = useNotification();
+  const { dispatchUser } = useContext(UserContext);
 
-  const handleUserNameChange = ({ target }) => setUsername(target.value);
-  const handlePasswordChange = ({ target }) => setPassword(target.value);
+  const handleChange = (setter) => (event) => {
+    setter(event.target.value);
+  };
+  const resetForm = () => {
+    setUsername('');
+    setPassword('');
+  };
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const userData = await loginService.login({ username, password });
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      setToken(userData.token);
-      setUsername('');
-      setPassword('');
+      const userData = await loginUser(dispatchUser, { username, password });
+      resetForm();
       notify({
         message: `User ${userData.name} is successfully logged in`,
         type: 'success'
       });
     } catch (error) {
       notify({
-        message: error.message,
+        message: error.response?.data?.error || error.message,
         type: 'error'
       });
     }
@@ -46,7 +47,7 @@ const LoginForm = ({ setUser }) => {
             name="username"
             required
             value={username}
-            onChange={handleUserNameChange}
+            onChange={handleChange(setUsername)}
             data-testid="username"
           />
         </div>
@@ -60,7 +61,7 @@ const LoginForm = ({ setUser }) => {
             name="password"
             required
             value={password}
-            onChange={handlePasswordChange}
+            onChange={handleChange(setPassword)}
             data-testid="password"
           />
         </div>
@@ -74,7 +75,3 @@ const LoginForm = ({ setUser }) => {
 };
 
 export default LoginForm;
-
-LoginForm.propTypes = {
-  setUser: PropTypes.func.isRequired
-};

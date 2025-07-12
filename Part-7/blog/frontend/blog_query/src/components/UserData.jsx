@@ -1,12 +1,15 @@
-import PropTypes from 'prop-types';
+import { useContext } from 'react';
+import UserContext from '../contexts/UserContext';
 import Logout from './Logout';
 
-const UserData = ({ user, setUser }) => {
-  const { username, name } = user;
+const UserData = () => {
+  const { user } = useContext(UserContext);
 
   if (!user) {
     return null;
   }
+
+  const { username, name } = user;
 
   return (
     <div className='user'>
@@ -15,15 +18,10 @@ const UserData = ({ user, setUser }) => {
         <p className='user-username'>Username: {username}</p>
         <p className='user-name'>Name: {name}</p>
         <p className='user-status'>Status: Logged In</p>
-        <Logout setUser={setUser}/>
+        <Logout />
       </div>
     </div>
   );
 };
 
 export default UserData;
-
-UserData.propTypes = {
-  user: PropTypes.object.isRequired,
-  setUser: PropTypes.func.isRequired
-};

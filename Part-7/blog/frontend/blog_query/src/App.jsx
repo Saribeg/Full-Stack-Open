@@ -1,26 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
-import { safeParseJSON } from './utils/commonHelpers';
-import { setToken } from './services/api';
+import { useEffect, useRef, useContext } from 'react';
 import LoginForm from './components/LoginForm';
 import UserData from './components/UserData';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification/Notification';
 import Togglable from './components/Togglable/Togglable';
+import UserContext from './contexts/UserContext';
+import { initializeUser } from './utils/user';
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const { user, dispatchUser } = useContext(UserContext);
   const blogFormRef = useRef();
 
   useEffect(() => {
-    const userJSON = window.localStorage.getItem('user');
-    const user = safeParseJSON(userJSON);
-
-    if (user && user.token) {
-      setUser(user);
-      setToken(user.token);
-    }
-  }, []);
+    initializeUser(dispatchUser);
+  }, [dispatchUser]);
 
   return (
     <div>
@@ -29,10 +23,8 @@ const App = () => {
       {user
         ? (
           <>
-            <UserData user={user} setUser={setUser}/>
-            <BlogList
-              user={user}
-            />
+            <UserData />
+            <BlogList />
             <Togglable buttonLabel="New Blog" ref={blogFormRef}>
               <BlogForm
                 toggleForm={() => blogFormRef.current.toggleVisibility()}
@@ -41,9 +33,7 @@ const App = () => {
           </>
         )
         : (
-          <LoginForm
-            setUser={setUser}
-          />
+          <LoginForm />
         )}
     </div>
   );
