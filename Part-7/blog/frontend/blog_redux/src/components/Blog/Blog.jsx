@@ -3,13 +3,12 @@ import { useState } from 'react';
 import blogService from '../../services/blogs';
 import './Blog.css';
 
-const Blog = ({ blog, user, modifyBlogs, notify }) => {
+const Blog = ({ blog, user, notify }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleBlogUpdate = async () => {
     try {
       const updatedBlog = await blogService.update({ ...blog, likes: blog.likes + 1 });
-      modifyBlogs('update', updatedBlog);
       notify({
         message: `Blog ${updatedBlog.title} is successfully updated`,
         type: 'success'
@@ -31,7 +30,6 @@ const Blog = ({ blog, user, modifyBlogs, notify }) => {
 
     try {
       await blogService.deleteBlog(blog.id);
-      modifyBlogs('delete', { id: blog.id });
       notify({
         message: `Blog ${blog.title} is successfully deleted`,
         type: 'success'
@@ -79,6 +77,5 @@ export default Blog;
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
-  modifyBlogs: PropTypes.func.isRequired,
   notify: PropTypes.func.isRequired
 };
