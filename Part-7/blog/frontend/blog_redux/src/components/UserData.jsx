@@ -1,7 +1,8 @@
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import Logout from './Logout';
 
-const UserData = ({ user, setUser }) => {
+const UserData = () => {
+  const user = useSelector((state) => state.user);
   const { username, name } = user;
 
   if (!user) {
@@ -15,15 +16,10 @@ const UserData = ({ user, setUser }) => {
         <p className="user-username">Username: {username}</p>
         <p className="user-name">Name: {name}</p>
         <p className="user-status">Status: Logged In</p>
-        <Logout setUser={setUser} />
+        <Logout />
       </div>
     </div>
   );
 };
 
 export default UserData;
-
-UserData.propTypes = {
-  user: PropTypes.object.isRequired,
-  setUser: PropTypes.func.isRequired
-};
