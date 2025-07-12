@@ -1,11 +1,14 @@
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import blogService from '../services/blogs';
+import { createBlog } from '../store/reducers/blogsReducer';
 
-const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
+const BlogForm = ({ notify, toggleForm }) => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
+
+  const dispatch = useDispatch();
 
   const handleChange = (setter) => (event) => {
     setter(event.target.value);
@@ -26,8 +29,7 @@ const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
     };
 
     try {
-      var createdBlog = await blogService.create(newBlog);
-      modifyBlogs('add', createdBlog);
+      const createdBlog = await dispatch(createBlog(newBlog));
       resetForm();
       notify({
         message: `Blog ${createdBlog.title} is successfully created`,
@@ -106,7 +108,6 @@ const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
 export default BlogForm;
 
 BlogForm.propTypes = {
-  modifyBlogs: PropTypes.func.isRequired,
   notify: PropTypes.func.isRequired,
   toggleForm: PropTypes.func.isRequired
 };
