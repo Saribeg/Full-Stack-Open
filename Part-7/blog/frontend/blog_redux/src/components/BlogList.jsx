@@ -10,7 +10,7 @@ const BlogList = ({ notify }) => {
 
   useEffect(() => {
     dispatch(initializeBlogs());
-  }, []);
+  }, [dispatch]);
   return (
     <div>
       <h2>Blogs</h2>
