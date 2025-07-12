@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useNotification } from '../../hooks';
 import blogService from '../../services/blogs';
+import UserContext from '../../contexts/UserContext';
 import './Blog.css';
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const [expanded, setExpanded] = useState(false);
+  const { user } = useContext(UserContext);
 
   const notify = useNotification();
   const queryClient = useQueryClient();
@@ -103,6 +105,5 @@ const Blog = ({ blog, user }) => {
 export default Blog;
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+  blog: PropTypes.object.isRequired
 };

@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
 import { useQuery } from '@tanstack/react-query';
 import blogsService from '../services/blogs';
 import Blog from './Blog/Blog';
 import { useNotification } from '../hooks';
 
-const BlogList = ({ user }) => {
+const BlogList = () => {
   const notify = useNotification();
 
   const { data: blogs, isLoading } = useQuery({
@@ -28,7 +27,6 @@ const BlogList = ({ user }) => {
         <Blog
           key={blog.id}
           blog={blog}
-          user={user}
         />
       )}
     </div>
@@ -36,7 +34,3 @@ const BlogList = ({ user }) => {
 };
 
 export default BlogList;
-
-BlogList.propTypes = {
-  user: PropTypes.object.isRequired
-};
