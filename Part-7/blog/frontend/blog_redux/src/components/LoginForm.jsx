@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../store/reducers/userReducer';
+import { useNotification } from '../hooks';
 
-const LoginForm = ({ notify }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,6 +17,7 @@ const LoginForm = ({ notify }) => {
   };
 
   const dispatch = useDispatch();
+  const notify = useNotification();
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
 
@@ -78,7 +79,3 @@ const LoginForm = ({ notify }) => {
 };
 
 export default LoginForm;
-
-LoginForm.propTypes = {
-  notify: PropTypes.func.isRequired
-};

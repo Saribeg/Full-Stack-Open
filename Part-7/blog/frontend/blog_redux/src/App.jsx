@@ -6,18 +6,12 @@ import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification/Notification';
 import Togglable from './components/Togglable/Togglable';
-import { setNotification } from './store/reducers/notificationReducer';
 import { initializeUser } from './store/reducers/userReducer';
 
 const App = () => {
   const blogFormRef = useRef();
   const user = useSelector((state) => state.user);
-  const notification = useSelector((state) => state.notification);
   const dispatch = useDispatch();
-
-  const notify = ({ message, type = 'success' }) => {
-    dispatch(setNotification(message, type, 5));
-  };
 
   useEffect(() => {
     dispatch(initializeUser());
@@ -30,17 +24,17 @@ const App = () => {
           BlogsApp
         </a>
       </h1>
-      {notification && <Notification message={notification.message} type={notification.type} />}
+      <Notification />
       {user ? (
         <>
           <UserData />
-          <BlogList notify={notify} />
+          <BlogList />
           <Togglable buttonLabel="New Blog" ref={blogFormRef}>
-            <BlogForm notify={notify} toggleForm={() => blogFormRef.current.toggleVisibility()} />
+            <BlogForm toggleForm={() => blogFormRef.current.toggleVisibility()} />
           </Togglable>
         </>
       ) : (
-        <LoginForm notify={notify} />
+        <LoginForm />
       )}
     </div>
   );
