@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { safeParseJSON, modifyArray } from './utils/commonHelpers';
 import { setToken } from './services/api';
 import LoginForm from './components/LoginForm';
@@ -8,17 +9,19 @@ import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import Notification from './components/Notification/Notification';
 import Togglable from './components/Togglable/Togglable';
+import { setNotification } from './store/reducers/notificationReducer';
 
 const App = () => {
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
 
-  const [notification, setNotification] = useState({ message: null, type: null });
   const blogFormRef = useRef();
 
+  const notification = useSelector((state) => state.notification);
+  const dispatch = useDispatch();
+
   const notify = ({ message, type = 'success' }) => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification({ message: null, type: null }), 3000);
+    dispatch(setNotification(message, type, 5));
   };
 
   const modifyBlogs = (operationType, blogData) =>
@@ -48,7 +51,7 @@ const App = () => {
           BlogsApp
         </a>
       </h1>
-      <Notification message={notification.message} type={notification.type} />
+      {notification && <Notification message={notification.message} type={notification.type} />}
       {user ? (
         <>
           <UserData user={user} setUser={setUser} />
