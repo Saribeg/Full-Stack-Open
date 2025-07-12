@@ -1,24 +1,28 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { setToken } from '../services/api';
-import loginService from '../services/login';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../store/reducers/userReducer';
 
-const LoginForm = ({ setUser, notify }) => {
+const LoginForm = ({ notify }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleUserNameChange = ({ target }) => setUsername(target.value);
-  const handlePasswordChange = ({ target }) => setPassword(target.value);
+  const handleChange = (setter) => (event) => {
+    setter(event.target.value);
+  };
+
+  const resetForm = () => {
+    setUsername('');
+    setPassword('');
+  };
+
+  const dispatch = useDispatch();
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const userData = await loginService.login({ username, password });
-      localStorage.setItem('user', JSON.stringify(userData));
-      setUser(userData);
-      setToken(userData.token);
-      setUsername('');
-      setPassword('');
+      const userData = await dispatch(loginUser({ username, password }));
+      resetForm();
       notify({
         message: `User ${userData.name} is successfully logged in`,
         type: 'success'
@@ -44,7 +48,7 @@ const LoginForm = ({ setUser, notify }) => {
             name="username"
             required
             value={username}
-            onChange={handleUserNameChange}
+            onChange={handleChange(setUsername)}
             data-testid="username"
           />
         </div>
@@ -58,7 +62,7 @@ const LoginForm = ({ setUser, notify }) => {
             name="password"
             required
             value={password}
-            onChange={handlePasswordChange}
+            onChange={handleChange(setPassword)}
             data-testid="password"
           />
         </div>
@@ -76,6 +80,5 @@ const LoginForm = ({ setUser, notify }) => {
 export default LoginForm;
 
 LoginForm.propTypes = {
-  setUser: PropTypes.func.isRequired,
   notify: PropTypes.func.isRequired
 };

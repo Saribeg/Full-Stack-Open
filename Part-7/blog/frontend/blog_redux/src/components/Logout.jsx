@@ -1,11 +1,10 @@
-import PropTypes from 'prop-types';
-import { clearToken } from '../services/api';
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '../store/reducers/userReducer';
 
-const Logout = ({ setUser }) => {
+const Logout = () => {
+  const dispatch = useDispatch();
   const handleLogout = () => {
-    window.localStorage.removeItem('user');
-    clearToken();
-    setUser(null);
+    dispatch(logoutUser());
   };
   return (
     <button className="btn btn-secondary" onClick={handleLogout}>
@@ -15,7 +14,3 @@ const Logout = ({ setUser }) => {
 };
 
 export default Logout;
-
-Logout.propTypes = {
-  setUser: PropTypes.func.isRequired
-};
