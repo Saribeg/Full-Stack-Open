@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useNotification } from '../hooks';
 import blogService from '../services/blogs';
 
-const BlogForm = ({ modifyBlogs, notify, toggleForm }) => {
+const BlogForm = ({ modifyBlogs, toggleForm }) => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
+
+  const notify = useNotification();
 
   const handleChange = (setter) => (event) => {
     setter(event.target.value);
@@ -100,6 +103,5 @@ export default BlogForm;
 
 BlogForm.propTypes = {
   modifyBlogs: PropTypes.func.isRequired,
-  notify: PropTypes.func.isRequired,
   toggleForm: PropTypes.func.isRequired
 };

@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useNotification } from '../../hooks';
 import blogService from '../../services/blogs';
 import './Blog.css';
 
-const Blog = ({ blog, user, modifyBlogs, notify }) => {
+const Blog = ({ blog, user, modifyBlogs }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const notify = useNotification();
 
   const handleBlogUpdate = async () => {
     try {
@@ -75,6 +78,5 @@ export default Blog;
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
-  modifyBlogs: PropTypes.func.isRequired,
-  notify: PropTypes.func.isRequired
+  modifyBlogs: PropTypes.func.isRequired
 };
