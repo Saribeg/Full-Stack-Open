@@ -108,6 +108,16 @@ const BlogDetails = () => {
             </button>
             : null
         }
+        {blog.comments && (
+          <>
+            <h3>Comments</h3>
+            <ul>
+              {blog.comments.map((comment) => (
+                <li>{comment}</li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
     </div>
   );
