@@ -1,7 +1,7 @@
 import { useEffect, useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import Header from './components/Header/Header';
 import LoginForm from './components/LoginForm';
-import UserData from './components/UserData';
 import Users from './components/Users';
 import UserDetails from './components/UserDetails';
 import BlogSection from './components/BlogSection';
@@ -20,20 +20,17 @@ const App = () => {
 
   return (
     <div>
-      <h1 className="logo"><a className="logo-link" href="/">BlogsApp</a></h1>
+      <Header />
       <Notification />
       {user
         ? (
-          <>
-            <UserData />
-            <Routes>
-              <Route path="/" element={<BlogSection />} />
-              <Route path="blogs" element={<BlogSection />}/>
-              <Route path="blogs/:id" element={<BlogDetails />} />
-              <Route path="users/:id" element={<UserDetails />} />
-              <Route path="users" element={<Users />}/>
-            </Routes>
-          </>
+          <Routes>
+            <Route path="/" element={<BlogSection />} />
+            <Route path="blogs" element={<BlogSection />}/>
+            <Route path="blogs/:id" element={<BlogDetails />} />
+            <Route path="users/:id" element={<UserDetails />} />
+            <Route path="users" element={<Users />}/>
+          </Routes>
         )
         : (
           <LoginForm />
