@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import UserData from './components/UserData';
 import Users from './components/Users';
+import UserDetails from './components/UserDetails';
 import BlogSection from './components/BlogSection';
 import Notification from './components/Notification/Notification';
 
@@ -27,6 +28,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<BlogSection />} />
               <Route path="blogs" element={<BlogSection />}/>
+              <Route path="users/:id" element={<UserDetails />} />
               <Route path="users" element={<Users />}/>
             </Routes>
           </>

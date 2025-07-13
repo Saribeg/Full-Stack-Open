@@ -4,7 +4,7 @@ import UserItem from './UserItem';
 import { getUsers } from '../store/reducers/usersReducer';
 
 const Users = () => {
-  const users = useSelector((state) => state.users);
+  const users = useSelector((state) => state.users.userList);
   const dispatch = useDispatch();
 
   useEffect(() => {
