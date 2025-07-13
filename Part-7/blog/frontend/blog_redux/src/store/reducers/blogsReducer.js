@@ -24,6 +24,9 @@ const blogsSlice = createSlice({
     },
     setSelectedBlog(state, action) {
       state.selectedBlog = action.payload;
+    },
+    addComment(state, action) {
+      state.selectedBlog = action.payload;
     }
   }
 });
@@ -65,11 +68,19 @@ export const getBlogById = (id) => {
   };
 };
 
+export const createComment = ({ id, comment }) => {
+  return async (dispatch) => {
+    const updatedBlog = await blogService.createComment({ id, comment });
+    dispatch(addComment(updatedBlog));
+  };
+};
+
 export const {
   setBlogs,
   addBlog,
   updateBlog,
   deleteBlog: deleteBlogAction,
-  setSelectedBlog
+  setSelectedBlog,
+  addComment
 } = blogsSlice.actions;
 export default blogsSlice.reducer;
