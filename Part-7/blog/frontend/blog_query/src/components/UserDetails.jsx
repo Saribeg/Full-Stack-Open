@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import userService from '../services/users';
 import { useNotification } from '../hooks';
+import BlogTable from './BlogTable';
 
 const UserDetails = () => {
   const { id } = useParams();
@@ -24,11 +25,7 @@ const UserDetails = () => {
     <div>
       <h2>{user.name}</h2>
       <h3>Added Blogs</h3>
-      <ul>
-        {user.blogs.map((blog) => (
-          <li>{blog.title}</li>
-        ))}
-      </ul>
+      <BlogTable blogs={user.blogs}/>
     </div>
   );
 };
