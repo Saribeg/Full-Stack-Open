@@ -3,10 +3,16 @@ import userService from '../../services/users';
 
 const usersSlice = createSlice({
   name: 'users',
-  initialState: [],
+  initialState: {
+    userList: [],
+    selectedUser: null
+  },
   reducers: {
     setUsers(state, action) {
-      return action.payload;
+      state.userList = action.payload;
+    },
+    setSelectedUser(state, action) {
+      state.selectedUser = action.payload;
     }
   }
 });
@@ -18,5 +24,12 @@ export const getUsers = () => {
   };
 };
 
-export const { setUsers } = usersSlice.actions;
+export const getUserById = (id) => {
+  return async (dispatch) => {
+    const user = await userService.getById(id);
+    dispatch(setSelectedUser(user));
+  };
+};
+
+export const { setUsers, setSelectedUser } = usersSlice.actions;
 export default usersSlice.reducer;
