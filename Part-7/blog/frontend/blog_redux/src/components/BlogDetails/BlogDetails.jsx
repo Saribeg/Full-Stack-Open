@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { likeBlog, deleteBlog } from '../../store/reducers/blogsReducer';
 import { useNotification } from '../../hooks';
 import { getBlogById, setSelectedBlog } from '../../store/reducers/blogsReducer';
+import CommentForm from '../CommentForm';
 import './BlogDetails.css';
 
 const BlogDetails = () => {
@@ -86,11 +87,12 @@ const BlogDetails = () => {
             <h3>Comments</h3>
             <ul>
               {blog.comments.map((comment) => (
-                <li>{comment}</li>
+                <li key={comment.id}>{comment.text}</li>
               ))}
             </ul>
           </>
         )}
+        <CommentForm id={blog.id} />
       </div>
     </div>
   );
