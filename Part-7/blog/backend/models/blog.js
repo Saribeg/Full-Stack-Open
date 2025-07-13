@@ -18,7 +18,15 @@ const blogSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  comments: [String]
+  comments: [
+    {
+      id: mongoose.Schema.Types.ObjectId,
+      text: {
+        type: String,
+        required: true
+      }
+    }
+  ]
 });
 
 blogSchema.set('toJSON', {
@@ -26,6 +34,19 @@ blogSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
+
+    if (returnedObject.comments) {
+      returnedObject.comments = returnedObject.comments.map(comment => {
+        const transformedComment = {
+          ...comment,
+          id: comment.id?.toString?.() || comment.id,
+          text: comment.text
+        };
+
+        delete transformedComment._id;
+        return transformedComment;
+      });
+    }
   }
 });
 

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useNotification } from '../../hooks';
 import blogService from '../../services/blogs';
 import UserContext from '../../contexts/UserContext';
+import CommentForm from '../CommentForm';
 import './BlogDetails.css';
 
 const BlogDetails = () => {
@@ -113,11 +114,12 @@ const BlogDetails = () => {
             <h3>Comments</h3>
             <ul>
               {blog.comments.map((comment) => (
-                <li>{comment}</li>
+                <li key={comment.id}>{comment.text}</li>
               ))}
             </ul>
           </>
         )}
+        <CommentForm id={blog.id} />
       </div>
     </div>
   );
