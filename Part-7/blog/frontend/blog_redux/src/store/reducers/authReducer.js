@@ -9,6 +9,9 @@ const userSlice = createSlice({
   reducers: {
     setUser(state, action) {
       return action.payload;
+    },
+    showUsers(state, action) {
+      return action.payload;
     }
   }
 });
@@ -43,5 +46,5 @@ export const logoutUser = () => {
   };
 };
 
-export const { setUser } = userSlice.actions;
+export const { setUser, showUsers } = userSlice.actions;
 export default userSlice.reducer;

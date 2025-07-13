@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginUser } from '../store/reducers/userReducer';
+import { loginUser } from '../store/reducers/authReducer';
 import { useNotification } from '../hooks';
 
 const LoginForm = () => {
