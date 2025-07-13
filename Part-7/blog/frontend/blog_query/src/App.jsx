@@ -5,6 +5,7 @@ import UserData from './components/UserData';
 import Users from './components/Users';
 import UserDetails from './components/UserDetails';
 import BlogSection from './components/BlogSection';
+import BlogDetails from './components/BlogDetails/BlogDetails';
 import Notification from './components/Notification/Notification';
 
 import UserContext from './contexts/UserContext';
@@ -28,6 +29,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<BlogSection />} />
               <Route path="blogs" element={<BlogSection />}/>
+              <Route path="blogs/:id" element={<BlogDetails />} />
               <Route path="users/:id" element={<UserDetails />} />
               <Route path="users" element={<Users />}/>
             </Routes>

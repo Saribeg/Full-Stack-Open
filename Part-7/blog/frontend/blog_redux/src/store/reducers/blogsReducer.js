@@ -3,21 +3,27 @@ import blogService from '../../services/blogs';
 
 const blogsSlice = createSlice({
   name: 'blogs',
-  initialState: [],
+  initialState: {
+    blogList: [],
+    selectedBlog: null
+  },
   reducers: {
     setBlogs(state, action) {
-      return action.payload;
+      state.blogList = action.payload;
     },
     addBlog(state, action) {
-      state.push(action.payload);
+      state.blogList.push(action.payload);
     },
     updateBlog(state, action) {
       const updated = action.payload;
-      return state.map((b) => (b.id !== updated.id ? b : updated));
+      state.blogList = state.blogList.map((b) => (b.id !== updated.id ? b : updated));
     },
     deleteBlog(state, action) {
       const id = action.payload;
-      return state.filter((b) => b.id !== id);
+      state.blogList = state.blogList.filter((b) => b.id !== id);
+    },
+    setSelectedBlog(state, action) {
+      state.selectedBlog = action.payload;
     }
   }
 });
@@ -52,5 +58,18 @@ export const deleteBlog = (id) => {
   };
 };
 
-export const { setBlogs, addBlog, updateBlog, deleteBlog: deleteBlogAction } = blogsSlice.actions;
+export const getBlogById = (id) => {
+  return async (dispatch) => {
+    const blog = await blogService.getById(id);
+    dispatch(setSelectedBlog(blog));
+  };
+};
+
+export const {
+  setBlogs,
+  addBlog,
+  updateBlog,
+  deleteBlog: deleteBlogAction,
+  setSelectedBlog
+} = blogsSlice.actions;
 export default blogsSlice.reducer;
