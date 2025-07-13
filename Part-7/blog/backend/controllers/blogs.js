@@ -78,4 +78,28 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   response.status(204).end();
 });
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body;
+
+  if (!comment || typeof comment !== 'string') {
+    return response.status(400).json({ error: 'Comment is required and must be a string' });
+  }
+
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    request.params.id,
+    { $push: { comments: comment } },
+    {
+      new: true,           // Return updated document
+      runValidators: true, // Apply schema validations when updating
+      context: 'query'     // For correct work of custom validators
+    }
+  ).populate('user');;
+
+  if (!updatedBlog) {
+    return response.status(404).json({ error: 'Blog is not found' });
+  }
+
+  response.status(201).json(updatedBlog);
+});
+
 module.exports = blogsRouter;
