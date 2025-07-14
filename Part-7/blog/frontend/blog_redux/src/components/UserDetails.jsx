@@ -1,19 +1,24 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getUserById } from '../store/reducers/usersReducer';
+import { fetchUserById } from '../store/users/thunks';
+import { selectUserDetailsState } from '../store/users/selectors';
+import { clearUser } from '../store/users/slice';
 import BlogTable from './BlogTable';
 
 const UserDetails = () => {
-  const user = useSelector((state) => state.users.selectedUser);
+  const { user, loading } = useSelector(selectUserDetailsState);
   const dispatch = useDispatch();
   const { id } = useParams();
 
   useEffect(() => {
-    dispatch(getUserById(id));
+    dispatch(fetchUserById(id));
+    return () => dispatch(clearUser());
   }, [dispatch, id]);
 
-  if (!user) return null;
+  if (loading) return <div>Loading...</div>;
+
+  if (!user) return <div>User not found</div>;
 
   return (
     <div>

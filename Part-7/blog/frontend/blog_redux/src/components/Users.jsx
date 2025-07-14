@@ -1,15 +1,20 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import UserItem from './UserItem';
-import { getUsers } from '../store/reducers/usersReducer';
+import { fetchUsers } from '../store/users/thunks';
+import { selectUsersState } from '../store/users/selectors';
 
 const Users = () => {
-  const users = useSelector((state) => state.users.userList);
+  const { users, loading } = useSelector(selectUsersState);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getUsers());
-  }, [dispatch]);
+    if (users.length === 0) {
+      dispatch(fetchUsers());
+    }
+  }, [dispatch, users.length]);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div>

@@ -1,64 +1,44 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { likeBlog, deleteBlog } from '../../store/reducers/blogsReducer';
-import { useNotification } from '../../hooks';
-import { getBlogById, setSelectedBlog } from '../../store/reducers/blogsReducer';
+import { selectAuth } from '../../store/auth/selectors';
+import { selectBlogDetailsState } from '../../store/blogDetails/selectors';
+import { fetchBlogById, likeBlog, deleteBlog } from '../../store/blogDetails/thunks';
+import { clearBlog } from '../../store/blogDetails/slice';
 import CommentForm from '../CommentForm';
 import './BlogDetails.css';
 
 const BlogDetails = () => {
-  const user = useSelector((state) => state.user);
-  const blog = useSelector((state) => state.blogs.selectedBlog);
+  const authUser = useSelector(selectAuth);
+  const { blog, loading } = useSelector(selectBlogDetailsState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const notify = useNotification();
   const { id } = useParams();
 
   useEffect(() => {
-    dispatch(getBlogById(id));
-    return () => dispatch(setSelectedBlog(null));
+    dispatch(fetchBlogById(id));
+    return () => dispatch(clearBlog());
   }, [dispatch, id]);
 
-  const handleBlogUpdate = async () => {
-    try {
-      const updatedBlog = await dispatch(likeBlog(blog));
-      dispatch(setSelectedBlog(updatedBlog));
-      notify({
-        message: `Blog ${updatedBlog.title} is successfully updated`,
-        type: 'success'
-      });
-    } catch (error) {
-      notify({
-        message: error.message,
-        type: 'error'
-      });
-    }
+  const handleBlogUpdate = () => {
+    dispatch(likeBlog(blog));
   };
 
-  const handleBlogDelete = async () => {
+  const handleBlogDelete = () => {
     const isToBeDeleted = window.confirm(`Are you sure you want to delete the blog ${blog.title}?`);
 
     if (!isToBeDeleted) {
       return;
     }
 
-    try {
-      await dispatch(deleteBlog(blog.id));
-      navigate('/blogs');
-      notify({
-        message: `Blog ${blog.title} is successfully deleted`,
-        type: 'success'
-      });
-    } catch (error) {
-      notify({
-        message: error.message,
-        type: 'error'
-      });
-    }
+    dispatch(deleteBlog(blog.id))
+      .unwrap()
+      .then(() => navigate('/blogs'));
   };
 
-  if (!blog) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>;
+
+  if (!blog) return <div>Blog not found</div>;
 
   return (
     <div className="blog-card">
@@ -77,7 +57,7 @@ const BlogDetails = () => {
           </button>
         </div>
         {blog.user?.name && <div className="blog-user">Added by {blog.user.name}</div>}
-        {user?.id === blog.user?.id ? (
+        {authUser?.id === blog.user?.id ? (
           <button className="btn btn-danger blog-delete" onClick={handleBlogDelete}>
             Delete
           </button>

@@ -1,15 +1,21 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { selectVisibleBlogsState } from '../store/blogs/selector';
 import BlogTable from './BlogTable';
-import { initializeBlogs } from '../store/reducers/blogsReducer';
+import { fetchBlogs } from '../store/blogs/thunks';
 
 const BlogList = () => {
-  const blogs = useSelector((state) => [...state.blogs.blogList].sort((a, b) => b.likes - a.likes));
+  const { blogs, loading } = useSelector(selectVisibleBlogsState);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(initializeBlogs());
-  }, [dispatch]);
+    if (blogs.length === 0) {
+      dispatch(fetchBlogs());
+    }
+  }, [dispatch, blogs.length]);
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <div>
       <h2>Blogs</h2>
