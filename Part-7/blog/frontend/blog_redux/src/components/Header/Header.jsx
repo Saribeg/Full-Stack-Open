@@ -1,10 +1,11 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { selectAuth } from '../../store/auth/selectors';
 import AuthStatus from '../AuthStatus/AuthStatus';
 import './Header.css';
 
 const Header = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector(selectAuth);
 
   return (
     <div className="header">

@@ -10,7 +10,7 @@ const AuthStatus = ({ user }) => {
       <p className="user-name">
         {name} <span>logged in</span>
       </p>
-      <Logout />
+      <Logout name={name} />
     </div>
   );
 };
