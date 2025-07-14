@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { logout } from '../store/auth/thunks';
+import { logout } from '../../store/auth/thunks';
 
 const Logout = ({ name }) => {
   const dispatch = useDispatch();

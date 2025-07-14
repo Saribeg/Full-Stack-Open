@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
-import { useNotification } from '../hooks';
-import blogService from '../services/blogs';
+import { useNotification } from '../../hooks';
+import blogService from '../../services/blogs';
 
 const CommentForm = ({ id }) => {
   const [comment, setComment] = useState('');

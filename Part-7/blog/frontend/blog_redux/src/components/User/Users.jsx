@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import UserItem from './UserItem';
-import { fetchUsers } from '../store/users/thunks';
-import { selectUsersState } from '../store/users/selectors';
+import { fetchUsers } from '../../store/users/thunks';
+import { selectUsersState } from '../../store/users/selectors';
 
 const Users = () => {
   const { users, loading } = useSelector(selectUsersState);

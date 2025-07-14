@@ -1,25 +1,44 @@
-import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { createBlog } from '../store/blogs/thunks';
-import { selectCreateBlogStatus } from '../store/blogs/selector';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useNotification } from '../../hooks';
+import blogService from '../../services/blogs';
 
 const BlogForm = ({ toggleForm }) => {
-  const { loading } = useSelector(selectCreateBlogStatus);
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
-
-  const dispatch = useDispatch();
-
-  const handleChange = (setter) => (event) => {
-    setter(event.target.value);
-  };
 
   const resetForm = () => {
     setBlogTitle('');
     setBlogAuthor('');
     setBlogUrl('');
+  };
+
+  const notify = useNotification();
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+
+      notify({
+        type: 'info',
+        message: `Blog "${data.title}" is successfully created`
+      });
+      resetForm();
+      toggleForm();
+    },
+    onError: (err, { title }) => {
+      notify({
+        type: 'error',
+        message: `${err.response?.data?.error || err.message}. Your input is "${title}"`
+      });
+    }
+  });
+
+  const handleChange = (setter) => (event) => {
+    setter(event.target.value);
   };
 
   const handleBlogCreation = (event) => {
@@ -30,12 +49,7 @@ const BlogForm = ({ toggleForm }) => {
       url: blogUrl
     };
 
-    dispatch(createBlog(newBlog))
-      .unwrap()
-      .then(() => {
-        resetForm();
-        toggleForm();
-      });
+    mutate(newBlog);
   };
 
   return (
@@ -86,13 +100,13 @@ const BlogForm = ({ toggleForm }) => {
 
         <div className="form-actions">
           <button
-            className="btn btn-primary"
+            className={`btn btn-primary${isPending ? ' btn-blocked' : ''}`}
             type="submit"
             id="createBlog"
             data-testid="createBlog"
-            disabled={loading}
+            disabled={isPending}
           >
-            {loading ? 'Creating...' : 'Create'}
+            {isPending ? 'Creating...' : 'Create'}
           </button>
         </div>
       </form>

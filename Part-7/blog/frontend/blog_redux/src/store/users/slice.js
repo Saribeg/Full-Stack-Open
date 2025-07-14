@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { buildBlogDetailsExtraReducers } from './extraReducers';
+import { extraReducers } from './extraReducers';
 
 const usersSlice = createSlice({
   name: 'users',
@@ -11,13 +11,8 @@ const usersSlice = createSlice({
       fetchById: { loading: false, error: null }
     }
   },
-  reducers: {
-    clearUser(state) {
-      state.selectedUser = null;
-    }
-  },
-  extraReducers: buildBlogDetailsExtraReducers
+  reducers: {},
+  extraReducers
 });
 
-export const { clearUser } = usersSlice.actions;
 export default usersSlice.reducer;
