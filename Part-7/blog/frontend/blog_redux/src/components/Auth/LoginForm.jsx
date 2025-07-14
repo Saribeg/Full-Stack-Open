@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectLoginStatus } from '../store/auth/selectors';
-import { login } from '../store/auth/thunks';
+import { selectLoginStatus } from '../../store/auth/selectors';
+import { login } from '../../store/auth/thunks';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');

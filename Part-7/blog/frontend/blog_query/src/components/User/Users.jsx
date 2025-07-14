@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import userService from '../services/users';
-import { useNotification } from '../hooks';
+import userService from '../../services/users';
+import { useNotification } from '../../hooks';
 import UserItem from './UserItem';
 
 const Users = () => {

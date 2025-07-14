@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectVisibleBlogsState } from '../store/blogs/selector';
+import { selectVisibleBlogsState } from '../../store/blogs/selectors';
 import BlogTable from './BlogTable';
-import { fetchBlogs } from '../store/blogs/thunks';
+import { fetchBlogs } from '../../store/blogs/thunks';
 
 const BlogList = () => {
   const { blogs, loading } = useSelector(selectVisibleBlogsState);
