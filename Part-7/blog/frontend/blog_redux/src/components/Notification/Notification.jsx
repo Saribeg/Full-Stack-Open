@@ -1,16 +1,17 @@
 import { useSelector } from 'react-redux';
+import { selectNotification } from '../../store/notification/selectors';
 import './Notification.css';
 
 const Notification = () => {
-  const notification = useSelector((state) => state.notification);
-
-  if (!notification) return null;
-
-  const { message, type } = notification;
+  const { message, type = 'success', popup } = useSelector(selectNotification);
 
   if (!message || typeof message !== 'string') return null;
 
-  return <div className={`notification ${type}`}>{message}</div>;
+  return popup ? (
+    <div className={`toast toast-${type}`}>{message}</div>
+  ) : (
+    <div className={`notification notification-${type}`}>{message}</div>
+  );
 };
 
 export default Notification;

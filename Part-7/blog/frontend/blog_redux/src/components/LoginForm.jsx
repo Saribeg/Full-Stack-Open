@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { loginUser } from '../store/reducers/authReducer';
-import { useNotification } from '../hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectLoginStatus } from '../store/auth/selectors';
+import { login } from '../store/auth/thunks';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -17,24 +17,14 @@ const LoginForm = () => {
   };
 
   const dispatch = useDispatch();
-  const notify = useNotification();
-  const handleLoginSubmit = async (event) => {
+  const handleLoginSubmit = (event) => {
     event.preventDefault();
-
-    try {
-      const userData = await dispatch(loginUser({ username, password }));
-      resetForm();
-      notify({
-        message: `User ${userData.name} is successfully logged in`,
-        type: 'success'
-      });
-    } catch (error) {
-      notify({
-        message: error.message,
-        type: 'error'
-      });
-    }
+    dispatch(login({ username, password }))
+      .unwrap()
+      .then(() => resetForm());
   };
+
+  const { loading } = useSelector(selectLoginStatus);
 
   return (
     <div className="form-container">
@@ -69,8 +59,14 @@ const LoginForm = () => {
         </div>
 
         <div className="form-actions">
-          <button className="btn btn-primary" type="submit" id="login" data-testid="login">
-            Login
+          <button
+            className="btn btn-primary"
+            type="submit"
+            id="login"
+            data-testid="login"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </div>
       </form>

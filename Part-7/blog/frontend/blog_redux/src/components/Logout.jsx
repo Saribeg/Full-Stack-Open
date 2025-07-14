@@ -1,10 +1,11 @@
 import { useDispatch } from 'react-redux';
-import { logoutUser } from '../store/reducers/authReducer';
+import PropTypes from 'prop-types';
+import { logout } from '../store/auth/thunks';
 
-const Logout = () => {
+const Logout = ({ name }) => {
   const dispatch = useDispatch();
   const handleLogout = () => {
-    dispatch(logoutUser());
+    dispatch(logout({ name }));
   };
   return (
     <button className="btn btn-secondary" onClick={handleLogout}>
@@ -14,3 +15,7 @@ const Logout = () => {
 };
 
 export default Logout;
+
+Logout.propTypes = {
+  name: PropTypes.string.isRequired
+};

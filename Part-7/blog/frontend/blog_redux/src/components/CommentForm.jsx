@@ -1,30 +1,19 @@
-import { useDispatch } from 'react-redux';
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { createComment } from '../store/reducers/blogsReducer';
-import { useNotification } from '../hooks';
+import { createComment } from '../store/blogDetails/thunks';
+import { selectCreateCommentStatus } from '../store/blogDetails/selectors';
 
 const CommentForm = ({ id }) => {
   const [comment, setComment] = useState('');
+  const { loading } = useSelector(selectCreateCommentStatus);
   const dispatch = useDispatch();
-  const notify = useNotification();
 
-  const handleCommentCreation = async (event) => {
+  const handleCommentCreation = (event) => {
     event.preventDefault();
-
-    try {
-      dispatch(createComment({ id, comment }));
-      setComment('');
-      notify({
-        message: 'Comment is successfully added',
-        type: 'success'
-      });
-    } catch (error) {
-      notify({
-        message: error.message,
-        type: 'error'
-      });
-    }
+    dispatch(createComment({ id, comment }))
+      .unwrap()
+      .then(() => setComment(''));
   };
 
   return (
@@ -50,8 +39,9 @@ const CommentForm = ({ id }) => {
             type="submit"
             id="createBlogComment"
             data-testid="createBlogComment"
+            disabled={loading}
           >
-            Add Comment
+            {loading ? 'Adding Comment...' : 'Add Comment'}
           </button>
         </div>
       </form>
