@@ -1,7 +1,7 @@
 import { Link, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../store/auth/selectors';
-import AuthStatus from '../AuthStatus/AuthStatus';
+import AuthStatus from '../Auth/AuthStatus/AuthStatus';
 import './Header.css';
 
 const Header = () => {

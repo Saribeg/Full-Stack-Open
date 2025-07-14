@@ -1,7 +1,8 @@
 import { addCases } from '../utils/addCases';
 import { fetchUsers, fetchUserById } from './thunks';
+import { logout } from '../auth/thunks';
 
-export const buildBlogDetailsExtraReducers = (builder) => {
+export const extraReducers = (builder) => {
   addCases(builder)
     .for(fetchUsers, 'fetch', {
       fulfilled: (state, action) => {
@@ -12,5 +13,9 @@ export const buildBlogDetailsExtraReducers = (builder) => {
       fulfilled: (state, action) => {
         state.selectedUser = action.payload;
       }
+    })
+    .also(logout.fulfilled, (state) => {
+      state.userList = [];
+      state.selectedUser = null;
     });
 };

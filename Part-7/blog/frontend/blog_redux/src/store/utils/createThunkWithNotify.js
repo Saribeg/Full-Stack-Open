@@ -38,7 +38,7 @@ export const createThunkWithNotify = (typePrefix, asyncFn) => {
         extra.notify?.({
           type: 'error',
           message,
-          popup: rule?.popup || false
+          popup: rule?.popup || true
         });
       }
 

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { buildBlogDetailsExtraReducers } from './extraReducers';
+import { extraReducers } from './extraReducers';
 
 const blogsSlice = createSlice({
   name: 'blogs',
@@ -11,7 +11,7 @@ const blogsSlice = createSlice({
     }
   },
   reducers: {},
-  extraReducers: buildBlogDetailsExtraReducers
+  extraReducers
 });
 
 export default blogsSlice.reducer;

@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import userService from '../services/users';
-import { useNotification } from '../hooks';
-import BlogTable from './BlogTable';
+import userService from '../../services/users';
+import { useNotification } from '../../hooks';
+import BlogTable from '../Blog/BlogTable';
 
 const UserDetails = () => {
   const { id } = useParams();

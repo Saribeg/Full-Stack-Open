@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useNotification } from '../../hooks';
-import blogService from '../../services/blogs';
-import UserContext from '../../contexts/UserContext';
+import { useNotification } from '../../../hooks';
+import blogService from '../../../services/blogs';
+import UserContext from '../../../contexts/UserContext';
 import CommentForm from '../CommentForm';
 import './BlogDetails.css';
 

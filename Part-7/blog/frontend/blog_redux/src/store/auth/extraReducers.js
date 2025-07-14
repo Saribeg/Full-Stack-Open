@@ -7,7 +7,7 @@ const assignUserHandlers = {
   }
 };
 
-export const buildAuthExtraReducers = (builder) => {
+export const extraReducers = (builder) => {
   addCases(builder)
     .for(login, 'login', assignUserHandlers)
     .for(initialize, 'initialize', assignUserHandlers)

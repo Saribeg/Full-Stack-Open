@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
-import { useNotification } from '../hooks';
-import UserContext from '../contexts/UserContext';
-import { loginUser } from '../utils/user';
+import { useNotification } from '../../hooks';
+import UserContext from '../../contexts/UserContext';
+import { loginUser } from '../../utils/user';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
