@@ -1,16 +1,16 @@
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { createBlog } from '../store/reducers/blogsReducer';
-import { useNotification } from '../hooks';
+import { createBlog } from '../store/blogs/thunks';
+import { selectCreateBlogStatus } from '../store/blogs/selector';
 
 const BlogForm = ({ toggleForm }) => {
+  const { loading } = useSelector(selectCreateBlogStatus);
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
 
   const dispatch = useDispatch();
-  const notify = useNotification();
 
   const handleChange = (setter) => (event) => {
     setter(event.target.value);
@@ -22,7 +22,7 @@ const BlogForm = ({ toggleForm }) => {
     setBlogUrl('');
   };
 
-  const handleBlogCreation = async (event) => {
+  const handleBlogCreation = (event) => {
     event.preventDefault();
     const newBlog = {
       title: blogTitle,
@@ -30,20 +30,12 @@ const BlogForm = ({ toggleForm }) => {
       url: blogUrl
     };
 
-    try {
-      const createdBlog = await dispatch(createBlog(newBlog));
-      resetForm();
-      notify({
-        message: `Blog ${createdBlog.title} is successfully created`,
-        type: 'success'
+    dispatch(createBlog(newBlog))
+      .unwrap()
+      .then(() => {
+        resetForm();
+        toggleForm();
       });
-      toggleForm();
-    } catch (error) {
-      notify({
-        message: error.message,
-        type: 'error'
-      });
-    }
   };
 
   return (
@@ -98,8 +90,9 @@ const BlogForm = ({ toggleForm }) => {
             type="submit"
             id="createBlog"
             data-testid="createBlog"
+            disabled={loading}
           >
-            Create
+            {loading ? 'Creating...' : 'Create'}
           </button>
         </div>
       </form>

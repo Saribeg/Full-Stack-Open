@@ -8,14 +8,15 @@ import UserDetails from './components/UserDetails';
 import BlogSection from './components/BlogSection';
 import BlogDetails from './components/BlogDetails/BlogDetails';
 import Notification from './components/Notification/Notification';
-import { initializeUser } from './store/reducers/authReducer';
+import { initialize } from './store/auth/thunks';
+import { selectAuth } from './store/auth/selectors';
 
 const App = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector(selectAuth);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(initializeUser());
+    dispatch(initialize());
   }, [dispatch]);
 
   return (
