@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchUserById } from '../store/users/thunks';
-import { selectUserDetailsState } from '../store/users/selectors';
-import { clearUser } from '../store/users/slice';
-import BlogTable from './BlogTable';
+import { fetchUserById } from '../../store/users/thunks';
+import { selectUserDetailsState } from '../../store/users/selectors';
+import BlogTable from '../Blog/BlogTable';
 
 const UserDetails = () => {
   const { user, loading } = useSelector(selectUserDetailsState);
@@ -13,7 +12,6 @@ const UserDetails = () => {
 
   useEffect(() => {
     dispatch(fetchUserById(id));
-    return () => dispatch(clearUser());
   }, [dispatch, id]);
 
   if (loading) return <div>Loading...</div>;

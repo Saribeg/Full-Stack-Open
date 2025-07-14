@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { buildBlogDetailsExtraReducers } from './extraReducers';
+import { extraReducers } from './extraReducers';
 
 const blogDetailsSlice = createSlice({
   name: 'blogDetails',
@@ -12,13 +12,8 @@ const blogDetailsSlice = createSlice({
       delete: { loading: false, error: null }
     }
   },
-  reducers: {
-    clearBlog(state) {
-      state.blog = null;
-    }
-  },
-  extraReducers: buildBlogDetailsExtraReducers
+  reducers: {},
+  extraReducers
 });
 
-export const { clearBlog } = blogDetailsSlice.actions;
 export default blogDetailsSlice.reducer;

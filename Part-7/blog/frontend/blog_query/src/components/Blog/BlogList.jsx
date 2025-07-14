@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import blogsService from '../services/blogs';
+import blogsService from '../../services/blogs';
 import BlogTable from './BlogTable';
-import { useNotification } from '../hooks';
+import { useNotification } from '../../hooks';
 
 const BlogList = () => {
   const notify = useNotification();

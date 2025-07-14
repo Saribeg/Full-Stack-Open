@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { selectAuth } from '../../store/auth/selectors';
-import { selectBlogDetailsState } from '../../store/blogDetails/selectors';
-import { fetchBlogById, likeBlog, deleteBlog } from '../../store/blogDetails/thunks';
-import { clearBlog } from '../../store/blogDetails/slice';
+import { selectAuth } from '../../../store/auth/selectors';
+import { selectBlogDetailsState } from '../../../store/blogDetails/selectors';
+import { fetchBlogById, likeBlog, deleteBlog } from '../../../store/blogDetails/thunks';
 import CommentForm from '../CommentForm';
 import './BlogDetails.css';
 
@@ -17,7 +16,6 @@ const BlogDetails = () => {
 
   useEffect(() => {
     dispatch(fetchBlogById(id));
-    return () => dispatch(clearBlog());
   }, [dispatch, id]);
 
   const handleBlogUpdate = () => {
