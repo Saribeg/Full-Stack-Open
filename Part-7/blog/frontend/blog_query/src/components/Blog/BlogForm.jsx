@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { useNotification } from '../../hooks';
-import blogService from '../../services/blogs';
+import { useCreateBlog } from '../../queries/blog';
 
 const BlogForm = ({ toggleForm }) => {
   const [blogTitle, setBlogTitle] = useState('');
@@ -15,25 +13,10 @@ const BlogForm = ({ toggleForm }) => {
     setBlogUrl('');
   };
 
-  const notify = useNotification();
-  const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationFn: blogService.create,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] });
-
-      notify({
-        type: 'info',
-        message: `Blog "${data.title}" is successfully created`
-      });
+  const { mutate, isPending } = useCreateBlog({
+    onSuccess: () => {
       resetForm();
       toggleForm();
-    },
-    onError: (err, { title }) => {
-      notify({
-        type: 'error',
-        message: `${err.response?.data?.error || err.message}. Your input is "${title}"`
-      });
     }
   });
 
@@ -43,10 +26,11 @@ const BlogForm = ({ toggleForm }) => {
 
   const handleBlogCreation = (event) => {
     event.preventDefault();
+
     const newBlog = {
       title: blogTitle,
       author: blogAuthor,
-      url: blogUrl
+      url: blogUrl,
     };
 
     mutate(newBlog);
