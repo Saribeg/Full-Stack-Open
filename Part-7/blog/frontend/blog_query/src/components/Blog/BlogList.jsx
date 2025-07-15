@@ -1,22 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
-import blogsService from '../../services/blogs';
+
 import BlogTable from './BlogTable';
-import { useNotification } from '../../hooks';
+import { useBlogs } from '../../queries/blog';
 
 const BlogList = () => {
-  const notify = useNotification();
-
-  const { data: blogs, isLoading } = useQuery({
-    queryKey: ['blogs'],
-    queryFn: blogsService.getAll,
-    select: (data) => [...data].sort((a, b) => b.likes - a.likes),
-    onError: (error) => {
-      notify({
-        type: 'error',
-        message: `Failed to fetch blogs. Error: "${error.message}"`
-      });
-    }
-  });
+  const { data: blogs, isLoading } = useBlogs();
 
   if (isLoading) return <div>Loading...</div>;
 

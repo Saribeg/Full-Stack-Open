@@ -1,21 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
-import userService from '../../services/users';
-import { useNotification } from '../../hooks';
+import { useUsers } from '../../queries/user';
 import UserItem from './UserItem';
 
 const Users = () => {
-  const notify = useNotification();
-
-  const { data: users, isLoading } = useQuery({
-    queryKey: ['users'],
-    queryFn: userService.getAll,
-    onError: (error) => {
-      notify({
-        type: 'error',
-        message: `Failed to fetch users. Error: "${error.message}"`
-      });
-    }
-  });
+  const { data: users, isLoading } = useUsers();
 
   if (isLoading) return <div>Loading...</div>;
 
