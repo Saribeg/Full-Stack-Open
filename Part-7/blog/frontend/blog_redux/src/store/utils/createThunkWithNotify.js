@@ -16,8 +16,6 @@ const executeCentralizedNotification = (typePrefix, notificationType, dataOrErro
   const message =
     typeof settings.getMessage === 'function' ? settings.getMessage(dataOrError) : defaultMessage;
 
-  console.log('thunk', settings.duration);
-
   notify?.({
     type: notificationType,
     message,

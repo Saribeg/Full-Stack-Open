@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
-import { createComment } from '../../store/blogDetails/thunks';
-import { selectCreateCommentStatus } from '../../store/blogDetails/selectors';
+
 import Textarea from '../ui/Form/Textarea';
 import Button from '../ui/Form/Button';
 import Form from '../ui/Form/Form';
+import InlineNotification from '../Notification/InlineNotification';
+
+import PropTypes from 'prop-types';
+import { createComment } from '../../store/blogDetails/thunks';
+import { selectCreateCommentStatus } from '../../store/blogDetails/selectors';
 
 const CommentForm = ({ id }) => {
   const [comment, setComment] = useState('');
@@ -22,29 +25,26 @@ const CommentForm = ({ id }) => {
   return (
     <div className="form-container">
       <Form onSubmit={handleCommentCreation}>
-        <div className="form-group">
-          <Textarea
-            type="text"
-            id="comment"
-            name="comment"
-            placeholder="Write comment..."
-            required
-            value={comment}
-            onChange={(event) => setComment(event.target.value)}
-            data-testid="comment"
-          />
-        </div>
+        <Textarea
+          type="text"
+          id="comment"
+          name="comment"
+          placeholder="Write comment..."
+          required
+          value={comment}
+          onChange={(event) => setComment(event.target.value)}
+          data-testid="comment"
+        />
 
-        <div className="form-actions">
-          <Button
-            type="submit"
-            id="createBlogComment"
-            data-testid="createBlogComment"
-            disabled={loading}
-          >
-            {loading ? 'Adding Comment...' : 'Add Comment'}
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          id="createBlogComment"
+          data-testid="createBlogComment"
+          disabled={loading}
+        >
+          {loading ? 'Adding Comment...' : 'Add Comment'}
+        </Button>
+        <InlineNotification placement="CommentForm" />
       </Form>
     </div>
   );

@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+
 import Button from '../ui/Form/Button';
+
 import { deleteBlog } from '../../store/blogDetails/thunks';
 import { hideModal } from '../../store/modal/slice';
 
