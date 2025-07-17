@@ -21,7 +21,8 @@ export const createThunkWithNotify = (typePrefix, asyncFn) => {
         extra.notify?.({
           type: 'success',
           message,
-          popup: rule?.popup || false
+          popup: rule?.popup || false,
+          placement: rule?.placement || 'global'
         });
       }
 
@@ -38,7 +39,8 @@ export const createThunkWithNotify = (typePrefix, asyncFn) => {
         extra.notify?.({
           type: 'error',
           message,
-          popup: rule?.popup || true
+          popup: rule?.popup || false,
+          placement: rule?.placement || 'global'
         });
       }
 

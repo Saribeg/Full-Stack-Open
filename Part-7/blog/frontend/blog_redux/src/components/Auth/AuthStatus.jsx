@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
-import Logout from '../Logout';
-import './AuthStatus.css';
+import Logout from './Logout';
 
 const AuthStatus = ({ user }) => {
   const { name } = user;
 
   return (
-    <div className="auth-status">
-      <p className="user-name">
-        {name} <span>logged in</span>
+    <div className="flex items-center gap-4">
+      <p className="whitespace-nowrap">
+        <span className="font-semibold">{name}</span> <span>logged in</span>
       </p>
       <Logout name={name} />
     </div>

@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Georama:wght@700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Manrope', sans-serif;
+  --font-logo: 'Georama', sans-serif;
+
+  --color-notif-success-bg: #0f2e2e;
+  --color-notif-success-border: #1ba57d;
+  --color-notif-error-bg: #2b1212;
+  --color-notif-error-border: #cc4b4b;
+}
+
+body {
+  @apply font-sans text-white bg-gradient-to-br from-[#0f172a] via-[#132e45] to-[#0d4d4d] min-h-screen;
+}
+
+@keyframes notif-progress {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
+
+.animate-notif-progress {
+  animation: notif-progress var(--notif-duration, 3000ms) linear forwards;
+}

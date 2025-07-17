@@ -3,6 +3,7 @@ export const notificationRules = {
     login: {
       success: true,
       error: true,
+      placement: 'loginForm',
       successMessage: (result) => `Welcome, ${result.name}`
     },
     logout: {
@@ -17,12 +18,14 @@ export const notificationRules = {
     like: {
       success: true,
       error: true,
+      popup: true,
       successMessage: (result) =>
         `Thanks, ${result.user.name}, for liking "${result.title}" by ${result.author}!`
     },
     comment: {
       success: true,
       error: true,
+      popup: true,
       successMessage: (result) => {
         const last = result.comments.at(-1);
         return `Thanks, ${result.user.name}, for commenting "${result.title}" by ${result.author}! 💬 Comment "${last?.text ?? '...'}" added successfully!`;
@@ -40,12 +43,13 @@ export const notificationRules = {
     create: {
       success: true,
       error: true,
+      popup: true,
       successMessage: (result) =>
         `Thanks, ${result.user.name}, for creating blog "${result.title}" by ${result.author}! Keep it up!`
     }
   },
   users: {
-    fetchAll: { success: false, error: true },
-    fetchById: { success: false, error: true }
+    fetchAll: { success: false, error: true, popup: true },
+    fetchById: { success: false, error: true, popup: true }
   }
 };

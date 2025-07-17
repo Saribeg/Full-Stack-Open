@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../store/auth/thunks';
+import Button from '../ui/Form/Button';
 
 const Logout = ({ name }) => {
   const dispatch = useDispatch();
@@ -8,9 +9,9 @@ const Logout = ({ name }) => {
     dispatch(logout({ name }));
   };
   return (
-    <button className="btn btn-secondary" onClick={handleLogout}>
+    <Button uiType="ghostPrimary" onClick={handleLogout}>
       Logout
-    </button>
+    </Button>
   );
 };
 
