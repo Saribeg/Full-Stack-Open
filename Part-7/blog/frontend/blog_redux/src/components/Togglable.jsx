@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, forwardRef, useImperativeHandle } from 'react';
-import './Togglable.css';
+import ToggleButton from './ui/ToggleButton';
 
 const Togglable = forwardRef((props, refs) => {
   const [visible, setVisible] = useState(false);
@@ -50,14 +50,19 @@ const Togglable = forwardRef((props, refs) => {
 
   return (
     <div className="togglable-container">
-      <button
-        className={`btn toggler ${visible ? 'toggler-open' : 'toggler-closed'}`}
+      <ToggleButton
+        className="mx-auto w-fit px-6 py-2"
+        visible={visible}
+        label={props.buttonLabel}
         onClick={toggleVisibility}
+      />
+      <div
+        className={`overflow-hidden transition-all duration-700 ease-in-out ${
+          visible ? 'mt-6 max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
       >
-        {visible ? '▲ Cancel' : `➕ ${props.buttonLabel}`}
-      </button>
-
-      <div className={`togglable-content ${visible ? 'open' : ''}`}>{props.children}</div>
+        {props.children}
+      </div>
     </div>
   );
 });

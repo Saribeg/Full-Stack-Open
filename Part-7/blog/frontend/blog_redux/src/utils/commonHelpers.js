@@ -6,4 +6,6 @@ function safeParseJSON(data) {
   }
 }
 
-export { safeParseJSON };
+const getNestedValueFromObj = (obj, path) => path.split('.').reduce((acc, key) => acc?.[key], obj);
+
+export { safeParseJSON, getNestedValueFromObj };

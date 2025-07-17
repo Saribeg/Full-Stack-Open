@@ -1,25 +1,16 @@
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import TextLink from '../ui/TextLink';
+import { AutoTable } from '../ui/Table';
 
 const BlogTable = ({ blogs }) => (
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Author</th>
-      </tr>
-    </thead>
-    <tbody>
-      {blogs.map((blog) => (
-        <tr key={blog.id}>
-          <td>
-            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          </td>
-          <td>{blog.author}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <AutoTable
+    titles={['Title', 'Author']}
+    listToRender={blogs}
+    cellProps={['title', 'author']}
+    getCellContent={(blog, prop) =>
+      prop === 'title' ? <TextLink to={`/blogs/${blog.id}`}>{blog.title}</TextLink> : blog[prop]
+    }
+  />
 );
 
 export default BlogTable;

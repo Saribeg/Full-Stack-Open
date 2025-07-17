@@ -16,12 +16,7 @@ const BlogList = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  return (
-    <div>
-      <h2>Blogs</h2>
-      <BlogTable blogs={blogs} />
-    </div>
-  );
+  return <BlogTable blogs={blogs} />;
 };
 
 export default BlogList;

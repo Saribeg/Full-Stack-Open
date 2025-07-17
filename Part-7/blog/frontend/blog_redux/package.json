@@ -16,14 +16,18 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
+    "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.4.0",
+    "clsx": "^2.1.1",
     "globals": "^16.3.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.3",
-    "reselect": "^5.1.1"
+    "reselect": "^5.1.1",
+    "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
@@ -31,7 +35,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.0.3",
+    "@vitejs/plugin-react": "^4.6.0",
     "concurrently": "^9.2.0",
     "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.5",
@@ -42,7 +46,8 @@
     "eslint-plugin-vitest": "^0.5.4",
     "jsdom": "^26.1.0",
     "prettier": "^3.6.2",
-    "vite": "^4.4.5",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "vite": "^7.0.4",
     "vitest": "^3.2.4"
   }
 }
