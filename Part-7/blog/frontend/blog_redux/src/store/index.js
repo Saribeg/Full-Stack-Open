@@ -7,6 +7,7 @@ import blogDetailsReducer from './blogDetails/slice';
 import usersReducer from './users/slice';
 
 import { setNotification } from './notification/thunks';
+import { uiConfigs } from '../utils/uiConfigs';
 
 const store = configureStore({
   reducer: {
@@ -20,8 +21,13 @@ const store = configureStore({
     getDefaultMiddleware({
       thunk: {
         extraArgument: {
-          notify: ({ message, type = 'success', popup }) =>
-            store.dispatch(setNotification(message, type, popup))
+          notify: ({
+            message,
+            type = 'success',
+            popup,
+            ms = uiConfigs.notificationDuration,
+            placement = 'global'
+          }) => store.dispatch(setNotification(message, type, popup, ms, placement))
         }
       }
     })

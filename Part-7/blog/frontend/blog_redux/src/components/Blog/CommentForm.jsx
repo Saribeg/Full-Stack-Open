@@ -3,6 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { createComment } from '../../store/blogDetails/thunks';
 import { selectCreateCommentStatus } from '../../store/blogDetails/selectors';
+import Textarea from '../ui/Form/Textarea';
+import Button from '../ui/Form/Button';
+import Form from '../ui/Form/Form';
 
 const CommentForm = ({ id }) => {
   const [comment, setComment] = useState('');
@@ -18,10 +21,9 @@ const CommentForm = ({ id }) => {
 
   return (
     <div className="form-container">
-      <form onSubmit={handleCommentCreation}>
+      <Form onSubmit={handleCommentCreation}>
         <div className="form-group">
-          <input
-            className="form-input"
+          <Textarea
             type="text"
             id="comment"
             name="comment"
@@ -34,17 +36,16 @@ const CommentForm = ({ id }) => {
         </div>
 
         <div className="form-actions">
-          <button
-            className="btn btn-primary"
+          <Button
             type="submit"
             id="createBlogComment"
             data-testid="createBlogComment"
             disabled={loading}
           >
             {loading ? 'Adding Comment...' : 'Add Comment'}
-          </button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 };
