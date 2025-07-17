@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { createBlog } from '../../store/blogs/thunks';
 import { selectCreateBlogStatus } from '../../store/blogs/selectors';
+import Input from '../ui/Form/Input';
+import Button from '../ui/Form/Button';
+import Form from '../ui/Form/Form';
 
 const BlogForm = ({ toggleForm }) => {
   const { loading } = useSelector(selectCreateBlogStatus);
@@ -39,63 +42,43 @@ const BlogForm = ({ toggleForm }) => {
   };
 
   return (
-    <div className="form-container">
-      <h2>Create a new blog</h2>
-      <form onSubmit={handleBlogCreation}>
-        <div className="form-group">
-          <label htmlFor="blogTitle">Title:</label>
-          <input
-            className="form-input"
-            type="text"
-            id="blogTitle"
-            name="blogTitle"
-            required
-            value={blogTitle}
-            onChange={handleChange(setBlogTitle)}
-            data-testid="blogTitle"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="blogAuthor">Author:</label>
-          <input
-            className="form-input"
-            type="text"
-            id="blogAuthor"
-            name="blogAuthor"
-            required
-            value={blogAuthor}
-            onChange={handleChange(setBlogAuthor)}
-            data-testid="blogAuthor"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="blogUrl">Url:</label>
-          <input
-            className="form-input"
-            type="text"
-            id="blogUrl"
-            name="blogUrl"
-            required
-            value={blogUrl}
-            onChange={handleChange(setBlogUrl)}
-            data-testid="blogUrl"
-          />
-        </div>
-
-        <div className="form-actions">
-          <button
-            className="btn btn-primary"
-            type="submit"
-            id="createBlog"
-            data-testid="createBlog"
-            disabled={loading}
-          >
-            {loading ? 'Creating...' : 'Create'}
-          </button>
-        </div>
-      </form>
+    <div className="mx-auto mt-8 w-full max-w-xl px-4 sm:px-6">
+      <p className="my-4 text-xl">Create a new blog</p>
+      <Form onSubmit={handleBlogCreation}>
+        <Input
+          type="text"
+          id="blogTitle"
+          name="blogTitle"
+          required
+          value={blogTitle}
+          placeholder="Enter blog title"
+          onChange={handleChange(setBlogTitle)}
+          data-testid="blogTitle"
+        />
+        <Input
+          type="text"
+          id="blogAuthor"
+          name="blogAuthor"
+          required
+          value={blogAuthor}
+          placeholder="Enter blog author"
+          onChange={handleChange(setBlogAuthor)}
+          data-testid="blogAuthor"
+        />
+        <Input
+          type="text"
+          id="blogUrl"
+          name="blogUrl"
+          required
+          value={blogUrl}
+          placeholder="Enter blog url"
+          onChange={handleChange(setBlogUrl)}
+          data-testid="blogUrl"
+        />
+        <Button type="submit" id="createBlog" data-testid="createBlog" disabled={loading}>
+          {loading ? 'Creating Blog...' : 'Create Blog'}
+        </Button>
+      </Form>
     </div>
   );
 };
