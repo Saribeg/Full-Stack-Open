@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import notificationReducer from './notification/slice';
+import modalReducer from './modal/slice';
 import authReducer from './auth/slice';
 import blogsReducer from './blogs/slice';
 import blogDetailsReducer from './blogDetails/slice';
@@ -12,6 +13,7 @@ import { uiConfigs } from '../utils/uiConfigs';
 const store = configureStore({
   reducer: {
     notification: notificationReducer,
+    modal: modalReducer,
     auth: authReducer,
     blogs: blogsReducer,
     blogDetails: blogDetailsReducer,

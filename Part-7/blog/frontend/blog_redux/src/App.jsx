@@ -12,6 +12,7 @@ import NotFound from './components/NotFound';
 import { initialize } from './store/auth/thunks';
 import { selectAuth } from './store/auth/selectors';
 import { selectNotificationPlacement } from './store/notification/selectors';
+import ModalHost from './components/ModalHost';
 
 const App = () => {
   const user = useSelector(selectAuth);
@@ -24,6 +25,7 @@ const App = () => {
 
   return (
     <div>
+      <ModalHost />
       <div className="container mx-auto my-4 px-4 sm:px-6 lg:px-8">
         {user && <Header />}
         {notificationPlacement === 'global' && <Notification />}

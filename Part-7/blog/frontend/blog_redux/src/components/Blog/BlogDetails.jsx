@@ -1,20 +1,20 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { selectAuth } from '../../store/auth/selectors';
 import { selectBlogDetailsState } from '../../store/blogDetails/selectors';
-import { fetchBlogById, likeBlog, deleteBlog } from '../../store/blogDetails/thunks';
+import { fetchBlogById, likeBlog } from '../../store/blogDetails/thunks';
 import CommentForm from './CommentForm';
 import Button from '../ui/Form/Button';
 import PageTitle from '../PageTitle';
 import NativeLink from '../ui/NativeLink';
 import LikeButton from '../ui/LikeButton';
+import { showModal } from '../../store/modal/slice';
 
 const BlogDetails = () => {
   const authUser = useSelector(selectAuth);
   const { blog, loading } = useSelector(selectBlogDetailsState);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
@@ -26,15 +26,7 @@ const BlogDetails = () => {
   };
 
   const handleBlogDelete = () => {
-    const isToBeDeleted = window.confirm(`Are you sure you want to delete the blog ${blog.title}?`);
-
-    if (!isToBeDeleted) {
-      return;
-    }
-
-    dispatch(deleteBlog(blog.id))
-      .unwrap()
-      .then(() => navigate('/blogs'));
+    dispatch(showModal({ type: 'confirmDelete', params: { blog } }));
   };
 
   if (loading) return <div>Loading...</div>;
