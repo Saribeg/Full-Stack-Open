@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { selectNotification } from '../store/notification/selectors';
-import { uiConfigs } from '../utils/uiConfigs';
 
 const Notification = () => {
-  const { message, type = 'success', popup } = useSelector(selectNotification);
+  const { message, type = 'success', popup, duration } = useSelector(selectNotification);
+  console.log(duration);
 
   if (!message || typeof message !== 'string') return null;
 
@@ -22,7 +22,6 @@ const Notification = () => {
     success: 'bg-emerald-300',
     error: 'bg-red-400'
   };
-  const duration = uiConfigs.notificationDuration;
 
   return popup ? (
     <div
