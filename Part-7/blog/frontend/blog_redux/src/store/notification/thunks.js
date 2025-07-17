@@ -4,8 +4,10 @@ export const setNotification = (message, type, popup, duration, placement) => {
   return (dispatch) => {
     dispatch(showNotification({ message, type, popup, duration, placement }));
 
-    setTimeout(() => {
-      dispatch(hideNotification());
-    }, duration);
+    if (typeof duration === 'number' && duration > 0) {
+      setTimeout(() => {
+        dispatch(hideNotification());
+      }, duration);
+    }
   };
 };

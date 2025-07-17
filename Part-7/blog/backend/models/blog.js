@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const blogSchema = mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    minlength: 10
   },
   author: String,
   url: {
     type: String,
-    required: true
+    required: true,
+    minlength: 10
   },
   likes: {
     type: Number,
@@ -23,7 +25,8 @@ const blogSchema = mongoose.Schema({
       id: mongoose.Schema.Types.ObjectId,
       text: {
         type: String,
-        required: true
+        required: true,
+        minlength: 20
       }
     }
   ]

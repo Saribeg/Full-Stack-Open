@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectVisibleBlogsState } from '../../store/blogs/selectors';
+
 import BlogTable from './BlogTable';
+import InlineNotification from '../Notification/InlineNotification';
+
+import { selectVisibleBlogsState } from '../../store/blogs/selectors';
 import { fetchBlogs } from '../../store/blogs/thunks';
 
 const BlogList = () => {
@@ -15,6 +18,10 @@ const BlogList = () => {
   }, [dispatch, blogs.length]);
 
   if (loading) return <div>Loading...</div>;
+
+  if (!blogs || !blogs.length) {
+    return <InlineNotification placement="BlogList" />;
+  }
 
   return <BlogTable blogs={blogs} />;
 };

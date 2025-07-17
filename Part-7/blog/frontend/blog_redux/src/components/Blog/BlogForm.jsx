@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { createBlog } from '../../store/blogs/thunks';
-import { selectCreateBlogStatus } from '../../store/blogs/selectors';
+
 import Input from '../ui/Form/Input';
 import Button from '../ui/Form/Button';
 import Form from '../ui/Form/Form';
+import InlineNotification from '../Notification/InlineNotification';
+
+import { createBlog } from '../../store/blogs/thunks';
+import { selectCreateBlogStatus } from '../../store/blogs/selectors';
 
 const BlogForm = ({ toggleForm }) => {
   const { loading } = useSelector(selectCreateBlogStatus);
@@ -78,6 +81,7 @@ const BlogForm = ({ toggleForm }) => {
         <Button type="submit" id="createBlog" data-testid="createBlog" disabled={loading}>
           {loading ? 'Creating Blog...' : 'Create Blog'}
         </Button>
+        <InlineNotification placement="BlogForm" />
       </Form>
     </div>
   );

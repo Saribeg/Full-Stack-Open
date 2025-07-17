@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
 import clsx from 'clsx';
-import { selectNotification } from '../store/notification/selectors';
+import { selectNotification } from '../../store/notification/selectors';
 
 const Notification = () => {
   const { message, type = 'success', popup, duration } = useSelector(selectNotification);
-  console.log(duration);
 
   if (!message || typeof message !== 'string') return null;
 
