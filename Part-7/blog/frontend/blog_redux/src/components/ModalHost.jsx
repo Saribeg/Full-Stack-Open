@@ -1,6 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux';
+
 import Modal from './ui/Modal';
 import DeleteBlogModal from './Blog/DeleteBlogModal';
+
 import { selectModal } from '../store/modal/selectors';
 import { hideModal } from '../store/modal/slice';
 

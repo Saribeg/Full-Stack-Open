@@ -27,9 +27,9 @@ const store = configureStore({
             message,
             type = 'success',
             popup,
-            ms = uiConfigs.notificationDuration,
+            duration = uiConfigs.notificationDuration,
             placement = 'global'
-          }) => store.dispatch(setNotification(message, type, popup, ms, placement))
+          }) => store.dispatch(setNotification(message, type, popup, duration, placement))
         }
       }
     })

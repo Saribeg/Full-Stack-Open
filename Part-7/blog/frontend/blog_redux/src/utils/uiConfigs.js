@@ -1,3 +1,3 @@
 export const uiConfigs = {
-  notificationDuration: 5000
+  notificationDuration: 3000
 };

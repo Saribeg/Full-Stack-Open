@@ -1,11 +1,13 @@
 import { showNotification, hideNotification } from './slice';
 
-export const setNotification = (message, type, popup, ms, placement) => {
+export const setNotification = (message, type, popup, duration, placement) => {
   return (dispatch) => {
-    dispatch(showNotification({ message, type, popup, placement }));
+    dispatch(showNotification({ message, type, popup, duration, placement }));
 
-    setTimeout(() => {
-      dispatch(hideNotification());
-    }, ms);
+    if (typeof duration === 'number' && duration > 0) {
+      setTimeout(() => {
+        dispatch(hideNotification());
+      }, duration);
+    }
   };
 };

@@ -1,10 +1,14 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchUsers } from '../../store/users/thunks';
-import { selectUsersState } from '../../store/users/selectors';
-import PageTitle from '../PageTitle';
+
 import { AutoTable } from '../ui/Table';
 import TextLink from '../ui/TextLink';
+import PageTitle from '../PageTitle';
+import InlineNotification from '../Notification/InlineNotification';
+
+import { fetchUsers } from '../../store/users/thunks';
+import { selectUsersState } from '../../store/users/selectors';
+
 import { getNestedValueFromObj } from '../../utils/commonHelpers';
 
 const Users = () => {
@@ -18,6 +22,10 @@ const Users = () => {
   }, [dispatch, users.length]);
 
   if (loading) return <div>Loading...</div>;
+
+  if (!users || !users.length) {
+    return <InlineNotification placement="Users" />;
+  }
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 px-8">

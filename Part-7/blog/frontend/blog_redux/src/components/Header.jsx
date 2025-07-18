@@ -1,9 +1,12 @@
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
 import clsx from 'clsx';
+
+import Logo from './Logo';
+
 import { selectAuth } from './../store/auth/selectors';
 import AuthStatus from './Auth/AuthStatus';
-import Logo from './Logo';
 
 const Header = () => {
   const user = useSelector(selectAuth);

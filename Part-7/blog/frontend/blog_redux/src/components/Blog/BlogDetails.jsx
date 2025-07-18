@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { selectAuth } from '../../store/auth/selectors';
-import { selectBlogDetailsState } from '../../store/blogDetails/selectors';
-import { fetchBlogById, likeBlog } from '../../store/blogDetails/thunks';
+import { useSelector, useDispatch } from 'react-redux';
+
 import CommentForm from './CommentForm';
 import Button from '../ui/Form/Button';
 import PageTitle from '../PageTitle';
 import NativeLink from '../ui/NativeLink';
 import LikeButton from '../ui/LikeButton';
+import InlineNotification from '../Notification/InlineNotification';
+
+import { selectAuth } from '../../store/auth/selectors';
+import { selectBlogDetailsState } from '../../store/blogDetails/selectors';
+import { fetchBlogById, likeBlog } from '../../store/blogDetails/thunks';
 import { showModal } from '../../store/modal/slice';
 
 const BlogDetails = () => {
@@ -31,7 +34,13 @@ const BlogDetails = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  if (!blog) return <div>Blog not found</div>;
+  if (!blog)
+    return (
+      <div>
+        <div>Blog not found</div>
+        <InlineNotification placement="BlogDetails" />
+      </div>
+    );
 
   return (
     <div className="mx-auto mt-8 max-w-4xl space-y-8 px-8">
@@ -45,7 +54,6 @@ const BlogDetails = () => {
             URL: <NativeLink href={blog.url}>{blog.url}</NativeLink>
           </div>
           {blog.user?.name && <div>Added by {blog.user.name}</div>}
-          <span>Likes: {blog.likes}</span>
         </div>
         <div className="align-center flex gap-12">
           <LikeButton count={blog.likes} onClick={handleBlogUpdate} />

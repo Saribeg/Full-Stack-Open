@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import { useState, forwardRef, useImperativeHandle } from 'react';
+import PropTypes from 'prop-types';
 import ToggleButton from './ui/ToggleButton';
 
 const Togglable = forwardRef((props, refs) => {

@@ -1,5 +1,4 @@
 const blogsRouter = require('express').Router();
-const mongoose = require('mongoose');
 const middleware = require('../utils/middleware');
 const Blog = require('../models/blog');
 
@@ -38,13 +37,12 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   });
 });
 
-blogsRouter.put('/:id', middleware.userExtractor, async (request, response) => {
-  const user = request.user;
+blogsRouter.put('/:id', async (request, response) => {
   const { title, author, url, likes } = request.body;
 
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
-    { title, author, url, likes, user: user._id },
+    { title, author, url, likes },
     {
       new: true,           // Return updated document
       runValidators: true, // Apply schema validations when updating
@@ -86,10 +84,7 @@ blogsRouter.post('/:id/comments', async (request, response) => {
     return response.status(400).json({ error: 'Comment is required and must be a string' });
   }
 
-  const newComment = {
-    id: new mongoose.Types.ObjectId(),
-    text: comment
-  };
+  const newComment = { text: comment };
 
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
