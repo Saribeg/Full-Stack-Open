@@ -7,12 +7,12 @@ import PageTitle from '../PageTitle';
 import InlineNotification from '../Notification/InlineNotification';
 
 import { fetchUsers } from '../../store/users/thunks';
-import { selectUsersState } from '../../store/users/selectors';
+import { selectVisibleUsersState } from '../../store/users/selectors';
 
 import { getNestedValueFromObj } from '../../utils/commonHelpers';
 
 const Users = () => {
-  const { users, loading } = useSelector(selectUsersState);
+  const { users, loading } = useSelector(selectVisibleUsersState);
   const dispatch = useDispatch();
 
   useEffect(() => {
