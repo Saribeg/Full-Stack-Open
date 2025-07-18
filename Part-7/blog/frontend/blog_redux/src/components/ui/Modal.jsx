@@ -27,7 +27,7 @@ const Modal = ({ isOpened = false, onClose, children }) => {
           <div className="flex-1" />
           <button
             onClick={onClose}
-            className="text-cyan-300 transition hover:text-cyan-100"
+            className="cursor-pointer text-cyan-300 transition hover:text-cyan-100"
             aria-label="Close"
           >
             <AiOutlineClose className="text-2xl" />

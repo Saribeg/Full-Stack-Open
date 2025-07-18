@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectLoginStatus } from '../../store/auth/selectors';
-import { selectNotificationPlacement } from '../../store/notification/selectors';
-import { login } from '../../store/auth/thunks';
+
 import Logo from '../Logo';
 import Input from '../ui/Form/Input';
 import Button from '../ui/Form/Button';
 import Form from '../ui/Form/Form';
-import Notification from '../Notification';
+import InlineNotification from '../Notification/InlineNotification';
+
+import { selectLoginStatus } from '../../store/auth/selectors';
+import { login } from '../../store/auth/thunks';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -31,7 +32,6 @@ const LoginForm = () => {
   };
 
   const { loading } = useSelector(selectLoginStatus);
-  const notificationPlacement = useSelector(selectNotificationPlacement);
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
@@ -66,9 +66,7 @@ const LoginForm = () => {
             >
               {loading ? 'Logging in...' : 'Login'}
             </Button>
-            <div className="min-h-[92px]">
-              {notificationPlacement === 'loginForm' && <Notification />}
-            </div>
+            <InlineNotification placement="LoginForm" />
           </Form>
         </div>
       </div>

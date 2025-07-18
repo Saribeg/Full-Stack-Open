@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const blogSchema = mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    minlength: 10
   },
   author: String,
   url: {
     type: String,
-    required: true
+    required: true,
+    minlength: 10
   },
   likes: {
     type: Number,
@@ -20,10 +22,10 @@ const blogSchema = mongoose.Schema({
   },
   comments: [
     {
-      id: mongoose.Schema.Types.ObjectId,
       text: {
         type: String,
-        required: true
+        required: true,
+        minlength: 20
       }
     }
   ]
@@ -39,7 +41,7 @@ blogSchema.set('toJSON', {
       returnedObject.comments = returnedObject.comments.map(comment => {
         const transformedComment = {
           ...comment,
-          id: comment.id?.toString?.() || comment.id,
+          id: comment._id.toString(), // лучше прямо использовать _id
           text: comment.text
         };
 
@@ -49,5 +51,6 @@ blogSchema.set('toJSON', {
     }
   }
 });
+
 
 module.exports = mongoose.model('Blog', blogSchema);

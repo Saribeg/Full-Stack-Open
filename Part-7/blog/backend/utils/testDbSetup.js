@@ -1,82 +1,84 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Blog = require('../models/blog');
+const initialData = require('./testData');
 
-const initialData = {
-  users: [
-    {
-      username: 'alex',
-      name: 'Alex Smith'
-    },
-    {
-      username: 'john',
-      name: 'John Doe'
-    },
-    {
-      username: 'lisa',
-      name: 'Lisa Parker'
-    },
-    {
-      username: 'jessica',
-      name: 'Jessica Huston'
-    },
-    {
-      username: 'harrypotter',
-      name: 'Harry Potter'
-    }
-  ],
-  blogs: [
-    {
-      title: 'React patterns',
-      author: 'Michael Chan',
-      url: 'https://reactpatterns.com/',
-      likes: 7,
-      user: 'alex'
-    },
-    {
-      title: 'Go To Statement Considered Harmful',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-      likes: 5,
-      user: 'jessica'
-    },
-    {
-      title: 'Canonical string reduction',
-      author: 'Edsger W. Dijkstra',
-      url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-      likes: 12,
-      user: 'jessica'
-    },
-    {
-      title: 'First class tests',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-      likes: 10,
-      user: 'john'
-    },
-    {
-      title: 'TDD harms architecture',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-      likes: 0,
-      user: 'alex'
-    },
-    {
-      title: 'Type wars',
-      author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-      likes: 2,
-      user: 'jessica'
-    },
-    {
-      title: 'Full Stack Open',
-      author: 'Albus Dumbledore',
-      url: 'https://fullstackopen.com/',
-      likes: 150,
-      user: 'harrypotter'
-    }
-  ]
-};
+// const initialData = {
+//   users: [
+//     {
+//       username: 'alex',
+//       name: 'Alex Smith'
+//     },
+//     {
+//       username: 'john',
+//       name: 'John Doe'
+//     },
+//     {
+//       username: 'lisa',
+//       name: 'Lisa Parker'
+//     },
+//     {
+//       username: 'jessica',
+//       name: 'Jessica Huston'
+//     },
+//     {
+//       username: 'harrypotter',
+//       name: 'Harry Potter'
+//     }
+//   ],
+//   blogs: [
+//     {
+//       title: 'React patterns',
+//       author: 'Michael Chan',
+//       url: 'https://reactpatterns.com/',
+//       likes: 7,
+//       user: 'alex',
+//       comments: [{ text: 'comment #1' }, { text: 'Comment #2' }, { text: 'Comment #3' }]
+//     },
+//     {
+//       title: 'Go To Statement Considered Harmful',
+//       author: 'Edsger W. Dijkstra',
+//       url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+//       likes: 5,
+//       user: 'jessica'
+//     },
+//     {
+//       title: 'Canonical string reduction',
+//       author: 'Edsger W. Dijkstra',
+//       url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+//       likes: 12,
+//       user: 'jessica'
+//     },
+//     {
+//       title: 'First class tests',
+//       author: 'Robert C. Martin',
+//       url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+//       likes: 10,
+//       user: 'john'
+//     },
+//     {
+//       title: 'TDD harms architecture',
+//       author: 'Robert C. Martin',
+//       url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+//       likes: 0,
+//       user: 'alex'
+//     },
+//     {
+//       title: 'Type wars',
+//       author: 'Robert C. Martin',
+//       url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+//       likes: 2,
+//       user: 'jessica'
+//     },
+//     {
+//       title: 'Full Stack Open',
+//       author: 'Albus Dumbledore',
+//       url: 'https://fullstackopen.com/',
+//       likes: 150,
+//       user: 'harrypotter'
+//     }
+//   ]
+// };
 
 const resetDb = async () => {
   await User.deleteMany({});

@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
 import PropTypes from 'prop-types';
+
 import clsx from 'clsx';
+
+import logo from '../assets/logo.png';
 
 const Logo = ({ large = false }) => {
   const size = large ? 'h-[250px] w-[250px]' : 'h-[64px] w-[64px] sm:h-[80px] sm:w-[80px]';
