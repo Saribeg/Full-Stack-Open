@@ -6,6 +6,7 @@ import Notification from './components/Notification/Notification';
 import ModalHost from './components/ModalHost';
 import Header from './components/Header';
 import LoginForm from './components/Auth/LoginForm';
+import About from './components/About/About';
 import Users from './components/User/Users';
 import UserDetails from './components/User/UserDetails';
 import BlogSection from './components/Blog/BlogSection';
@@ -34,6 +35,7 @@ const App = () => {
         {user ? (
           <Routes>
             <Route path="/" element={<BlogSection />} />
+            <Route path="about" element={<About />} />
             <Route path="blogs" element={<BlogSection />} />
             <Route path="blogs/:id" element={<BlogDetails />} />
             <Route path="users/:id" element={<UserDetails />} />

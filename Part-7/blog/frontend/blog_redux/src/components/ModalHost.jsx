@@ -14,7 +14,7 @@ const ModalHost = () => {
 
   return (
     <Modal isOpened={isOpened} onClose={onClose}>
-      {type === 'confirmDelete' && <DeleteBlogModal params={params} />}
+      {type === 'confirmBlogDelete' && <DeleteBlogModal params={params} />}
     </Modal>
   );
 };
