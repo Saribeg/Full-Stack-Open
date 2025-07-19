@@ -4,7 +4,7 @@ import axios from 'axios';
 import { safeParseJSON } from '../utils/commonHelpers';
 
 const api = axios.create({
-  baseURL: import.meta.env.API_URL
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 export function setToken(token) {
