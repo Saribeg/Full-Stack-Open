@@ -23,6 +23,7 @@ const store = configureStore({
     getDefaultMiddleware({
       thunk: {
         extraArgument: {
+          // For centralization of notification popups
           notify: ({
             message,
             type = 'success',

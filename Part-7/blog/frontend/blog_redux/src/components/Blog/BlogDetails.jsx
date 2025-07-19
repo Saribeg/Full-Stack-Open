@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -7,7 +7,9 @@ import Button from '../ui/Form/Button';
 import PageTitle from '../PageTitle';
 import NativeLink from '../ui/NativeLink';
 import LikeButton from '../ui/LikeButton';
-import InlineNotification from '../Notification/InlineNotification';
+import BlogNotFound from './BlogNotFound';
+import Togglable from '../Togglable';
+import Spinner from '../ui/Spinner';
 
 import { selectAuth } from '../../store/auth/selectors';
 import { selectBlogDetailsState } from '../../store/blogDetails/selectors';
@@ -19,6 +21,7 @@ const BlogDetails = () => {
   const { blog, loading } = useSelector(selectBlogDetailsState);
   const dispatch = useDispatch();
   const { id } = useParams();
+  const commentFormRef = useRef();
 
   useEffect(() => {
     dispatch(fetchBlogById(id));
@@ -32,15 +35,8 @@ const BlogDetails = () => {
     dispatch(showModal({ type: 'confirmDelete', params: { blog } }));
   };
 
-  if (loading) return <div>Loading...</div>;
-
-  if (!blog)
-    return (
-      <div>
-        <div>Blog not found</div>
-        <InlineNotification placement="BlogDetails" />
-      </div>
-    );
+  if (loading) return <Spinner />;
+  if (!blog) return <BlogNotFound id={id} />;
 
   return (
     <div className="mx-auto mt-8 max-w-4xl space-y-8 px-8">
@@ -64,15 +60,21 @@ const BlogDetails = () => {
           ) : null}
         </div>
       </div>
+
+      {blog.comments?.length > 7 && (
+        <Togglable buttonLabel="New Comment" ref={commentFormRef}>
+          <CommentForm id={blog.id} toggleForm={() => commentFormRef.current.toggleVisibility()} />
+        </Togglable>
+      )}
+
       <div className="flex w-full flex-col">
-        {blog.comments && (
+        {blog.comments?.length > 0 && (
           <>
             <h3 className="mb-4 text-2xl">Comments</h3>
             <ul className="flex flex-col gap-2">
               {blog.comments.map((comment) => (
                 <li
                   key={comment.id}
-                  // className="space-y-1 rounded-xl border border-cyan-800 bg-[#0b1120] p-4 text-lg leading-relaxed text-cyan-100/80"
                   className="relative rounded-2xl border border-cyan-800 bg-gradient-to-b from-[#0b1120] to-[#071625] p-4 text-lg leading-relaxed text-cyan-100/90 shadow-[0_0_6px_#0891b233]"
                 >
                   {comment.text}
@@ -82,7 +84,7 @@ const BlogDetails = () => {
           </>
         )}
       </div>
-      <CommentForm id={blog.id} className="mt-8" />
+      <CommentForm id={blog.id} />
     </div>
   );
 };

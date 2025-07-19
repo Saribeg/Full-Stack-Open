@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { createComment } from '../../store/blogDetails/thunks';
 import { selectCreateCommentStatus } from '../../store/blogDetails/selectors';
 
-const CommentForm = ({ id }) => {
+const CommentForm = ({ id, toggleForm }) => {
   const [comment, setComment] = useState('');
   const { loading } = useSelector(selectCreateCommentStatus);
   const dispatch = useDispatch();
@@ -19,11 +19,14 @@ const CommentForm = ({ id }) => {
     event.preventDefault();
     dispatch(createComment({ id, comment }))
       .unwrap()
-      .then(() => setComment(''));
+      .then(() => {
+        setComment('');
+        toggleForm();
+      });
   };
 
   return (
-    <div className="form-container">
+    <div className="form-container mt-10">
       <Form onSubmit={handleCommentCreation}>
         <Textarea
           type="text"
@@ -53,5 +56,6 @@ const CommentForm = ({ id }) => {
 export default CommentForm;
 
 CommentForm.propTypes = {
-  id: PropTypes.string.isRequired
+  id: PropTypes.string.isRequired,
+  toggleForm: PropTypes.func
 };

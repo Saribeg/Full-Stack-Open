@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import BlogTable from '../Blog/BlogTable';
 import PageTitle from '../PageTitle';
-import InlineNotification from '../Notification/InlineNotification';
+import UserNotFound from './UserNotFound';
+import Spinner from '../ui/Spinner';
 
 import { fetchUserById } from '../../store/users/thunks';
 import { selectUserDetailsState } from '../../store/users/selectors';
@@ -18,15 +19,9 @@ const UserDetails = () => {
     dispatch(fetchUserById(id));
   }, [dispatch, id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Spinner />;
 
-  if (!user)
-    return (
-      <div>
-        <div>User not found</div>
-        <InlineNotification placement="UserDetails" />
-      </div>
-    );
+  if (!user) return <UserNotFound id={id} />;
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 px-8">

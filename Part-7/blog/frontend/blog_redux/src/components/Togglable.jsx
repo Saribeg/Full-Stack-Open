@@ -4,15 +4,15 @@ import ToggleButton from './ui/ToggleButton';
 
 const Togglable = forwardRef((props, refs) => {
   const [visible, setVisible] = useState(false);
+  const { isContentAtTheBottom = false, buttonLabel, children } = props;
 
-  // I decided to use smooth scroll animation.
+  // I decided to use smooth scroll animation when button is location at the bottom of the page.
   // For this additional effect I used AI to learn more. )
   const toggleVisibility = () => {
     const willBeVisible = !visible;
+    setVisible(willBeVisible);
 
-    if (willBeVisible) {
-      setVisible(true);
-
+    if (willBeVisible && isContentAtTheBottom) {
       const duration = 1000; // Total duration of the scroll animation (in milliseconds)
       const startTime = performance.now(); // Timestamp when the animation starts
       const startScroll = window.scrollY; // Current vertical scroll position
@@ -41,8 +41,6 @@ const Togglable = forwardRef((props, refs) => {
 
       // Start the animation loop
       requestAnimationFrame(animateScroll);
-    } else {
-      setVisible(false);
     }
   };
 
@@ -53,15 +51,17 @@ const Togglable = forwardRef((props, refs) => {
       <ToggleButton
         className="mx-auto w-fit px-6 py-2"
         visible={visible}
-        label={props.buttonLabel}
+        label={buttonLabel}
         onClick={toggleVisibility}
       />
       <div
         className={`overflow-hidden transition-all duration-700 ease-in-out ${
-          visible ? 'mt-6 max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+          visible
+            ? `${isContentAtTheBottom ? 'mt-6' : ''} max-h-[1000px] opacity-100`
+            : 'max-h-0 opacity-0'
         }`}
       >
-        {props.children}
+        {children}
       </div>
     </div>
   );
@@ -71,5 +71,6 @@ export default Togglable;
 
 Togglable.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
-  children: PropTypes.node
+  children: PropTypes.node,
+  isContentAtTheBottom: PropTypes.bool
 };

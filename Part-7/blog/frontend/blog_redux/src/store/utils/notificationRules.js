@@ -1,10 +1,14 @@
+// All thunk-notifications are configured here centralized.
+// Very convenient and helps to avoid manual execution from components.
+// You can configure here any new actions.
+// Notification messages, duration, placement, variant (popup or inline) and feature switch are configurable.
 export const notificationRules = {
   auth: {
     login: {
       success: {
         isEnabled: true,
         popup: true,
-        getMessage: (result) => `Welcome, ${result.name}`
+        getMessage: (result) => `Welcome, ${result.name}! 😊`
       },
       error: { isEnabled: true, popup: false, placement: 'LoginForm', duration: -1 }
     },
@@ -12,7 +16,7 @@ export const notificationRules = {
       success: {
         isEnabled: true,
         popup: true,
-        getMessage: (result) => `Bye-Bye, ${result.name}. See you soon.`
+        getMessage: (result) => `Bye-Bye, ${result.name}. See you soon. 👋`
       },
       error: { isEnabled: true, popup: true }
     },
@@ -28,7 +32,7 @@ export const notificationRules = {
         isEnabled: true,
         popup: true,
         getMessage: (result) =>
-          `Thanks, ${result.user.name}, for liking "${result.title}" by ${result.author}!`
+          `Thanks, ${result.user.name}, for liking "${result.title}" by ${result.author}! ❤️`
       },
       error: { isEnabled: true }
     },
@@ -63,7 +67,7 @@ export const notificationRules = {
         isEnabled: true,
         popup: true,
         getMessage: (result) =>
-          `Thanks, ${result.user.name}, for creating blog "${result.title}" by ${result.author}! Keep it up!`
+          `Thanks, ${result.user.name}, for creating blog "${result.title}" by ${result.author}! Keep it up! 🏆`
       },
       error: { isEnabled: true, popup: false, placement: 'BlogForm', duration: -1 }
     }

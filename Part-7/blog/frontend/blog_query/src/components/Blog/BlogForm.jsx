@@ -1,5 +1,15 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
+
+import {
+  Box,
+  TextField,
+  Button,
+  Paper,
+  Stack
+} from '@mui/material';
+import PageTitle from '../PageTitle';
+
 import { useCreateBlog } from '../../queries/blog';
 
 const BlogForm = ({ toggleForm }) => {
@@ -37,64 +47,72 @@ const BlogForm = ({ toggleForm }) => {
   };
 
   return (
-    <div className="form-container">
-      <h2>Create a new blog</h2>
-      <form onSubmit={handleBlogCreation}>
-        <div className="form-group">
-          <label htmlFor="blogTitle">Title:</label>
-          <input
-            className="form-input"
-            type="text"
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: { xs: 360, sm: 480, md: 560 }, // на десктопе — шире
+        mx: 'auto',
+        mt: 10
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 3, sm: 4, md: 5 },
+          minHeight: { xs: 'auto', md: 350 },
+          borderRadius: 2,
+          mb: 4
+        }}
+      >
+        <Stack spacing={3} component="form" onSubmit={handleBlogCreation}>
+          <PageTitle variant="h5">Create a new blog</PageTitle>
+          <TextField
             id="blogTitle"
-            name="blogTitle"
-            required
+            label="Title"
             value={blogTitle}
             onChange={handleChange(setBlogTitle)}
-            data-testid="blogTitle"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="blogAuthor">Author:</label>
-          <input
-            className="form-input"
-            type="text"
-            id="blogAuthor"
-            name="blogAuthor"
             required
+            slotProps={{
+              htmlInput: { 'data-testid': 'blogTitle' }
+            }}
+            fullWidth
+          />
+          <TextField
+            id="blogAuthor"
+            label="Author"
             value={blogAuthor}
             onChange={handleChange(setBlogAuthor)}
-            data-testid="blogAuthor"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="blogUrl">Url:</label>
-          <input
-            className="form-input"
-            type="text"
-            id="blogUrl"
-            name="blogUrl"
             required
+            slotProps={{
+              htmlInput: { 'data-testid': 'blogAuthor' }
+            }}
+            fullWidth
+          />
+          <TextField
+            id="blogUrl"
+            label="Url"
             value={blogUrl}
             onChange={handleChange(setBlogUrl)}
-            data-testid="blogUrl"
+            required
+            slotProps={{
+              htmlInput: { 'data-testid': 'blogUrl' }
+            }}
+            fullWidth
           />
-        </div>
-
-        <div className="form-actions">
-          <button
-            className={`btn btn-primary${isPending ? ' btn-blocked' : ''}`}
+          <Button
             type="submit"
+            variant="contained"
+            size="large"
+            fullWidth
             id="createBlog"
             data-testid="createBlog"
             disabled={isPending}
           >
             {isPending ? 'Creating...' : 'Create'}
-          </button>
-        </div>
-      </form>
-    </div>
+          </Button>
+        </Stack>
+      </Paper>
+    </Box>
   );
 };
 
