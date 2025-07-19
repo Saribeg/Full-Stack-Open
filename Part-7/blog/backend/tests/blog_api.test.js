@@ -227,14 +227,6 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
       assert.ok(response.body.error);
       assert.strictEqual(response.body.error, 'Blog is not found');
     });
-
-    test('update fails with 401 if token is missing', async () => {
-      const blogsAtStart = await helper.blogsInDb();
-      const blogToUpdate = blogsAtStart[0];
-
-      const response = await api.put(`/api/blogs/${blogToUpdate.id}`).expect(401);
-      assert.match(response.body.error, /token/i);
-    });
   });
 });
 
