@@ -1,9 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+
+import { useQuery } from '@tanstack/react-query';
+
 import { useEnhancedMutation } from './utils';
 import blogService from '../services/blogs';
 import { useNotification } from '../hooks';
 
+// Fetch all blogs
 export const useBlogs = () => {
   const notify = useNotification();
 
@@ -20,6 +23,7 @@ export const useBlogs = () => {
   });
 };
 
+// Fetch blog by ID
 export const useBlogById = (id) => {
   const notify = useNotification();
 
@@ -35,29 +39,35 @@ export const useBlogById = (id) => {
   });
 };
 
-export const useCreateBlog = () => {
+// Create new blog
+export const useCreateBlog = (options = {}) => {
   const notify = useNotification();
 
   return useEnhancedMutation(blogService.create, {
     invalidate: [['blogs']],
     mutationOptions: {
-      onSuccess: (data) => {
+      ...options,
+      onSuccess: (data, variables, context) => {
         notify({
           type: 'info',
-          message: `Blog "${data.title}" is successfully created`,
+          message: `Thanks, ${data.user.name}, for creating blog "${data.title}" by ${data.author}! Keep it up! 🏆`,
         });
+        options?.onSuccess?.(data, variables, context);
       },
-      onError: (err, { title }) => {
+      onError: (err, variables, context) => {
+        const title = variables?.title || 'Unknown';
         notify({
           type: 'error',
           message: `${err.response?.data?.error || err.message}. Your input is "${title}"`,
         });
+        options?.onError?.(err, variables, context);
       },
     },
   });
 };
 
-export const useLikeBlog = () => {
+// Like a blog
+export const useLikeBlog = (options = {}) => {
   const notify = useNotification();
 
   return useEnhancedMutation(blogService.update, {
@@ -69,77 +79,82 @@ export const useLikeBlog = () => {
       },
     ],
     mutationOptions: {
-      onSuccess: (updatedBlog) => {
+      ...options,
+      onSuccess: (data, variables, context) => {
         notify({
           type: 'success',
-          message: `Blog ${updatedBlog.title} is successfully updated`,
+          message: `Thanks, ${data.user.name}, for liking "${data.title}" by ${data.author}! ❤️`,
         });
+        options?.onSuccess?.(data, variables, context);
       },
-      onError: (error) => {
+      onError: (error, variables, context) => {
         notify({
           type: 'error',
           message: error.response?.data?.error || error.message,
         });
+        options?.onError?.(error, variables, context);
       },
     },
   });
 };
 
-export const useDeleteBlog = () => {
+// Delete a blog
+export const useDeleteBlog = (options = {}) => {
   const notify = useNotification();
   const navigate = useNavigate();
 
-  return useEnhancedMutation(
-    ({ id }) => blogService.deleteBlog(id),
-    {
-      invalidate: [['blogs']],
-      mutationOptions: {
-        onSuccess: (_, { title }) => {
-          navigate('/blogs');
-          notify({
-            type: 'success',
-            message: `Blog ${title} is successfully deleted`,
-          });
-        },
-        onError: (error) => {
-          notify({
-            type: 'error',
-            message: error.response?.data?.error || error.message,
-          });
-        },
+  return useEnhancedMutation(({ id }) => blogService.deleteBlog(id), {
+    invalidate: [['blogs']],
+    mutationOptions: {
+      ...options,
+      onSuccess: (_, { title }, context) => {
+        navigate('/blogs');
+        notify({
+          type: 'success',
+          message: '💀 The blog is gone... or is it? The internet never forgets. 🤫',
+        });
+        options?.onSuccess?.(_, { title }, context);
       },
-    });
+      onError: (error, variables, context) => {
+        notify({
+          type: 'error',
+          message: error.response?.data?.error || error.message,
+          duration: 7000
+        });
+        options?.onError?.(error, variables, context);
+      },
+    },
+  });
 };
 
-export const useCreateComment = () => {
+// Add comment to a blog
+export const useCreateComment = (options = {}) => {
   const notify = useNotification();
 
   return useEnhancedMutation(blogService.createComment, {
     invalidate: [['blogs']],
     update: [
       {
-        key: (result, { id }) => ['selectedBlog', id],
-        updater: (result, prev) => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            comments: [...(prev.comments || []), result],
-          };
-        },
+        key: (updatedBlog) => ['selectedBlog', updatedBlog.id],
+        updater: (updatedBlog) => updatedBlog,
       },
     ],
     mutationOptions: {
-      onSuccess: () => {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        const last = data.comments.at(-1);
         notify({
           type: 'info',
-          message: 'Comment is successfully added',
+          message: `Thanks, ${data.user.name}, for commenting "${data.title}" by ${data.author}! 💬 Comment "${last?.text ?? '...'}" added successfully!`,
         });
+        options?.onSuccess?.(data, variables, context);
       },
-      onError: (err) => {
+      onError: (err, variables, context) => {
         notify({
           type: 'error',
           message: err.response?.data?.error || err.message,
         });
+        options?.onError?.(err, variables, context);
       },
     },
   });

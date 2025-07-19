@@ -8,6 +8,7 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ['users'],
     queryFn: userService.getAll,
+    select: (data) => [...data].sort((a, b) => b.blogs.length - a.blogs.length),
     onError: (error) => {
       notify({
         type: 'error',
