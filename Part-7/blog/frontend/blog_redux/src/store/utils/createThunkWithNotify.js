@@ -1,6 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { notificationRules } from './notificationRules';
 
+// I was looking for a way to centralize all my notifications execution, that are related to server CRUD operations
+// and other async operations, which usually are handled via thunks. This architecture / approach ia a great fit for me.
+// Access to notify function is giver by redux middleware.
 const executeCentralizedNotification = (typePrefix, notificationType, dataOrError, notify) => {
   const [resource, operation] = typePrefix.split('/');
   const rule = notificationRules?.[resource]?.[operation];

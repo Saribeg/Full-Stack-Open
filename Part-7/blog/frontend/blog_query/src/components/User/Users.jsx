@@ -1,28 +1,62 @@
+import { Link as RouterLink } from 'react-router-dom';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Link,
+  Typography
+} from '@mui/material';
+import Spinner from '../Spinner';
 import { useUsers } from '../../queries/user';
-import UserItem from './UserItem';
+
 
 const Users = () => {
   const { data: users, isLoading } = useUsers();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Spinner />;
 
   return (
-    <div>
-      <h2>Users</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Blogs Created</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableContainer component={Paper} elevation={3}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{
+            backgroundColor: 'grey.200'
+          }}>
+            <TableCell>
+              <Typography variant="subtitle1" fontWeight={600}>
+                Name
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography variant="subtitle1" fontWeight={600}>
+                Blogs Created
+              </Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {users.map(user => (
-            <UserItem key={user.id} user={user} />
+            <TableRow key={user.id} hover>
+              <TableCell>
+                <Link
+                  component={RouterLink}
+                  to={`/users/${user.id}`}
+                  underline="hover"
+                  color="primary"
+                >
+                  {user.name}
+                </Link>
+              </TableCell>
+              <TableCell>{user.blogs.length}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

@@ -1,18 +1,21 @@
-import PropTypes from 'prop-types';
 import { useState, forwardRef, useImperativeHandle } from 'react';
-import './Togglable.css';
+import PropTypes from 'prop-types';
+
+import { Box, Button, Collapse } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const Togglable = forwardRef((props, refs) => {
   const [visible, setVisible] = useState(false);
+  const { isContentAtTheBottom = false, buttonLabel, children } = props;
 
-  // I decided to use smooth scroll animation.
+  // I decided to use smooth scroll animation when button is location at the bottom of the page.
   // For this additional effect I used AI to learn more. )
   const toggleVisibility = () => {
     const willBeVisible = !visible;
+    setVisible(willBeVisible);
 
-    if (willBeVisible) {
-      setVisible(true);
-
+    if (willBeVisible && isContentAtTheBottom) {
       const duration = 1000; // Total duration of the scroll animation (in milliseconds)
       const startTime = performance.now(); // Timestamp when the animation starts
       const startScroll = window.scrollY; // Current vertical scroll position
@@ -41,26 +44,41 @@ const Togglable = forwardRef((props, refs) => {
 
       // Start the animation loop
       requestAnimationFrame(animateScroll);
-    } else {
-      setVisible(false);
     }
   };
 
   useImperativeHandle(refs, () => ({ toggleVisibility }));
 
   return (
-    <div className="togglable-container">
-      <button
-        className={`btn toggler ${visible ? 'toggler-open' : 'toggler-closed'}`}
+    <Box mt={3}>
+      <Button
+        variant={visible ? 'outlined' : 'contained'}
+        color={visible ? 'info' : 'primary'}
+        startIcon={visible ? <KeyboardArrowUpIcon /> : <AddIcon />}
         onClick={toggleVisibility}
+        sx={{
+          fontWeight: 500,
+          mb: 2,
+        }}
       >
-        {visible ? '▲ Cancel' : `➕ ${props.buttonLabel}`}
-      </button>
+        {visible ? 'Cancel' : buttonLabel}
+      </Button>
 
-      <div className={`togglable-content ${visible ? 'open' : ''}`}>
-        {props.children}
-      </div>
-    </div>
+      <Collapse in={visible} timeout={1000}>
+        <Box
+          sx={{
+            mt: 1,
+            px: 2,
+            py: 2,
+            borderRadius: 2,
+            backgroundColor: 'background.paper',
+            boxShadow: 2,
+          }}
+        >
+          {children}
+        </Box>
+      </Collapse>
+    </Box>
   );
 });
 
@@ -68,5 +86,6 @@ export default Togglable;
 
 Togglable.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
-  children: PropTypes.node
+  children: PropTypes.node,
+  isContentAtTheBottom: PropTypes.bool,
 };

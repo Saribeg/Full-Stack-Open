@@ -1,39 +1,91 @@
-import { Link, NavLink } from 'react-router-dom';
 import { useContext } from 'react';
+import { NavLink } from 'react-router-dom';
+
+import {
+  AppBar,
+  Toolbar,
+  Stack,
+  Link as MuiLink
+} from '@mui/material';
+
+import Logo from './Logo';
+import AuthStatus from '../Auth/AuthStatus';
+
 import UserContext from '../../contexts/UserContext';
-import AuthStatus from '../Auth/AuthStatus/AuthStatus';
-import './Header.css';
+
+const navLinkStyles = {
+  position: 'relative',
+  px: 1,
+  py: 0.5,
+  fontSize: '1.5rem',
+  fontWeight: 500,
+  color: 'text.primary',
+  textDecoration: 'none',
+  transition: 'color 0.2s ease',
+
+  '&.active': {
+    fontWeight: 700,
+    color: 'primary.dark',
+
+    '&::after': {
+      width: '100%',
+      height: '3px',
+      backgroundColor: 'primary.dark',
+    }
+  },
+
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    height: '2px',
+    width: 0,
+    backgroundColor: 'primary.main',
+    transition: 'width 0.3s ease, background-color 0.2s ease, height 0.2s ease',
+  },
+
+  '&:hover::after': {
+    width: '100%',
+  },
+
+  '&:hover': {
+    color: 'primary.main',
+  }
+};
 
 const Header = () => {
   const { user } = useContext(UserContext);
 
   return (
-    <div className="header">
-      <h1 className="logo">
-        <Link to="/" className="logo-link">
-          BlogsApp
-        </Link>
-      </h1>
-      {user && (
-        <>
-          <div className="navigation">
-            <NavLink
+    <AppBar position="static" color="default" elevation={1}>
+      <Toolbar sx={{ justifyContent: 'space-between', gap: 2 }}>
+        <Logo />
+
+        {user && (
+          <Stack direction="row" spacing={2}>
+            <MuiLink
+              component={NavLink}
               to="/blogs"
-              className={({ isActive }) => (isActive ? 'active nav-link' : 'nav-link')}
+              underline="none"
+              sx={navLinkStyles}
             >
               Blogs
-            </NavLink>
-            <NavLink
+            </MuiLink>
+            <MuiLink
+              component={NavLink}
               to="/users"
-              className={({ isActive }) => (isActive ? 'active nav-link' : 'nav-link')}
+              underline="none"
+              sx={navLinkStyles}
             >
               Users
-            </NavLink>
-          </div>
-          <AuthStatus user={user} />
-        </>
-      )}
-    </div>
+            </MuiLink>
+          </Stack>
+        )}
+
+        {user && <AuthStatus user={user} />}
+      </Toolbar>
+    </AppBar>
   );
 };
 

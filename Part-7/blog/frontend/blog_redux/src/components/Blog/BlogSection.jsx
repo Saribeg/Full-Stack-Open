@@ -11,9 +11,14 @@ const BlogSection = () => {
   return (
     <div className="mx-auto max-w-4xl space-y-8 px-8">
       <PageTitle>Blogs</PageTitle>
+
       <BlogList />
-      <Togglable buttonLabel="New Blog" ref={blogFormRef}>
-        <BlogForm toggleForm={() => blogFormRef.current.toggleVisibility()} />
+
+      <Togglable buttonLabel="New Blog" ref={blogFormRef} isContentAtTheBottom={true}>
+        <BlogForm
+          toggleForm={() => blogFormRef.current.toggleVisibility()}
+          isContentAtTheBottom={true}
+        />
       </Togglable>
     </div>
   );

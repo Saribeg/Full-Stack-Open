@@ -1,7 +1,18 @@
 import { useState, useContext } from 'react';
-import { useNotification } from '../../hooks';
+
+import PageTitle from '../PageTitle';
+
 import UserContext from '../../contexts/UserContext';
+import { useNotification } from '../../hooks';
 import { loginUser } from '../../utils/user';
+
+import {
+  Box,
+  TextField,
+  Button,
+  Paper,
+  Stack
+} from '@mui/material';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
@@ -23,54 +34,76 @@ const LoginForm = () => {
       const userData = await loginUser(dispatchUser, { username, password });
       resetForm();
       notify({
-        message: `User ${userData.name} is successfully logged in`,
+        message: `Welcome, ${userData.name}! 😊`,
         type: 'success'
       });
     } catch (error) {
       notify({
         message: error.response?.data?.error || error.message,
-        type: 'error'
+        type: 'error',
+        duration: 10000
       });
     }
   };
 
   return (
-    <div className="form-container">
-      <h2>Log In to see blogs and work with them</h2>
-      <form onSubmit={handleLoginSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username:</label>
-          <input
-            className="form-input"
-            type="text"
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: { xs: 360, sm: 480, md: 560 },
+        mx: 'auto',
+        mt: 10
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 3, sm: 4, md: 5 },
+          minHeight: { xs: 'auto', md: 350 },
+          borderRadius: 2
+        }}
+      >
+        <Stack spacing={3} component="form" onSubmit={handleLoginSubmit}>
+          <PageTitle variant="h5">Log in to see blogs and work with them</PageTitle>
+
+          <TextField
             id="username"
-            name="username"
-            required
+            label="Username"
             value={username}
             onChange={handleChange(setUsername)}
-            data-testid="username"
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            className="form-input"
-            type="password"
-            id="password"
-            name="password"
             required
+            slotProps={{
+              htmlInput: { 'data-testid': 'username' }
+            }}
+            fullWidth
+          />
+
+          <TextField
+            id="password"
+            label="Password"
+            type="password"
             value={password}
             onChange={handleChange(setPassword)}
-            data-testid="password"
+            required
+            slotProps={{
+              htmlInput: { 'data-testid': 'password' }
+            }}
+            fullWidth
           />
-        </div>
 
-        <div className="form-actions">
-          <button className="btn btn-primary" type="submit" id="login" data-testid="login">Login</button>
-        </div>
-      </form>
-    </div>
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            fullWidth
+            id="login"
+            data-testid="login"
+          >
+            Login
+          </Button>
+        </Stack>
+      </Paper>
+    </Box>
   );
 };
 

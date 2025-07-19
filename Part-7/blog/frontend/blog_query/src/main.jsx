@@ -1,8 +1,11 @@
 import ReactDOM from 'react-dom/client';
 import Providers from './Providers';
 import App from './App';
-import './styles/index.css';
-import './styles/forms.css';
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Providers>
