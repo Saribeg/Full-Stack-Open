@@ -25,7 +25,7 @@ describe('Integration tests. Testing the CRUD API for users', () => {
       const usersAtStart = await helper.usersInDb();
 
       const newUser = {
-        username: 'harrypotter',
+        username: 'harrypotternew',
         name: 'Harry Potter',
         password: 'Voldemortloser',
       };
