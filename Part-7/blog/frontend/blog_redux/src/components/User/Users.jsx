@@ -5,6 +5,7 @@ import { AutoTable } from '../ui/Table';
 import TextLink from '../ui/TextLink';
 import PageTitle from '../PageTitle';
 import InlineNotification from '../Notification/InlineNotification';
+import Spinner from '../ui/Spinner';
 
 import { fetchUsers } from '../../store/users/thunks';
 import { selectVisibleUsersState } from '../../store/users/selectors';
@@ -21,7 +22,7 @@ const Users = () => {
     }
   }, [dispatch, users.length]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Spinner />;
 
   if (!users || !users.length) {
     return <InlineNotification placement="Users" />;

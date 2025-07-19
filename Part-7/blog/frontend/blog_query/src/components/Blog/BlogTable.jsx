@@ -1,28 +1,61 @@
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Link,
+  Typography
+} from '@mui/material';
 
 const BlogTable = ({ blogs }) => (
-  <table>
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Author</th>
-      </tr>
-    </thead>
-    <tbody>
-      {blogs.map((blog) => (
-        <tr key={blog.id}>
-          <td>
-            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-          </td>
-          <td>{blog.author}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <TableContainer component={Paper} elevation={3}>
+    <Table>
+      <TableHead>
+        <TableRow
+          sx={{
+            backgroundColor: 'grey.200'
+          }}
+        >
+          <TableCell>
+            <Typography variant="subtitle1" fontWeight={600}>
+              Title
+            </Typography>
+          </TableCell>
+          <TableCell>
+            <Typography variant="subtitle1" fontWeight={600}>
+              Author
+            </Typography>
+          </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {blogs.map((blog) => (
+          <TableRow
+            key={blog.id}
+            hover
+          >
+            <TableCell>
+              <Link
+                component={RouterLink}
+                to={`/blogs/${blog.id}`}
+                underline="hover"
+                color="primary"
+              >
+                {blog.title}
+              </Link>
+            </TableCell>
+            <TableCell>{blog.author}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
 );
-
-export default BlogTable;
 
 BlogTable.propTypes = {
   blogs: PropTypes.arrayOf(
@@ -33,3 +66,5 @@ BlogTable.propTypes = {
     })
   ).isRequired
 };
+
+export default BlogTable;

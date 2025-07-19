@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 const notificationReducer = (state, action) => {
   switch (action.type) {
     case 'SHOW_MESSAGE': {
-      const { type, message } = action.payload;
-      return { type, message };
+      const { type, message, duration } = action.payload;
+      return { type, message, duration };
     }
     case 'HIDE_MESSAGE':
       return null;
