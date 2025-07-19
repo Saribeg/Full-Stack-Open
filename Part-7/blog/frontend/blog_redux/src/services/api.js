@@ -3,7 +3,9 @@
 import axios from 'axios';
 import { safeParseJSON } from '../utils/commonHelpers';
 
-const api = axios.create();
+const api = axios.create({
+  baseURL: import.meta.env.API_URL
+});
 
 export function setToken(token) {
   api.defaults.headers.common.Authorization = `Bearer ${token}`;
