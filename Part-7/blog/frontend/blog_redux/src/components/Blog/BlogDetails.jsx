@@ -32,7 +32,7 @@ const BlogDetails = () => {
   };
 
   const handleBlogDelete = () => {
-    dispatch(showModal({ type: 'confirmDelete', params: { blog } }));
+    dispatch(showModal({ type: 'confirmBlogDelete', params: { blog } }));
   };
 
   if (loading) return <Spinner />;

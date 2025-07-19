@@ -66,6 +66,14 @@ const Header = () => {
           <Stack direction="row" spacing={2}>
             <MuiLink
               component={NavLink}
+              to="/about"
+              underline="none"
+              sx={navLinkStyles}
+            >
+              Blogs
+            </MuiLink>
+            <MuiLink
+              component={NavLink}
               to="/blogs"
               underline="none"
               sx={navLinkStyles}

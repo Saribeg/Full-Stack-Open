@@ -24,6 +24,9 @@ const Header = () => {
         <Logo />
         {user && (
           <nav className="mx-auto flex gap-6">
+            <NavLink to="/about" className={navLinkStyles}>
+              About
+            </NavLink>
             <NavLink to="/blogs" className={navLinkStyles}>
               Blogs
             </NavLink>
