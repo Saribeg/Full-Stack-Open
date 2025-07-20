@@ -41,7 +41,7 @@ blogSchema.set('toJSON', {
       returnedObject.comments = returnedObject.comments.map(comment => {
         const transformedComment = {
           ...comment,
-          id: comment._id.toString(), // лучше прямо использовать _id
+          id: comment._id.toString(),
           text: comment.text
         };
 

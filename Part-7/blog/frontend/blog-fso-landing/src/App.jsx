@@ -3,6 +3,7 @@ import AboutMe from './components/AboutMe';
 import AboutProject from './components/AboutProject';
 import Technologies from './components/Technologies';
 import Projects from './components/Projects';
+import Timelog from './components/Timelog';
 import Footer from './components/Footer';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <AboutProject />
       <Technologies />
       <Projects />
+      <Timelog />
       <Footer />
     </div>
   );
