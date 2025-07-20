@@ -70,7 +70,7 @@ const Header = () => {
               underline="none"
               sx={navLinkStyles}
             >
-              Blogs
+              About
             </MuiLink>
             <MuiLink
               component={NavLink}
