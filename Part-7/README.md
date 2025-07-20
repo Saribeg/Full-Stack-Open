@@ -1,3 +1,3 @@
-## Deployed
+## Link to the landing page
 
-You can find all necessary information about project and links to deployments on this limk **[https://fso-blog-app.vercel.app/](https://fso-blog-app.vercel.app/)**
+You can find all the necessary information about the project and links to the deployments on this page: **[https://fso-blog-app.vercel.app/](https://fso-blog-app.vercel.app/)**
