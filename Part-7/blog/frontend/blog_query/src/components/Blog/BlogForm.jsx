@@ -50,7 +50,7 @@ const BlogForm = ({ toggleForm }) => {
     <Box
       sx={{
         width: '100%',
-        maxWidth: { xs: 360, sm: 480, md: 560 }, // на десктопе — шире
+        maxWidth: { xs: 360, sm: 480, md: 560 },
         mx: 'auto',
         mt: 10
       }}
