@@ -16,7 +16,7 @@ const commonRules = {
   'no-console': 'warn',
   'no-trailing-spaces': 'error',
   'arrow-spacing': ['error', { before: true, after: true }],
-  'prettier/prettier': 'error' // запускает Prettier как ESLint rule
+  'prettier/prettier': 'error'
 };
 
 export default [
