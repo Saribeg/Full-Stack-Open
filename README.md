@@ -2,9 +2,13 @@
 
 This repository contains my personal solutions to the [**Full Stack Open**](https://fullstackopen.com/en/) course exercises. **Full Stack Open** is a free online web development course created by the University of Helsinki. I will be updating this repo as I progress through the course, part by part.
 
+## Deploys
+- Part 7: [**Blogs App**](https://fso-blog-app.vercel.app/)
+- Part 3: [**Phonebook**](https://phonebook-full-stack-open-gkc1.onrender.com)
+
 ## Repository Structure
 
-Each part of the course has its own subdirectory in this repository: Part-0б Part-1, etc.
+Each part of the course has its own subdirectory in this repository: Part-1, Part-2, etc.
 Each folder contains the exercise solutions and projects for that part of the course, matching the official Full Stack Open curriculum structure.
 
 ## Progress Tracking
