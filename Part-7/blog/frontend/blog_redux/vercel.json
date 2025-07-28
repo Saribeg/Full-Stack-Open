@@ -1,5 +1,8 @@
 {
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
-  ]
+  ],
+  "build": {
+    "ignored": "git diff --name-only origin/main | grep '^Part-7/blog/frontend/blog_redux/' > /dev/null || exit 0"
+  }
 }
