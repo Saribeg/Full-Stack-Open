@@ -1,0 +1,17 @@
+{
+  "name": "library",
+  "version": "1.0.0",
+  "description": "Mini project for GraphQL backed learning",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Saribeh Karakhanian",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^5.0.0",
+    "graphql": "^16.11.0"
+  }
+}
