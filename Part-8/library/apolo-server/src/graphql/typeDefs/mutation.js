@@ -13,5 +13,16 @@ module.exports = gql`
       name: String!
       setBornTo: Int!
     ): Author
+
+    createUser(
+      username: String!
+      favoriteGenre: String!,
+      password: String!
+    ): User
+
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `;

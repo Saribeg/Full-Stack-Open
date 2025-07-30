@@ -5,6 +5,7 @@ module.exports = gql`
     bookCount: Int
     authorCount: Int
     allBooks(author: String, genre: String): [Book!]
-    allAuthors: [Author]
+    allAuthors: [Author],
+    me: User
   }
 `;

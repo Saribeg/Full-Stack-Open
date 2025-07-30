@@ -1,8 +1,13 @@
+const { GraphQLError } = require('graphql');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const Author = require('../../models/author');
 const Book = require('../../models/book');
+const User = require('../../models/user');
+const { withAuth } = require('../hofs');
 
 module.exports = {
-  addBook: async (_root, args) => {
+  addBook: withAuth(async (_root, args) => {
     let author = await Author.findOne({ name: args.author });
 
     if (!author) {
@@ -14,9 +19,9 @@ module.exports = {
     await book.save();
 
     return book.populate('author');
-  },
+  }),
 
-  editAuthor: async (_root, { name, setBornTo }) => {
+  editAuthor: withAuth(async (_root, { name, setBornTo }) => {
     const author = await Author.findOne({ name });
     if (!author) return null;
 
@@ -24,5 +29,58 @@ module.exports = {
     await author.save();
 
     return author;
+  }),
+
+  createUser: async (_root, { username, favoriteGenre, password }) => {
+    if (password.length < 3) {
+      throw new GraphQLError('Password must be at least 3 characters', {
+        extensions: {
+          code: 'BAD_USER_INPUT',
+          invalidArgs: ['password']
+        },
+      });
+    }
+
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
+    const user = new User({ username, favoriteGenre, passwordHash });
+    return user.save();
+  },
+
+  login: async (_root, { username, password }) => {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      throw new GraphQLError('User is not found', {
+        extensions: {
+          code: 'BAD_USER_INPUT',
+          invalidArgs: ['username']
+        },
+      });
+    }
+
+    const match = await bcrypt.compare(password, user.passwordHash);
+
+    if (!match) {
+      throw new GraphQLError('Incorrect credentials', {
+        extensions: {
+          code: 'BAD_USER_INPUT',
+          invalidArgs: ['username', 'password']
+        },
+      });
+    }
+
+    const userData = {
+      username: user.username,
+      id: user._id.toString()
+    };
+
+    const token = jwt.sign(
+      userData,
+      (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') ? process.env.TEST_SECRET : process.env.SECRET
+    );
+
+    return { value: token };
   }
 };
