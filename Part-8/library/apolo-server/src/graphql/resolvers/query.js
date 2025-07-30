@@ -19,5 +19,9 @@ module.exports = {
     return Book.find(filter).populate('author');
   },
 
-  allAuthors: async () => Author.find({})
+  allAuthors: async () => Author.find({}),
+
+  me: (_root, _args, context) => {
+    return context.currentUser;
+  }
 };
