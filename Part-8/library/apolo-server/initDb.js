@@ -1,11 +1,12 @@
 // Execute this script by npm run init:mongo:db just once for initiate DB data
-const mongoose = require('mongoose')
-require('dotenv').config()
+const mongoose = require('mongoose');
+require('dotenv').config();
+const logger = require('./src/utils/logger');
 
-const Book = require('./src/models/book')
-const Author = require('./src/models/author')
+const Book = require('./src/models/book');
+const Author = require('./src/models/author');
 
-const TEST_MONGODB_URI = process.env.TEST_MONGODB_URI
+const TEST_MONGODB_URI = process.env.TEST_MONGODB_URI;
 
 const authors = [
   { name: 'Robert Martin', born: 1952 },
@@ -13,7 +14,7 @@ const authors = [
   { name: 'Fyodor Dostoevsky', born: 1821 },
   { name: 'Joshua Kerievsky' },
   { name: 'Sandi Metz' },
-]
+];
 
 const books = [
   {
@@ -58,37 +59,37 @@ const books = [
     author: 'Fyodor Dostoevsky',
     genres: ['classic', 'revolution']
   },
-]
+];
 
 const seed = async () => {
   try {
-    await mongoose.connect(TEST_MONGODB_URI)
-    console.log('Connected to MongoDB')
+    await mongoose.connect(TEST_MONGODB_URI);
+    logger.info('Connected to MongoDB');
 
-    await Author.deleteMany({})
-    await Book.deleteMany({})
+    await Author.deleteMany({});
+    await Book.deleteMany({});
 
-    const authorDocs = await Author.insertMany(authors)
-    const authorMap = {}
+    const authorDocs = await Author.insertMany(authors);
+    const authorMap = {};
     authorDocs.forEach(author => {
-      authorMap[author.name] = author._id
-    })
+      authorMap[author.name] = author._id;
+    });
 
     const bookDocs = books.map(book => ({
       title: book.title,
       published: book.published,
       genres: book.genres,
       author: authorMap[book.author]
-    }))
+    }));
 
-    await Book.insertMany(bookDocs)
+    await Book.insertMany(bookDocs);
 
-    console.log('Seeding completed')
+    logger.info('Seeding completed');
   } catch (error) {
-    console.error('Error during seeding:', error.message)
+    logger.error('Error during seeding:', error.message);
   } finally {
-    await mongoose.connection.close()
+    await mongoose.connection.close();
   }
-}
+};
 
-seed()
+seed();
