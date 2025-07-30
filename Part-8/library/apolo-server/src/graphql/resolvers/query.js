@@ -1,5 +1,5 @@
-const Author = require('../../models/author')
-const Book = require('../../models/book')
+const Author = require('../../models/author');
+const Book = require('../../models/book');
 
 module.exports = {
   bookCount: async () => Book.countDocuments(),
@@ -7,17 +7,17 @@ module.exports = {
   authorCount: async () => Author.countDocuments(),
 
   allBooks: async (_root, args) => {
-    const filter = {}
+    const filter = {};
     if (args.author) {
-      const author = await Author.findOne({ name: args.author })
-      if (!author) return []
-      filter.author = author._id
+      const author = await Author.findOne({ name: args.author });
+      if (!author) return [];
+      filter.author = author._id;
     }
     if (args.genre) {
-      filter.genres = { $in: [args.genre] }
+      filter.genres = { $in: [args.genre] };
     }
-    return Book.find(filter).populate('author')
+    return Book.find(filter).populate('author');
   },
 
   allAuthors: async () => Author.find({})
-}
+};
