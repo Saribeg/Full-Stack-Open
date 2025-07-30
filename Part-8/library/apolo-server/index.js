@@ -4,10 +4,12 @@ const typeDefs = require('./src/graphql/typeDefs');
 const resolvers = require('./src/graphql/resolvers');
 require('./src/db');
 const logger = require('./src/utils/logger');
+const { formatError } = require('./src/graphql/hooks/formatError');
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  formatError
 });
 
 startStandaloneServer(server, {
