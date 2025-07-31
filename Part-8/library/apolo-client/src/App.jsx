@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import LoginForm from "./components/LoginForm";
@@ -8,6 +8,13 @@ import Logout from "./components/Logout";
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState("");
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('library-user-token')
+    if (savedToken) {
+      setToken(savedToken)
+    }
+  }, [])
 
   return (
     <div>
