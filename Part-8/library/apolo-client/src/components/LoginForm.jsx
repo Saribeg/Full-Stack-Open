@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import { jwtDecode } from "jwt-decode";
 import { LOGIN } from '../queries';
 
 const LoginForm = (props) => {
@@ -14,6 +15,8 @@ const LoginForm = (props) => {
       const token = data.login.value;
       props.setToken(token);
       localStorage.setItem('library-user-token', token);
+      const decoded = jwtDecode(token);
+      props.setUser(decoded)
       setUsername('');
       setPassword('');
       props.setPage('authors');

@@ -1,9 +1,10 @@
 import { useApolloClient } from '@apollo/client';
 
-const Logout = ({ setToken }) => {
+const Logout = ({ setToken, setUser }) => {
   const client = useApolloClient()
   const handleLogout = () => {
     setToken(null);
+    setUser(null);
     localStorage.removeItem('library-user-token');
     client.resetStore()
   };
