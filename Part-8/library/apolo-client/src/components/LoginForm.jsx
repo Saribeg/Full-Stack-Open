@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { jwtDecode } from "jwt-decode";
-import { LOGIN } from '../queries';
+import { LOGIN } from '../graphql'
 
 const LoginForm = (props) => {
   const [username, setUsername] = useState('');

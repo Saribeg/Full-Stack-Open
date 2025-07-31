@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client"
-import { ALL_AUTHORS } from '../queries'
+import { ALL_AUTHORS } from '../graphql'
 import AuthorBirthForm from './AuthorBirthForm'
 
 const Authors = (props) => {
