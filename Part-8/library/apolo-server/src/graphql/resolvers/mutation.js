@@ -1,6 +1,8 @@
 const { GraphQLError } = require('graphql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const pubsub = require('../pubsub');
+
 const Author = require('../../models/author');
 const Book = require('../../models/book');
 const User = require('../../models/user');
@@ -17,6 +19,8 @@ module.exports = {
 
     const book = new Book({ ...args, author: author._id });
     await book.save();
+
+    pubsub.publish('BOOK_ADDED', { bookAdded: book });
 
     return book.populate('author');
   }),

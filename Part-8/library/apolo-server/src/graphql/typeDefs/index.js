@@ -5,6 +5,7 @@ const userType = require('./userType');
 const tokenType = require('./tokenType');
 const query = require('./query');
 const mutation = require('./mutation');
+const subscription = require('./subscription');
 
 const typeDefs = mergeTypeDefs([
   bookType,
@@ -12,7 +13,8 @@ const typeDefs = mergeTypeDefs([
   userType,
   tokenType,
   query,
-  mutation
+  mutation,
+  subscription
 ]);
 
 module.exports = typeDefs;
