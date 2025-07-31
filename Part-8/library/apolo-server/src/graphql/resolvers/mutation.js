@@ -73,6 +73,7 @@ module.exports = {
 
     const userData = {
       username: user.username,
+      favoriteGenre: user.favoriteGenre,
       id: user._id.toString()
     };
 
