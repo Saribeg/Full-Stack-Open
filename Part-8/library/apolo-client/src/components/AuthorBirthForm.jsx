@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import Select from 'react-select';
-import { SET_BIRTH_YEAR, ALL_AUTHORS } from '../graphql'
+import { SET_BIRTH_YEAR, ALL_AUTHORS } from '../graphql/operations'
 
 const AuthorBirthForm = ({ authors }) => {
   const [selectedOption, setSelectedOption] = useState(null);

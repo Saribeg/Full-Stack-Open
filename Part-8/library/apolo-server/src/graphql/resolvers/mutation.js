@@ -17,7 +17,7 @@ module.exports = {
       await author.save();
     }
 
-    const book = new Book({ ...args, author: author._id });
+    const book = new Book({ ...args, author: author.id });
     await book.save();
 
     const populatedBook = await book.populate('author');
@@ -80,7 +80,7 @@ module.exports = {
     const userData = {
       username: user.username,
       favoriteGenre: user.favoriteGenre,
-      id: user._id.toString()
+      id: user.id
     };
 
     const token = jwt.sign(

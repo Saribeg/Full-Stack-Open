@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client"
-import { ALL_AUTHORS } from '../graphql'
+import { ALL_AUTHORS } from '../graphql/operations'
 import AuthorBirthForm from './AuthorBirthForm'
 
 const Authors = (props) => {
@@ -26,7 +26,7 @@ const Authors = (props) => {
             <th>books</th>
           </tr>
           {authors.map((a) => (
-            <tr key={a.name}>
+            <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.bookCount}</td>
