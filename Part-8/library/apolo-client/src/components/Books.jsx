@@ -1,23 +1,39 @@
-import { useQuery } from "@apollo/client"
+import { useState } from "react";
+import { useQuery, useLazyQuery } from "@apollo/client"
+import Select from 'react-select';
 import { ALL_BOOKS } from '../queries'
 
+
 const Books = (props) => {
-  const { data, loading } = useQuery(ALL_BOOKS)
+  const [selectedOption, setSelectedOption] = useState(null);
+  const { data: allBooksData, loading: allBooksLoading } = useQuery(ALL_BOOKS); // All books and genres
+  const [fetchBooksByGenre, { data: filteredData, loading: filteredLoading }] = useLazyQuery(ALL_BOOKS);
 
-  if (!props.show) {
-    return null
-  }
+  const handleGenreChange = (option) => {
+    setSelectedOption(option);
+    if (option) {
+      fetchBooksByGenre({ variables: { genre: option.value } });
+    }
+  };
 
-  if (loading) {
-    return <div>Loading...</div>
-  }
 
-  const books = data?.allBooks ?? []
+  if (!props.show) return null
+  if (selectedOption && filteredLoading) return <div>Loading...</div>;
+
+  const allBooks = allBooksData?.allBooks ?? [];
+  const booksToShow = selectedOption ? (filteredData?.allBooks ?? []) : allBooks;
+  const genreOptions = Array.from(new Set(allBooks.flatMap(b => b.genres))).map(g => ({ value: g, label: g }));
 
   return (
     <div>
       <h2>books</h2>
-
+      <p>in genre</p>
+      <Select
+        defaultValue={selectedOption}
+        onChange={handleGenreChange}
+        options={genreOptions}
+        placeholder="Filter by genre"
+      />
       <table>
         <tbody>
           <tr>
@@ -25,7 +41,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map((a) => (
+          {booksToShow.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
