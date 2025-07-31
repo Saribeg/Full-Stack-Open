@@ -8,6 +8,8 @@ import { createClient } from 'graphql-ws'
 
 import App from "./App.jsx";
 
+import 'react-toastify/dist/ReactToastify.css';
+
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('library-user-token')
   return {
