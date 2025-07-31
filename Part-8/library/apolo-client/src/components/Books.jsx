@@ -21,15 +21,18 @@ const Books = (props) => {
   if (selectedOption && filteredLoading) return <div>Loading...</div>;
 
   const allBooks = allBooksData?.allBooks ?? [];
-  const booksToShow = selectedOption ? (filteredData?.allBooks ?? []) : allBooks;
-  const genreOptions = Array.from(new Set(allBooks.flatMap(b => b.genres))).map(g => ({ value: g, label: g }));
+  const booksToShow = filteredData?.allBooks && selectedOption ? (filteredData?.allBooks ?? []) : allBooks;
+  const genreOptions = allBooks.length > 0
+    ? Array.from(new Set(allBooks.flatMap(b => b.genres)))
+        .map(g => ({ value: g, label: g }))
+    : [];
+
 
   return (
     <div>
       <h2>books</h2>
       <p>in genre</p>
       <Select
-        defaultValue={selectedOption}
         onChange={handleGenreChange}
         options={genreOptions}
         placeholder="Filter by genre"
