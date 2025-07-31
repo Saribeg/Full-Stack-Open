@@ -15,15 +15,22 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^5.0.0",
+    "@as-integrations/express5": "^1.1.2",
     "@graphql-tools/merge": "^9.1.1",
+    "@graphql-tools/schema": "^10.0.25",
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
+    "express": "^5.1.0",
     "graphql": "^16.11.0",
+    "graphql-subscriptions": "^3.0.0",
     "graphql-tag": "^2.12.6",
+    "graphql-ws": "^6.0.6",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.5",
     "mongoose-unique-validator": "^4.0.1",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
