@@ -57,7 +57,7 @@ const App = () => {
             <>
               <button onClick={() => setPage("add")}>add book</button>
               <button onClick={() => setPage("mybooks")}>recommended</button>
-              <Logout setToken={setToken} setUser={setUser}/>
+              <Logout setToken={setToken} setUser={setUser} setPage={setPage}/>
             </>
           ) : <button onClick={() => setPage("login")}>login</button>
         }

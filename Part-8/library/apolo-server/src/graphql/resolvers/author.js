@@ -1,7 +1,5 @@
-const Book = require('../../models/book');
-
 module.exports = {
-  bookCount: async (author) => {
-    return Book.countDocuments({ author: author.id });
+  bookCount: async (author, _args, { loaders }) => {
+    return loaders.bookCountLoader.load(author.id);
   }
 };
