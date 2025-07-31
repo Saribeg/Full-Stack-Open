@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useQuery, useLazyQuery } from "@apollo/client"
 import Select from 'react-select';
-import { ALL_BOOKS } from '../queries'
+import { ALL_BOOKS, BOOKS_BY_GENRE } from '../queries'
 
 
 const Books = (props) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const { data: allBooksData, loading: allBooksLoading } = useQuery(ALL_BOOKS); // All books and genres
-  const [fetchBooksByGenre, { data: filteredData, loading: filteredLoading }] = useLazyQuery(ALL_BOOKS);
+  const [fetchBooksByGenre, { data: filteredData, loading: filteredLoading }] = useLazyQuery(BOOKS_BY_GENRE, { fetchPolicy: 'cache-and-network' });
 
   const handleGenreChange = (option) => {
     setSelectedOption(option);
