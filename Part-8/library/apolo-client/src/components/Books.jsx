@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useLazyQuery } from "@apollo/client"
 import Select from 'react-select';
-import { ALL_BOOKS, BOOKS_BY_GENRE } from '../queries'
+import { ALL_BOOKS, BOOKS_BY_GENRE } from '../graphql'
 
 
 const Books = (props) => {

@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import { useSubscription } from '@apollo/client'
+
+import { BOOK_ADDED } from './graphql'
+
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import LoginForm from "./components/LoginForm";
@@ -20,6 +24,15 @@ const App = () => {
       setUser(decoded)
     }
   }, [])
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedBook = data?.data?.bookAdded
+      if (addedBook) {
+        window.alert(`New book added: "${addedBook.title}" by ${addedBook.author.name}`)
+      }
+    }
+  })
 
   return (
     <div>

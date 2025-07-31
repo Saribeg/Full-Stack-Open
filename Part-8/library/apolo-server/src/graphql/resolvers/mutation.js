@@ -20,9 +20,11 @@ module.exports = {
     const book = new Book({ ...args, author: author._id });
     await book.save();
 
-    pubsub.publish('BOOK_ADDED', { bookAdded: book });
+    const populatedBook = await book.populate('author');
 
-    return book.populate('author');
+    pubsub.publish('BOOK_ADDED', { bookAdded: populatedBook });
+
+    return populatedBook;
   }),
 
   editAuthor: withAuth(async (_root, { name, setBornTo }) => {
