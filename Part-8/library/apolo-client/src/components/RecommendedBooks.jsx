@@ -3,12 +3,21 @@ import { BOOKS_BY_GENRE } from '../graphql/operations'
 
 const RecommendedBooks = ({ user, show }) => {
   const { data, loading } = useQuery(BOOKS_BY_GENRE, {
-    variables: user ? { genre: user.favoriteGenre } : {},
+    variables: { genre: user?.favoriteGenre },
+    skip: !user?.favoriteGenre
   });
 
   const books = data?.allBooks ?? [];
 
   if (!show) return null;
+  if (!user?.favoriteGenre) {
+    return (
+      <p>
+        books in your favourite genre:{" "}
+        <b>{user?.favoriteGenre ?? "not set"}</b>
+      </p>
+    )
+  }
   if (loading) return <div>Loading...</div>;
 
     return (
