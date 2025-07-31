@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useLazyQuery } from "@apollo/client"
 import Select from 'react-select';
-import { ALL_BOOKS, BOOKS_BY_GENRE } from '../graphql'
+import { ALL_BOOKS, BOOKS_BY_GENRE } from '../graphql/operations'
 
 
 const Books = (props) => {
@@ -41,11 +41,11 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {booksToShow.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
+          {booksToShow.map((b) => (
+            <tr key={b.id}>
+              <td>{b.title}</td>
+              <td>{b.author.name}</td>
+              <td>{b.published}</td>
             </tr>
           ))}
         </tbody>
