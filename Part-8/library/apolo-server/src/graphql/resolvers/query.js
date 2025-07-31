@@ -11,7 +11,7 @@ module.exports = {
     if (args.author) {
       const author = await Author.findOne({ name: args.author });
       if (!author) return [];
-      filter.author = author._id;
+      filter.author = author.id;
     }
     if (args.genre) {
       filter.genres = { $in: [args.genre] };

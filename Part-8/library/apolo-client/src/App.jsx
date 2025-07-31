@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useSubscription } from '@apollo/client'
+import { ToastContainer, toast, Bounce } from 'react-toastify';
 
-import { BOOK_ADDED } from './graphql'
+import { BOOK_ADDED } from './graphql/operations'
+import { updateCachesAfterBookAdded } from './graphql/cache/handleNewBookCaches'
 
 import Authors from "./components/Authors";
 import Books from "./components/Books";
@@ -26,16 +28,27 @@ const App = () => {
   }, [])
 
   useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
+    onData: ({ data, client }) => {
       const addedBook = data?.data?.bookAdded
       if (addedBook) {
-        window.alert(`New book added: "${addedBook.title}" by ${addedBook.author.name}`)
+        updateCachesAfterBookAdded(client.cache, addedBook)
+        toast(`New book added: "${addedBook.title}" by ${addedBook.author.name}`)
       }
     }
   })
 
   return (
     <div>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick={true}
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>

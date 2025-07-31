@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client"
-import { BOOKS_BY_GENRE } from '../graphql'
+import { BOOKS_BY_GENRE } from '../graphql/operations'
 
 const RecommendedBooks = ({ user, show }) => {
   const { data, loading } = useQuery(BOOKS_BY_GENRE, {
@@ -22,11 +22,11 @@ const RecommendedBooks = ({ user, show }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
+          {books.map((b) => (
+            <tr key={b.title}>
+              <td>{b.title}</td>
+              <td>{b.author.name}</td>
+              <td>{b.published}</td>
             </tr>
           ))}
         </tbody>
