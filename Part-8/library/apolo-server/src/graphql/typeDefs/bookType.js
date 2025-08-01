@@ -2,10 +2,10 @@ const { gql } = require('graphql-tag');
 
 module.exports = gql`
   type Book {
-    id: ID!
+    id: ObjectID!
     title: String!
-    published: Int!
+    published: Year!
     author: Author!
-    genres: [String!]!
+    genres: [Genre!]!
   }
 `;

@@ -2,9 +2,9 @@ const { gql } = require('graphql-tag');
 
 module.exports = gql`
   type Author {
-    id: ID!
+    id: ObjectID!
     name: String!
-    born: Int
+    born: Year
     bookCount: Int
   }
 `;
