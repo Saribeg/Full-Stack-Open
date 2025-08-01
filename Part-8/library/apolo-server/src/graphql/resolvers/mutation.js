@@ -38,15 +38,6 @@ module.exports = {
   }),
 
   createUser: async (_root, { username, favoriteGenre, password }) => {
-    if (password.length < 3) {
-      throw new GraphQLError('Password must be at least 3 characters', {
-        extensions: {
-          code: 'BAD_USER_INPUT',
-          invalidArgs: ['password']
-        },
-      });
-    }
-
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
