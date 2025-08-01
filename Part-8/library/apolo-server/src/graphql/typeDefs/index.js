@@ -1,4 +1,5 @@
 const { mergeTypeDefs } = require('@graphql-tools/merge');
+const scalars = require('./scalars');
 const bookType = require('./bookType');
 const authorType = require('./authorType');
 const userType = require('./userType');
@@ -8,6 +9,7 @@ const mutation = require('./mutation');
 const subscription = require('./subscription');
 
 const typeDefs = mergeTypeDefs([
+  scalars,
   bookType,
   authorType,
   userType,
