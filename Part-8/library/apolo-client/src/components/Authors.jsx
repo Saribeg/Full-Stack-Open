@@ -1,9 +1,14 @@
+import { useState } from "react"
 import { useQuery } from "@apollo/client"
 import { ALL_AUTHORS } from '../graphql/operations'
 import AuthorBirthForm from './AuthorBirthForm'
 
 const Authors = (props) => {
-  const { data, loading } = useQuery(ALL_AUTHORS)
+  const [page, setPage] = useState(1);
+  const limit = 20;
+  const { data, loading } = useQuery(ALL_AUTHORS, {
+    variables: { offset: (page - 1) * limit, limit }
+  });
 
   if (!props.show) {
     return null
@@ -14,6 +19,9 @@ const Authors = (props) => {
   }
 
   const authors = data?.allAuthors ?? []
+  const authorCount = data?.authorCount ?? 0
+  const pagesCount = Math.ceil(authorCount / 20)
+  const pages = Array.from({ length: pagesCount }, (_, i) => i + 1)
 
   return (
     <div>
@@ -34,6 +42,30 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <ul style={{ display: 'flex', margin: '20px 0', listStyleType: 'none', gap: '10px' }}>
+        <li key="pagination-prev-button">
+          <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+            Previous
+          </button>
+        </li>
+        
+        {pages.map(p => (
+          <li key={p} onClick={() => setPage(p)} >
+            <button
+              onClick={() => setPage(p)}
+              style={{ fontWeight: page === p ? 'bold' : 'normal' }}
+            >
+              {p}
+            </button>
+          </li>
+        ))}
+
+        <li key="pagination-next-button">
+          <button disabled={page === pagesCount} onClick={() => setPage(page + 1)}>
+            Next
+          </button>
+        </li>
+      </ul>
 
       { props.token ? <AuthorBirthForm authors={authors}/> : null}
     </div>
