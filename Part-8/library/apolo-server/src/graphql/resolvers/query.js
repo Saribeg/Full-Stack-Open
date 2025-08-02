@@ -6,20 +6,124 @@ module.exports = {
 
   authorCount: async () => Author.countDocuments(),
 
+  // With coursor-based pagination
   allBooks: async (_root, args) => {
+    const { author, genre, first = 30, after } = args;
     const filter = {};
-    if (args.author) {
-      const author = await Author.findOne({ name: args.author });
-      if (!author) return [];
-      filter.author = author.id;
+
+    if (author) {
+      const foundAuthor = await Author.findOne({ name: author });
+      if (!foundAuthor) {
+        return {
+          edges: [],
+          pageInfo: {
+            hasNextPage: false,
+            endCursor: null
+          }
+        };
+      }
+      filter.author = foundAuthor._id;
     }
-    if (args.genre) {
-      filter.genres = { $in: [args.genre] };
+
+    if (genre) {
+      filter.genres = { $in: [genre] };
     }
-    return Book.find(filter).populate('author');
+
+    if (after) {
+      filter._id = { $lt: after };
+    }
+
+    // Retrieve 1 more book to find out if there exists next page
+    const books = await Book.find(filter)
+      .sort({ _id: -1 })
+      .limit(first + 1)
+      .populate('author');
+
+    const hasNextPage = books.length > first;
+    const slicedBooks = hasNextPage ? books.slice(0, first) : books; // Do not include additional product
+
+    const edges = slicedBooks.map(book => ({
+      node: book,
+      cursor: book._id
+    }));
+
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        endCursor
+      }
+    };
   },
 
-  allAuthors: async () => Author.find({}),
+  allAuthors: async (_root, args) => {
+    const { offset = 0, limit = 20 } = args;
+
+    const result = await Author.aggregate([
+      // Step 1: Join books collection to get books written by each author
+      {
+        $lookup: {
+          from: 'books',               // Name of the collection to join
+          localField: '_id',           // Field from Author
+          foreignField: 'author',      // Matching field in Book
+          as: 'books',                 // Output array field
+        },
+      },
+
+      // Step 2: Add a new field 'bookCount' with the number of books per author
+      {
+        $addFields: {
+          bookCount: { $size: '$books' }, // Count how many books each author has
+        },
+      },
+
+      // Step 3: Sort authors by bookCount in descending order
+      {
+        $sort: { bookCount: -1 },
+      },
+
+      // Step 4: Remove temporary fields so they don’t reach the client.
+      // Mongoose's schema.toJSON does NOT apply to aggregation pipelines.
+      // We must manually convert `_id` to string to match the expected `id` field in GraphQL.
+      {
+        $project: {
+          id: { $toString: '$_id' },
+          name: 1,
+          born: 1,
+          _id: 0
+        },
+      },
+
+      // Step 5: Apply offset for pagination
+      { $skip: offset },
+
+      // Step 6: Limit the number of returned authors
+      { $limit: limit },
+    ]);
+
+    return result;
+  },
+
+  allGenres: async () => {
+    const result = await Book.aggregate([
+      // Step 1: Deconstruct the genres array so each genre becomes its own document
+      { $unwind: '$genres' },
+
+      // Step 2: Group by genre and count how many times each appears
+      { $group: { _id: '$genres', count: { $sum: 1 } } },
+
+      // Step 3: Sort genres by frequency in descending order
+      { $sort: { count: -1 } },
+
+      // Step 4: Reshape the output to only include the genre string
+      { $project: { _id: 0, genre: '$_id' } }
+    ]);
+
+    // Return the genre names as a flat array
+    return result.map(g => g.genre);
+  },
 
   me: (_root, _args, context) => {
     return context.currentUser;
