@@ -19,7 +19,14 @@ module.exports = {
     return Book.find(filter).populate('author');
   },
 
-  allAuthors: async () => Author.find({}),
+  allAuthors: async (_root, args) => {
+    const { offset = 0, limit = 20 } = args;
+
+    return await Author.find({})
+      .sort({ _id: -1 })
+      .skip(offset)
+      .limit(limit);
+  },
 
   me: (_root, _args, context) => {
     return context.currentUser;

@@ -2,13 +2,14 @@ import { gql } from '@apollo/client'
 import { AUTHOR_DETAILS, BOOK_DETAILS } from './fragments'
 
 export const ALL_AUTHORS = gql`
-  query {
-    allAuthors {
+  query AllAuthors($offset: Int, $limit: Int) {
+    authorCount
+    allAuthors(offset: $offset, limit: $limit) {
       ...AuthorDetails
     }
   }
   ${AUTHOR_DETAILS}
-`
+`;
 
 export const ALL_BOOKS = gql`
   query {
@@ -20,7 +21,7 @@ export const ALL_BOOKS = gql`
 `
 
 export const BOOKS_BY_GENRE = gql`
-  query booksByGenre($genre: String!) {
+  query booksByGenre($genre: Genre!) {
     allBooks(genre: $genre) {
       ...BookDetails
     }
