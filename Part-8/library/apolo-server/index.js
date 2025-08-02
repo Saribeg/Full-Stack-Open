@@ -25,11 +25,12 @@ const start = async () => {
     path: '/',
   });
 
-  const schema = makeExecutableSchema({ typeDefs, resolvers, formatError });
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
   const serverCleanup = useServer({ schema }, wsServer);
 
   const server = new ApolloServer({
     schema,
+    formatError,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {

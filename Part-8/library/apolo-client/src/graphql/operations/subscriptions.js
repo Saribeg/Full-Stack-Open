@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import { BOOK_DETAILS } from './fragments'
+import { gql } from '@apollo/client';
+import { BOOK_DETAILS } from './fragments';
 
 export const BOOK_ADDED = gql`
   subscription {
@@ -8,4 +8,4 @@ export const BOOK_ADDED = gql`
     }
   }
   ${BOOK_DETAILS}
-`
+`;
