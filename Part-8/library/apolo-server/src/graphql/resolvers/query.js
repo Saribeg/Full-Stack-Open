@@ -61,10 +61,49 @@ module.exports = {
   allAuthors: async (_root, args) => {
     const { offset = 0, limit = 20 } = args;
 
-    return await Author.find({})
-      .sort({ _id: -1 })
-      .skip(offset)
-      .limit(limit);
+    const result = await Author.aggregate([
+      // Step 1: Join books collection to get books written by each author
+      {
+        $lookup: {
+          from: 'books',               // Name of the collection to join
+          localField: '_id',           // Field from Author
+          foreignField: 'author',      // Matching field in Book
+          as: 'books',                 // Output array field
+        },
+      },
+
+      // Step 2: Add a new field 'bookCount' with the number of books per author
+      {
+        $addFields: {
+          bookCount: { $size: '$books' }, // Count how many books each author has
+        },
+      },
+
+      // Step 3: Sort authors by bookCount in descending order
+      {
+        $sort: { bookCount: -1 },
+      },
+
+      // Step 4: Remove temporary fields so they don’t reach the client.
+      // Mongoose's schema.toJSON does NOT apply to aggregation pipelines.
+      // We must manually convert `_id` to string to match the expected `id` field in GraphQL.
+      {
+        $project: {
+          id: { $toString: '$_id' },
+          name: 1,
+          born: 1,
+          _id: 0
+        },
+      },
+
+      // Step 5: Apply offset for pagination
+      { $skip: offset },
+
+      // Step 6: Limit the number of returned authors
+      { $limit: limit },
+    ]);
+
+    return result;
   },
 
   allGenres: async () => {
