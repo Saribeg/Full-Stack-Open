@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client"
-import { ALL_BOOKS } from '../graphql/operations'
+import { useQuery } from '@apollo/client';
+import { ALL_BOOKS } from '../graphql/operations';
 
 const RecommendedBooks = ({ user, show }) => {
   const { data, loading } = useQuery(ALL_BOOKS, {
@@ -13,13 +13,13 @@ const RecommendedBooks = ({ user, show }) => {
   if (!user?.favoriteGenre) {
     return (
       <p>
-        books in your favourite genre: <b>{user?.favoriteGenre ?? "not set"}</b>
+        books in your favourite genre: <b>{user?.favoriteGenre ?? 'not set'}</b>
       </p>
-    )
+    );
   }
   if (loading) return <div>Loading...</div>;
 
-    return (
+  return (
     <div>
       <h2>recommendations</h2>
       <p>books in your favourite genre: <b>{user.favoriteGenre}</b></p>
@@ -40,7 +40,7 @@ const RecommendedBooks = ({ user, show }) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
 export default RecommendedBooks;

@@ -21,7 +21,7 @@ const Books = ({ show }) => {
   const endCursor = booksData?.allBooks?.pageInfo?.endCursor;
   const hasMore = booksData?.allBooks?.pageInfo?.hasNextPage ?? false;
 
-  const defaultOption = { value: null, label: 'All genres'};
+  const defaultOption = { value: null, label: 'All genres' };
   const genreOptions = genresData?.allGenres.map((g) => ({
     value: g,
     label: g,

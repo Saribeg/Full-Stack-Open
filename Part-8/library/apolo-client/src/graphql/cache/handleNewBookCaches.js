@@ -1,5 +1,3 @@
-import { ALL_AUTHORS } from '../operations';
-
 export const updateCachesAfterBookAdded = (cache, addedBook) => {
   // When a new book is added - update book lists.
   const targetGenres = [null, ...(addedBook.genres ?? [])];
@@ -78,29 +76,4 @@ export const updateCachesAfterBookAdded = (cache, addedBook) => {
       variables: { genre, first: 30 },
     });
   });
-
-  // When a new book with new author is added - update authors list adding this new author to cache
-  // without refetching authors list
-  if (addedBook.author) {
-    cache.updateQuery({ query: ALL_AUTHORS }, (data) => {
-      if (!data) return;
-
-      const authors = data.allAuthors;
-      const isExists = authors.some((a) => a.name === addedBook.author.name);
-
-      if (isExists) {
-        return {
-          allAuthors: authors.map((a) =>
-            a.name === addedBook.author.name
-              ? { ...a, bookCount: a.bookCount + 1 }
-              : a
-          ),
-        };
-      }
-
-      return {
-        allAuthors: authors.concat({ ...addedBook.author, bookCount: 1 }),
-      };
-    });
-  }
 };

@@ -1,41 +1,41 @@
-import { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
-import { useSubscription } from '@apollo/client'
+import { useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { useSubscription } from '@apollo/client';
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 
-import { BOOK_ADDED } from './graphql/operations'
-import { updateCachesAfterBookAdded } from './graphql/cache/handleNewBookCaches'
+import { BOOK_ADDED } from './graphql/operations';
+import { updateCachesAfterBookAdded } from './graphql/cache/handleNewBookCaches';
 
-import Authors from "./components/Authors";
-import Books from "./components/Books";
-import LoginForm from "./components/LoginForm";
-import NewBook from "./components/NewBook";
-import Logout from "./components/Logout";
-import RecommendedBooks from "./components/RecommendedBooks";
+import Authors from './components/Authors';
+import Books from './components/Books';
+import LoginForm from './components/LoginForm';
+import NewBook from './components/NewBook';
+import Logout from './components/Logout';
+import RecommendedBooks from './components/RecommendedBooks';
 
 const App = () => {
-  const [page, setPage] = useState("authors");
+  const [page, setPage] = useState('authors');
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('library-user-token')
+    const savedToken = localStorage.getItem('library-user-token');
     if (savedToken) {
-      setToken(savedToken)
+      setToken(savedToken);
       const decoded = jwtDecode(savedToken);
-      setUser(decoded)
+      setUser(decoded);
     }
-  }, [])
+  }, []);
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client }) => {
-      const addedBook = data?.data?.bookAdded
+      const addedBook = data?.data?.bookAdded;
       if (addedBook) {
-        updateCachesAfterBookAdded(client.cache, addedBook)
-        toast(`New book added: "${addedBook.title}" by ${addedBook.author.name}`)
+        updateCachesAfterBookAdded(client.cache, addedBook);
+        toast(`New book added: "${addedBook.title}" by ${addedBook.author.name}`);
       }
     }
-  })
+  });
 
   return (
     <div>
@@ -50,24 +50,24 @@ const App = () => {
         transition={Bounce}
       />
       <div>
-        <button onClick={() => setPage("authors")}>authors</button>
-        <button onClick={() => setPage("books")}>books</button>
+        <button onClick={() => setPage('authors')}>authors</button>
+        <button onClick={() => setPage('books')}>books</button>
         {
           token ? (
             <>
-              <button onClick={() => setPage("add")}>add book</button>
-              <button onClick={() => setPage("mybooks")}>recommended</button>
+              <button onClick={() => setPage('add')}>add book</button>
+              <button onClick={() => setPage('mybooks')}>recommended</button>
               <Logout setToken={setToken} setUser={setUser} setPage={setPage}/>
             </>
-          ) : <button onClick={() => setPage("login")}>login</button>
+          ) : <button onClick={() => setPage('login')}>login</button>
         }
       </div>
 
-      <Authors show={page === "authors"} token={token}/>
-      <Books show={page === "books"} />
-      <LoginForm show={page === "login"} setToken={setToken} setUser={setUser} setPage={setPage}/>
-      <NewBook show={page === "add"} />
-      <RecommendedBooks show={page === "mybooks"} user={user}/>
+      <Authors show={page === 'authors'} token={token}/>
+      <Books show={page === 'books'} />
+      <LoginForm show={page === 'login'} setToken={setToken} setUser={setUser} setPage={setPage}/>
+      <NewBook show={page === 'add'} />
+      <RecommendedBooks show={page === 'mybooks'} user={user}/>
     </div>
   );
 };

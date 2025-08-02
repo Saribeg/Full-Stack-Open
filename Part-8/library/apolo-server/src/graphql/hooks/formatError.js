@@ -6,20 +6,7 @@ const mongoose = require('mongoose');
 // https://www.apollographql.com/docs/apollo-server/data/errors#handling-errors
 const formatError = (formattedError, error) => {
   const original = unwrapResolverError(error);
-  const operation = formattedError.path[0];
-
-  if (original instanceof mongoose.Error.ValidationError) {
-    const fields = Object.keys(original.errors).join(', ');
-
-    return {
-      message: `Validation failed on fields: "${fields}" during operation "${operation}"`,
-      extensions: {
-        code: 'BAD_USER_INPUT',
-        invalidArgs: Object.keys(original.errors),
-        error
-      },
-    };
-  }
+  const operation = formattedError?.path?.[0] ?? 'unknown';
 
   if (original instanceof mongoose.Error.CastError) {
     const field = original.path;
@@ -34,7 +21,37 @@ const formatError = (formattedError, error) => {
     };
   }
 
-  if (original?.code === 11000) {
+  if (original instanceof mongoose.Error.ValidationError) {
+    const fields = Object.keys(original.errors || {});
+
+    const duplicateFields = fields.filter(
+      f => original.errors[f]?.kind === 'unique'
+    );
+
+    if (duplicateFields.length > 0) {
+      const duplicates = duplicateFields
+        .map(f => `${f} = "${original.errors[f].value}"`)
+        .join(', ');
+
+      return {
+        message: `Duplicate value(s): ${duplicates}`,
+        extensions: {
+          code: 'BAD_USER_INPUT',
+          invalidArgs: duplicateFields,
+        },
+      };
+    }
+
+    return {
+      message: `Validation failed on fields: "${fields.join(', ')}" during operation ${operation}`,
+      extensions: {
+        code: 'BAD_USER_INPUT',
+        invalidArgs: fields,
+      },
+    };
+  }
+
+  if (original.code === 11000 || (original.name === 'MongoServerError' && original.message.includes('E11000 duplicate key error'))) {
     const fields = Object.keys(original.keyValue || {});
     const values = Object.values(original.keyValue || {});
 
@@ -52,6 +69,7 @@ const formatError = (formattedError, error) => {
   return {
     message: formattedError.message,
     extensions: {
+      ...formattedError.extensions,
       code: formattedError.extensions?.code || 'INTERNAL_SERVER_ERROR',
     },
   };
