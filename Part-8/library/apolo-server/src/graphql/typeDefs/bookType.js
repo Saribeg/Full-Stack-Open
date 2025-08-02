@@ -8,4 +8,19 @@ module.exports = gql`
     author: Author!
     genres: [Genre!]!
   }
+
+  type BookEdge {
+    node: Book!
+    cursor: ObjectID!
+  }
+
+  type PageInfo {
+    endCursor: ObjectID
+    hasNextPage: Boolean!
+  }
+
+  type BookConnection {
+    edges: [BookEdge!]!
+    pageInfo: PageInfo!
+  }
 `;

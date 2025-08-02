@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink, split } from "@apollo/client";
+import { ApolloClient, ApolloProvider, createHttpLink, split } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
+import { inMemoryCache } from './graphql/cache/InMemoryCache.js'
 
 import App from "./App.jsx";
 
@@ -41,7 +42,7 @@ const splitLink = split(
 )
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: inMemoryCache,
   link: splitLink
 })
 

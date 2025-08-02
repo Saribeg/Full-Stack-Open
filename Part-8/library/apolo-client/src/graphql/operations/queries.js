@@ -12,19 +12,25 @@ export const ALL_AUTHORS = gql`
 `;
 
 export const ALL_BOOKS = gql`
-  query {
-    allBooks {
-      ...BookDetails
+  query AllBooks($genre: Genre, $author: String, $first: Int, $after: ObjectID) {
+    allBooks(genre: $genre, author: $author, first: $first, after: $after) {
+      edges {
+        node {
+          ...BookDetails
+        }
+        cursor
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
   ${BOOK_DETAILS}
-`
+`;
 
-export const BOOKS_BY_GENRE = gql`
-  query booksByGenre($genre: Genre!) {
-    allBooks(genre: $genre) {
-      ...BookDetails
-    }
+export const ALL_GENRES = gql`
+  query {
+    allGenres
   }
-  ${BOOK_DETAILS}
 `

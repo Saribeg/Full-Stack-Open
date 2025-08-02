@@ -1,20 +1,19 @@
 import { useQuery } from "@apollo/client"
-import { BOOKS_BY_GENRE } from '../graphql/operations'
+import { ALL_BOOKS } from '../graphql/operations'
 
 const RecommendedBooks = ({ user, show }) => {
-  const { data, loading } = useQuery(BOOKS_BY_GENRE, {
+  const { data, loading } = useQuery(ALL_BOOKS, {
     variables: { genre: user?.favoriteGenre },
     skip: !user?.favoriteGenre
   });
 
-  const books = data?.allBooks ?? [];
+  const books = data?.allBooks?.edges.map((e) => e.node) ?? [];
 
   if (!show) return null;
   if (!user?.favoriteGenre) {
     return (
       <p>
-        books in your favourite genre:{" "}
-        <b>{user?.favoriteGenre ?? "not set"}</b>
+        books in your favourite genre: <b>{user?.favoriteGenre ?? "not set"}</b>
       </p>
     )
   }
@@ -32,7 +31,7 @@ const RecommendedBooks = ({ user, show }) => {
             <th>published</th>
           </tr>
           {books.map((b) => (
-            <tr key={b.title}>
+            <tr key={b.id}>
               <td>{b.title}</td>
               <td>{b.author.name}</td>
               <td>{b.published}</td>
