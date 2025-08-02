@@ -1,29 +1,30 @@
-import { useState } from 'react'
-import { useMutation } from '@apollo/client'
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
 import Select from 'react-select';
-import { SET_BIRTH_YEAR, ALL_AUTHORS } from '../graphql/operations'
+import { SET_BIRTH_YEAR, ALL_AUTHORS } from '../graphql/operations';
 
 const AuthorBirthForm = ({ authors }) => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [born, setBorn] = useState('')
+  const [born, setBorn] = useState('');
 
   const [setBirthYear] = useMutation(SET_BIRTH_YEAR, {
-    refetchQueries: [{ query: ALL_AUTHORS }]
-  })
+    refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: () => {}
+  });
 
-  const options = authors.map(a => ({ value: a.name, label: a.name}))
+  const options = authors.map(a => ({ value: a.name, label: a.name }));
 
   const submit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setBirthYear({
       variables: {
         name: selectedOption.value,
         setBornTo: Number(born)
       }
-    })
-    setSelectedOption(null)
-    setBorn('')
-  }
+    });
+    setSelectedOption(null);
+    setBorn('');
+  };
 
   return (
     <div>
@@ -48,7 +49,7 @@ const AuthorBirthForm = ({ authors }) => {
         <button type="submit">update author</button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default AuthorBirthForm
+export default AuthorBirthForm;

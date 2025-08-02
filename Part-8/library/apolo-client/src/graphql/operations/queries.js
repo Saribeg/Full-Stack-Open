@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import { AUTHOR_DETAILS, BOOK_DETAILS } from './fragments'
+import { gql } from '@apollo/client';
+import { AUTHOR_DETAILS, BOOK_DETAILS } from './fragments';
 
 export const ALL_AUTHORS = gql`
   query AllAuthors($offset: Int, $limit: Int) {
@@ -33,4 +33,4 @@ export const ALL_GENRES = gql`
   query {
     allGenres
   }
-`
+`;

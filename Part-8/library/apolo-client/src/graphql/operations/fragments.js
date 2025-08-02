@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
 export const AUTHOR_DETAILS = gql`
   fragment AuthorDetails on Author {
@@ -7,7 +7,7 @@ export const AUTHOR_DETAILS = gql`
     born
     bookCount
   }
-`
+`;
 
 export const BOOK_DETAILS = gql`
   fragment BookDetails on Book {
@@ -21,4 +21,4 @@ export const BOOK_DETAILS = gql`
     published
     genres
   }
-`
+`;

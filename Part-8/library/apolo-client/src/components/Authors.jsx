@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { useQuery } from "@apollo/client"
-import { ALL_AUTHORS } from '../graphql/operations'
-import AuthorBirthForm from './AuthorBirthForm'
+import { useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { ALL_AUTHORS } from '../graphql/operations';
+import AuthorBirthForm from './AuthorBirthForm';
 
 const Authors = (props) => {
   const [page, setPage] = useState(1);
@@ -11,17 +11,17 @@ const Authors = (props) => {
   });
 
   if (!props.show) {
-    return null
+    return null;
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
-  const authors = data?.allAuthors ?? []
-  const authorCount = data?.authorCount ?? 0
-  const pagesCount = Math.ceil(authorCount / 20)
-  const pages = Array.from({ length: pagesCount }, (_, i) => i + 1)
+  const authors = data?.allAuthors ?? [];
+  const authorCount = data?.authorCount ?? 0;
+  const pagesCount = Math.ceil(authorCount / 20);
+  const pages = Array.from({ length: pagesCount }, (_, i) => i + 1);
 
   return (
     <div>
@@ -48,7 +48,7 @@ const Authors = (props) => {
             Previous
           </button>
         </li>
-        
+
         {pages.map(p => (
           <li key={p} onClick={() => setPage(p)} >
             <button
@@ -69,7 +69,7 @@ const Authors = (props) => {
 
       { props.token ? <AuthorBirthForm authors={authors}/> : null}
     </div>
-  )
-}
+  );
+};
 
-export default Authors
+export default Authors;

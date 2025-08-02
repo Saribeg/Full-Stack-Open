@@ -1,26 +1,24 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { jwtDecode } from "jwt-decode";
-import { LOGIN } from '../graphql/operations'
+import { jwtDecode } from 'jwt-decode';
+import { LOGIN } from '../graphql/operations';
 
 const LoginForm = (props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const [login] = useMutation(LOGIN, {
-    onError: (error) => {
-      console.log(error.graphQLErrors[0]?.message || 'Login failed');
-    },
     onCompleted: (data) => {
       const token = data.login.value;
       props.setToken(token);
       localStorage.setItem('library-user-token', token);
       const decoded = jwtDecode(token);
-      props.setUser(decoded)
+      props.setUser(decoded);
       setUsername('');
       setPassword('');
       props.setPage('authors');
     },
+    onError: () => {}
   });
 
   if (!props.show) {
