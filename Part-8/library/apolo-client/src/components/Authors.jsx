@@ -42,10 +42,29 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <ul>
-        {
-          pages.map(p => <li onClick={() => setPage(p)}>{p}</li>)
-        }
+      <ul style={{ display: 'flex', margin: '20px 0', listStyleType: 'none', gap: '10px' }}>
+        <li key="pagination-prev-button">
+          <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+            Previous
+          </button>
+        </li>
+        
+        {pages.map(p => (
+          <li key={p} onClick={() => setPage(p)} >
+            <button
+              onClick={() => setPage(p)}
+              style={{ fontWeight: page === p ? 'bold' : 'normal' }}
+            >
+              {p}
+            </button>
+          </li>
+        ))}
+
+        <li key="pagination-next-button">
+          <button disabled={page === pagesCount} onClick={() => setPage(page + 1)}>
+            Next
+          </button>
+        </li>
       </ul>
 
       { props.token ? <AuthorBirthForm authors={authors}/> : null}
