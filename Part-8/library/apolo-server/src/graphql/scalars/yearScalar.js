@@ -6,7 +6,7 @@ const validateYear = (value) => {
 
   if (!Number.isInteger(value)) throw new Error('Year must be an integer');
 
-  if (value < 1000 || value > currentYear) {
+  if (value < -400 || value > currentYear) {
     throw new Error(`Year must be between 1000 and ${currentYear}`);
   }
 
@@ -15,7 +15,7 @@ const validateYear = (value) => {
 
 module.exports = createScalar(
   'Year',
-  'A four-digit year between 1000 and the current year',
+  'A four-digit year between -400 and the current year',
   validateYear,
   Kind.INT
 );
