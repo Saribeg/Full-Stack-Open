@@ -39,7 +39,6 @@ export const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 
   if (networkError && networkError.statusCode !== 400) {
-    console.log(networkError);
     showToastOnce('Server unavailable. Please try again later.');
   }
 });
