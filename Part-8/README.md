@@ -5,6 +5,11 @@ This is my work for the **GraphQL** section of the [Full Stack Open](https://ful
 
 > **Note:** If you encounter dependency installation issues due to the `mongoose` version, run the install command with `--force`.
 
+## Time Tracking
+
+Starting from Part 7 of the course, I began tracking my work time with **Toggl**.  
+Here’s the breakdown for Part 8:
+
 | Task                                                                                                                                                            | Time                                   |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
 | **FSO. Part-8a** – GraphQL server                                                                                                                               | 3&nbsp;hours&nbsp;19&nbsp;minutes      |
