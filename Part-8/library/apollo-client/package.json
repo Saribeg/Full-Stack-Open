@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run start-server\" \"npm run start-client\"",
-    "start-server": "npm --prefix ../apolo-server run dev",
+    "start-server": "npm --prefix ../apollo-server run dev",
     "start-client": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",

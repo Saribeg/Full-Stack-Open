@@ -5,35 +5,50 @@ This is my work for the **GraphQL** section of the [Full Stack Open](https://ful
 
 > **Note:** If you encounter dependency installation issues due to the `mongoose` version, run the install command with `--force`.
 
-## Time Tracking
-
-Starting from Part 7 of the course, I began tracking my work time with **Toggl**.  
-Here’s the breakdown for Part 8:
-
-| Task | Time |
-|------|------|
-| **FSO. Part-8a** – GraphQL server | 3 hours 19 minutes |
-| **FSO. Part-8b** – React and GraphQL | 2 hours 47 minutes |
-| **FSO. Part-8c** – Database and user administration | 4 hours 26 minutes |
-| **FSO. Part-8d** – Login and updating the cache | 2 hours 44 minutes |
-| **FSO. Part-8e** – Fragments and subscriptions | 6 hours 47 minutes |
-| **Course subtotal** | **20 hours 3 minutes** |
-| **FSO. Part-8 – Additional learning** | |
-| Adding custom scalars (including some from `graphql-scalars`) for validation | 1 hour 40 minutes |
-| Pagination – offset-based for Authors, cursor-based for Books, cache problems and optimizations | 7 hours 42 minutes |
-| Error handling & bug fixes – `errorLink` and `retryLink` in Apollo Client, fixed `formatError` hook and custom scalars on the server, added toast notifications | 4 hours 12 minutes |
-| Reading about directives in GraphQL | 25 minutes |
-| Implementing basic GraphQL security – query depth, cost limits, introspection toggle | 1 hour 15 minutes |
-| **Add-ons subtotal** | **15 hours 14 minutes** |
-| **Total** | **35 hours 17 minutes** |
-
+| Task                                                                                                                                                            | Time                                   |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| **FSO. Part-8a** – GraphQL server                                                                                                                               | 3&nbsp;hours&nbsp;19&nbsp;minutes      |
+| **FSO. Part-8b** – React and GraphQL                                                                                                                            | 2&nbsp;hours&nbsp;47&nbsp;minutes      |
+| **FSO. Part-8c** – Database and user administration                                                                                                             | 4&nbsp;hours&nbsp;26&nbsp;minutes      |
+| **FSO. Part-8d** – Login and updating the cache                                                                                                                 | 2&nbsp;hours&nbsp;44&nbsp;minutes      |
+| **FSO. Part-8e** – Fragments and subscriptions                                                                                                                  | 6&nbsp;hours&nbsp;47&nbsp;minutes      |
+| **Course subtotal**                                                                                                                                             | **20&nbsp;hours&nbsp;3&nbsp;minutes**  |
+| **FSO. Part-8 – Additional learning**                                                                                                                           |                                        |
+| Adding custom scalars (including some from `graphql-scalars`) for validation                                                                                    | 1&nbsp;hour&nbsp;40&nbsp;minutes       |
+| Pagination – offset-based for Authors, cursor-based for Books, cache problems and optimizations                                                                 | 7&nbsp;hours&nbsp;42&nbsp;minutes      |
+| Error handling & bug fixes – `errorLink` and `retryLink` in Apollo Client, fixed `formatError` hook and custom scalars on the server, added toast notifications | 4&nbsp;hours&nbsp;12&nbsp;minutes      |
+| Reading about directives in GraphQL                                                                                                                             | 25&nbsp;minutes                        |
+| Implementing basic GraphQL security – query depth, cost limits, introspection toggle                                                                            | 1&nbsp;hour&nbsp;15&nbsp;minutes       |
+| **Add-ons subtotal**                                                                                                                                            | **15&nbsp;hours&nbsp;14&nbsp;minutes** |
+| **Total**                                                                                                                                                       | **35&nbsp;hours&nbsp;17&nbsp;minutes** |
 
 ## Installation & Run
 
+### 1. Install dependencies in both server and client
+
 ```bash
+cd Part-8/library/apollo-client
+npm install
+
+cd ../apollo-server
 npm install --force
+```
+
+### 2. Create a `.env` file inside `Part-8/library/apollo-server` with at least:
+
+```ini
+TEST_MONGODB_URI=your_test_mongodb_uri
+TEST_SECRET=your_test_secret
+```
+
+### 3. Start the project from the client folder
+
+```bash
+cd ../apollo-client
 npm run dev
 ```
+
+> This will use `concurrently` to launch both the Apollo Client (frontend) and Apollo Server (backend) at the same time.
 
 ## Extra Challenges & Lessons Learned
 
