@@ -1,3 +1,5 @@
+import { getArguments, validateArguments } from './helpers';
+
 interface ExerciseReport {
   periodLength: number,
   trainingDays: number,
@@ -8,7 +10,7 @@ interface ExerciseReport {
   average: number
 }
 
-const calculateExercises = (dailyHours: number[], target: number) : ExerciseReport => {
+const calculateExercises = (target: number, dailyHours: number[]) : ExerciseReport => {
   const periodLength = dailyHours.length;
   const trainingDays = dailyHours.filter(h => h > 0).length;
   const average = dailyHours.reduce((acc, h) => acc + h, 0) / periodLength;
@@ -39,4 +41,20 @@ const calculateExercises = (dailyHours: number[], target: number) : ExerciseRepo
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const args  = getArguments(process.argv);
+  validateArguments(args, { min: 2, max: 8 });
+  const [target, ...dailyHours] = args;
+  const result = calculateExercises(target, dailyHours);
+  console.log('\x1b[32m', JSON.stringify(result, null, 2));
+} catch (error) {
+  let errorMessage = 'Something bad happened.'
+
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+
+  console.log('\x1b[31m', errorMessage);
+}
+
+// npm run calculateExercises -- 2 1 0 2 4.5 0 3 1 0 4
