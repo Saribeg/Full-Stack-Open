@@ -4,10 +4,21 @@
     "experimentalSpecifierResolution": "node"
   },
   "compilerOptions": {
-    "noImplicitAny": true,
     "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "declaration": true,
+
+    // FSO "strictness" flags
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "strictBindCallApply": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true
   }
 }
