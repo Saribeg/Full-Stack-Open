@@ -1,7 +1,7 @@
+import { getArguments, validateArguments } from './helpers';
+
 const calculateBmi = (height: number, weight: number) : string => {
   const bmi = weight / (height / 100) ** 2;
-
-  console.log(bmi)
 
   if (bmi < 18.5) {
     return 'Underweight'
@@ -14,5 +14,19 @@ const calculateBmi = (height: number, weight: number) : string => {
   }
 }
 
-console.log(calculateBmi(180, 74))
-console.log(calculateBmi(175, 87))
+try {
+  const args  = getArguments(process.argv);
+  validateArguments(args, { min: 2, max: 2 });
+  const [height, weight] = args;
+  console.log('\x1b[32m', `Result is: "${calculateBmi(height, weight)}"`);
+} catch (error) {
+  let errorMessage = 'Something bad happened.'
+
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+
+  console.log('\x1b[31m', errorMessage);
+}
+
+// npm run calculateBmi -- 180 91
