@@ -4,15 +4,15 @@ export const calculateBmi = (height: number, weight: number) : string => {
   const bmi = weight / (height / 100) ** 2;
 
   if (bmi < 18.5) {
-    return 'Underweight'
+    return 'Underweight';
   } else if (bmi >= 18.5 && bmi < 25) {
-    return 'Normal Weight'
+    return 'Normal Weight';
   } else if (bmi >= 25 && bmi < 30) {
-    return 'Overweight'
+    return 'Overweight';
   } else {
-    return 'Obese'
+    return 'Obese';
   }
-}
+};
 
 try {
   const args  = getArguments(process.argv);
@@ -20,7 +20,7 @@ try {
   const [height, weight] = args;
   console.log('\x1b[32m', `Result is: "${calculateBmi(height, weight)}"`);
 } catch (error) {
-  let errorMessage = 'Something bad happened.'
+  let errorMessage = 'Something bad happened.';
 
   if (error instanceof Error) {
     errorMessage += ' Error: ' + error.message;
