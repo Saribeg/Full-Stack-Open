@@ -48,7 +48,7 @@ try {
   const result = calculateExercises(target, dailyHours);
   console.log('\x1b[32m', JSON.stringify(result, null, 2));
 } catch (error) {
-  let errorMessage = 'Something bad happened.'
+  let errorMessage = 'Something bad happened.';
 
   if (error instanceof Error) {
     errorMessage += ' Error: ' + error.message;
