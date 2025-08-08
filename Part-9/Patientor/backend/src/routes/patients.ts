@@ -1,6 +1,7 @@
 import express from 'express';
+import { z } from 'zod';
 import patientsService from '../services/patients';
-import { preparePatientData } from '../validation/patients';
+import { NewPatientSchema } from '../validation/patients';
 
 const router = express.Router();
 
@@ -11,15 +12,15 @@ router.get('/', (_req, res) => {
 
 router.post('/', (req, res) => {
   try {
-    const patientData = preparePatientData(req.body);
+    const patientData = NewPatientSchema.parse(req.body);
     const addedPatient = patientsService.addPatient(patientData);
     res.status(201).json(addedPatient);
-  } catch (error) {
-    let errorMessage = 'Something went wrong.';
-    if (error instanceof Error) {
-      errorMessage += ' Error: ' + error.message;
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.issues });
+    } else {
+      res.status(400).json({ error: 'Unknown error' });
     }
-    res.status(400).send(errorMessage);
   }
 
 });
