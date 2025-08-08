@@ -1,3 +1,9 @@
+export enum Gender {
+  Male = 'male',
+  Female = 'female',
+  Other = 'other'
+}
+
 export type Diagnosis = {
   code: string
   name: string
@@ -9,7 +15,7 @@ export type Patient = {
   name: string
   dateOfBirth: string
   ssn: string
-  gender: string
+  gender: Gender
   occupation: string
 };
 
