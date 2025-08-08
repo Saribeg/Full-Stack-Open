@@ -1,5 +1,5 @@
 import { Patient } from '../types';
-import { preparePatientData } from '../validation/patients';
+import { NewPatientSchema  } from '../validation/patients';
 
 const data = [
   {
@@ -45,7 +45,7 @@ const data = [
 ];
 
 const patients: Patient[] = data.map(({ id, ...rest }) => {
-  const parsed = preparePatientData(rest);
+  const parsed = NewPatientSchema.parse(rest);
   return { id, ...parsed };
 });
 
