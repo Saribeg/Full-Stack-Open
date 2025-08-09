@@ -34,11 +34,6 @@ export interface DiaryEntry {
 export type NewDiaryEntry = Omit<DiaryEntry, 'id'>;
 export type NonSensitiveDiaryEntry = Omit<DiaryEntry, 'comment'>;
 
-export interface Option<T> {
-  value: T,
-  label: string
-}
-
 export interface Status {
   type: StatusType
   message: string

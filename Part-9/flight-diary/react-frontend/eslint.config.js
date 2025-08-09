@@ -7,7 +7,18 @@ import tseslint from 'typescript-eslint';
 import { globalIgnores } from 'eslint/config';
 
 export default tseslint.config([
-  globalIgnores(['dist']),
+    globalIgnores([
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/build/**',
+    '**/.next/**',
+    '**/.output/**',
+    '**/coverage/**',
+    '**/.vite/**',
+    '**/.turbo/**',
+    '**/.yarn/**',
+    '**/vite-dist/**'
+  ]),
   js.configs.recommended,
   tseslint.configs.recommended,
   reactRefresh.configs.vite,

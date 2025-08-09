@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import DatePicker from 'react-datepicker';
 import { createDiary } from '../services/diaries';
-import Select from 'react-select';
 import { Weather, Visibility, Status as StatusOptions } from '../types';
-import type { Option, WeatherType, VisibilityType, DiaryEntry, Status } from '../types';
+import type { WeatherType, VisibilityType, DiaryEntry, Status, NewDiaryEntry } from '../types';
 
 type Props = {
   setDiaries: React.Dispatch<React.SetStateAction<DiaryEntry[]>>;
@@ -11,60 +9,88 @@ type Props = {
 };
 
 const DiaryForm = ({ setDiaries, setStatus }: Props) => {
-  const [date, setDate] = useState<Date | null>(null);
-  const [weatherOption, setWeatherOption] = useState<Option<WeatherType> | null>(null);
-  const [visibilityOption, setVisibilityOption] = useState<Option<VisibilityType> | null>(null);
+  const [date, setDate] = useState<string>('');
+  const [weather, setWeather] = useState<WeatherType | ''>('');
+  const [visibility, setVisibility] = useState<VisibilityType | ''>('');
   const [comment, setComment] = useState('');
+
+  const WEATHER_VALUES = Object.values(Weather) as WeatherType[];
+  const VISIBILITY_VALUES = Object.values(Visibility) as VisibilityType[];
 
   const handleFormSubmit = (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    if (
-      !date
-      || !weatherOption
-      || !weatherOption.value
-      || !visibilityOption
-      || !visibilityOption.value
-    ) {
+    if (!date || !weather || !visibility) {
       setStatus({ type: StatusOptions.Error, message: 'Fill in all necessary data' });
       return;
     }
 
-    createDiary({
-      date: date.toISOString().split('T')[0],
-      weather: weatherOption.value,
-      visibility: visibilityOption.value,
-      comment
-    }).then((newDiaryEntry) => {
-      setDate(null);
-      setWeatherOption(null);
-      setVisibilityOption(null);
-      setComment('');
-      setDiaries((prev) => [...prev, newDiaryEntry]);
-      setStatus({ type: StatusOptions.Success, message: 'Diary is successfully created' });
-    }).catch(error => {
-      // Typing is done in src\services\api.ts
-      setStatus({ type: 'error', message: error.message });
-    });
+    const newDiaryPayload: NewDiaryEntry = { date, weather, visibility, comment };
+
+    createDiary(newDiaryPayload)
+      .then((newDiaryEntry) => {
+        setDate('');
+        setWeather('');
+        setVisibility('');
+        setComment('');
+        setDiaries((prev) => [...prev, newDiaryEntry]);
+        setStatus({ type: StatusOptions.Success, message: 'Diary is successfully created' });
+      }).catch(error => {
+        // Typing is done in src\services\api.ts
+        setStatus({ type: 'error', message: error.message });
+      });
   };
-
-  const weatherOptions: Option<WeatherType>[] = Object.entries(Weather).map(([label, value]) => ({
-    label,
-    value,
-  }));
-
-  const visibilityOptions: Option<VisibilityType>[] = Object.entries(Visibility).map(([label, value]) => ({
-    label,
-    value,
-  }));
 
   return (
     <div>
       <h2>Create a Diary</h2>
       <form onSubmit={handleFormSubmit} className="diary-form">
-        <DatePicker selected={date} onChange={(d: Date | null) => setDate(d)} />
-        <Select options={weatherOptions} value={weatherOption} onChange={setWeatherOption}/>
-        <Select options={visibilityOptions} value={visibilityOption} onChange={setVisibilityOption}/>
+        <label>
+          Date
+          <input
+            type="date"
+            value={date}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
+          />
+        </label>
+
+        <fieldset>
+          <legend>Weather</legend>
+          {WEATHER_VALUES.map((w) => (
+            <label key={w} style={{ display: 'inline-block', marginRight: 12 }}>
+              <input
+                type="radio"
+                name="weather"
+                value={w}
+                checked={weather === w}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setWeather(e.target.value as WeatherType)
+                }
+              />
+              {' '}{w}
+            </label>
+          ))}
+        </fieldset>
+
+
+        <fieldset>
+          <legend>Visibility</legend>
+          {VISIBILITY_VALUES.map((v) => (
+            <label key={v} style={{ display: 'inline-block', marginRight: 12 }}>
+              <input
+                type="radio"
+                name="visibility"
+                value={v}
+                checked={visibility === v}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setVisibility(e.target.value as VisibilityType)
+                }
+              />
+              {' '}{v}
+            </label>
+          ))}
+        </fieldset>
+
         <textarea
           name="comment"
           id="comment"
