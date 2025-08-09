@@ -17,9 +17,9 @@ function App() {
 
   return (
     <div className="app">
-      <Diaries diaries={diaries}/>
       { status && <Toast type={status.type} message={status.message}/>}
       <DiaryForm setDiaries={setDiaries} setStatus={setStatus}/>
+      <Diaries diaries={diaries}/>
     </div>
   );
 }
