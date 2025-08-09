@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { createDiary } from '../services/diaries';
-import 'react-datepicker/dist/react-datepicker.css';
 import Select from 'react-select';
-import { Weather, Visibility } from '../types';
-import type { Option, WeatherType, VisibilityType, DiaryEntry } from '../types';
+import { Weather, Visibility, Status as StatusOptions } from '../types';
+import type { Option, WeatherType, VisibilityType, DiaryEntry, Status } from '../types';
 
 type Props = {
   setDiaries: React.Dispatch<React.SetStateAction<DiaryEntry[]>>;
+  setStatus: React.Dispatch<React.SetStateAction<Status | null>>;
 };
 
-const DiaryForm = ({ setDiaries }: Props) => {
+const DiaryForm = ({ setDiaries, setStatus }: Props) => {
   const [date, setDate] = useState<Date | null>(null);
   const [weatherOption, setWeatherOption] = useState<Option<WeatherType> | null>(null);
   const [visibilityOption, setVisibilityOption] = useState<Option<VisibilityType> | null>(null);
@@ -26,6 +26,7 @@ const DiaryForm = ({ setDiaries }: Props) => {
       || !visibilityOption
       || !visibilityOption.value
     ) {
+      setStatus({ type: StatusOptions.Error, message: 'Fill in all necessary data' });
       return;
     }
 
@@ -40,6 +41,10 @@ const DiaryForm = ({ setDiaries }: Props) => {
       setVisibilityOption(null);
       setComment('');
       setDiaries((prev) => [...prev, newDiaryEntry]);
+      setStatus({ type: StatusOptions.Success, message: 'Diary is successfully created' });
+    }).catch(error => {
+      // Typing is done in src\services\api.ts
+      setStatus({ type: 'error', message: error.message });
     });
   };
 
@@ -56,12 +61,19 @@ const DiaryForm = ({ setDiaries }: Props) => {
   return (
     <div>
       <h2>Create a Diary</h2>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleFormSubmit} className="diary-form">
         <DatePicker selected={date} onChange={(d: Date | null) => setDate(d)} />
         <Select options={weatherOptions} value={weatherOption} onChange={setWeatherOption}/>
         <Select options={visibilityOptions} value={visibilityOption} onChange={setVisibilityOption}/>
-        <textarea name="commnet" id="commnet" placeholder="Type a comment" onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setComment(event.target.value)}></textarea>
-        <button type="submit">Create Diary</button>
+        <textarea
+          name="comment"
+          id="comment"
+          className="diary-comment"
+          placeholder="Type a comment"
+          value={comment}
+          onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setComment(event.target.value)}
+        />
+        <button type="submit" className="diary-submit">Create Diary</button>
       </form>
     </div>
   );
