@@ -10,6 +10,17 @@ router.get('/', (_req, res) => {
   res.send(patients);
 });
 
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  const patient = patientsService.getPatientById(id);
+
+  if (!patient) {
+    return res.status(404).json({ error: 'Patient not found' });
+  }
+
+  return res.json(patient);
+});
+
 router.post('/', (req, res) => {
   try {
     const patientData = NewPatientSchema.parse(req.body);
@@ -22,7 +33,6 @@ router.post('/', (req, res) => {
       res.status(400).json({ error: 'Unknown error' });
     }
   }
-
 });
 
 export default router;
