@@ -24,6 +24,9 @@ module.exports = {
       "error",
       { "argsIgnorePattern": "^_" }
     ],
-    "no-case-declarations": "off"
+    "no-case-declarations": "off",
+    'no-multi-spaces': 'error',
+    'no-trailing-spaces': 'error',
+    'no-multiple-empty-lines': ['error', { max: 1 }]
   },
 }
