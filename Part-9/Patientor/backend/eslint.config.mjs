@@ -32,5 +32,7 @@ export default tseslint.config({
       'error',
       { argsIgnorePattern: '^_' },
     ],
+    '@stylistic/no-multi-spaces': 'error',
+    '@stylistic/no-trailing-spaces': 'error',
   },
 });
