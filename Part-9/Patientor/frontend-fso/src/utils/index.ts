@@ -42,3 +42,9 @@ export const handleApiError = (
   }
   setError(info.message || "Unexpected error");
 };
+
+export const assertNever = (value: never): never => {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+};
