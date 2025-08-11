@@ -2,6 +2,7 @@ import express from 'express';
 import { z } from 'zod';
 import patientsService from '../services/patients';
 import { NewPatientSchema } from '../validation/patients';
+import { NewEntrySchema } from '../validation/entries';
 
 const router = express.Router();
 
@@ -29,6 +30,24 @@ router.post('/', (req, res) => {
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       res.status(400).json({ error: error.issues });
+    } else {
+      res.status(400).json({ error: 'Unknown error' });
+    }
+  }
+});
+
+router.post('/:id/entries', (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const entryData = NewEntrySchema.parse(req.body);
+    const addedEntry = patientsService.addEntry(id, entryData);
+    res.status(201).json(addedEntry);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ error: error.issues });
+    } else if (error instanceof Error && error.message === 'PATIENT_NOT_FOUND') {
+      res.status(404).json({ error: 'Patient not found' });
     } else {
       res.status(400).json({ error: 'Unknown error' });
     }
