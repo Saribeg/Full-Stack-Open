@@ -7,12 +7,14 @@ import MaleIcon from "@mui/icons-material/Male";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 
 import PatienEntries from "./PatienEntries";
-import { Patient } from "../../types";
+import { Patient, Diagnosis } from "../../types";
 import patientService from "../../services/patients";
+import diagnosisService from "../../services/diagnoses";
 import { handleApiError } from "../../utils";
 
 const PatientDetailsPage = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -30,6 +32,15 @@ const PatientDetailsPage = () => {
         handleApiError(e, navigate, setError);
       });
   }, [id, navigate]);
+
+  useEffect(() => {
+    diagnosisService
+      .getAll()
+      .then(setDiagnoses)
+      .catch((e) => {
+        handleApiError(e, navigate, setError);
+      });
+  }, [navigate]);
 
   if (error) return <div role="alert">{error}</div>;
   if (!patient) return <div>Loading...</div>;
@@ -53,7 +64,7 @@ const PatientDetailsPage = () => {
           {patient.ssn && <Chip label={`SSN: ${patient.ssn}`} variant="outlined" />}
         </Stack>
 
-        {patient.entries?.length ? <PatienEntries entries={patient.entries}/> : null}
+        {patient.entries?.length ? <PatienEntries entries={patient.entries} diagnoses={diagnoses}/> : null}
       </CardContent>
     </Card>
   );
