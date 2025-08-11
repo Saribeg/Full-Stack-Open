@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { Card, CardContent, CardHeader, Typography, Stack, Chip, Divider } from "@mui/material";
+import { Card, CardContent, CardHeader, Typography, Stack, Chip } from "@mui/material";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 
+import PatienEntries from "./PatienEntries";
 import { Patient } from "../../types";
 import patientService from "../../services/patients";
 import { handleApiError } from "../../utils";
@@ -52,15 +53,7 @@ const PatientDetailsPage = () => {
           {patient.ssn && <Chip label={`SSN: ${patient.ssn}`} variant="outlined" />}
         </Stack>
 
-        {patient.entries?.length ? (
-          <>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h6" gutterBottom>
-              Entries
-            </Typography>
-            {/* entries rendering here */}
-          </>
-        ) : null}
+        {patient.entries?.length ? <PatienEntries entries={patient.entries}/> : null}
       </CardContent>
     </Card>
   );
