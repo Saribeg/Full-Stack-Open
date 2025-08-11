@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { Card, CardContent, Typography, Stack, Chip, Divider } from "@mui/material";
 
+import EntryDetails from "./EntryDetails";
+
 import { Entry, Diagnosis } from "../../types";
 
 type EntryWithDiagnoses = Entry & { diagnoses?: Diagnosis[] };
@@ -76,30 +78,9 @@ const PatienEntries = ({entries, diagnoses}: PatienEntriesType) => {
               </Stack>
             )}
 
-            {entry.type === "Hospital" && (
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                <strong>Discharge:</strong> {entry.discharge.date} — {entry.discharge.criteria}
-              </Typography>
-            )}
+            <Divider sx={{ my: 2 }} />
 
-            {entry.type === "OccupationalHealthcare" && (
-              <Stack sx={{ mt: 1 }} spacing={0.5}>
-                <Typography variant="body2">
-                  <strong>Employer:</strong> {entry.employerName}
-                </Typography>
-                {entry.sickLeave && (
-                  <Typography variant="body2">
-                    <strong>Sick leave:</strong> {entry.sickLeave.startDate} – {entry.sickLeave.endDate}
-                  </Typography>
-                )}
-              </Stack>
-            )}
-
-            {entry.type === "HealthCheck" && (
-              <Typography variant="body2" sx={{ mt: 1 }}>
-                <strong>Health check rating:</strong> {entry.healthCheckRating}
-              </Typography>
-            )}
+            <EntryDetails entry={entry} />
           </CardContent>
         </Card>
       ))}
