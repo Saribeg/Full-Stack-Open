@@ -1,7 +1,7 @@
-import { api } from "./api";
-import { Diagnosis } from "../types";
+import { api } from './api';
+import { Diagnosis } from '../types';
 
-import { apiBaseUrl } from "../constants";
+import { apiBaseUrl } from '../constants';
 
 const getAll = async () => {
   const { data } = await api.get<Diagnosis[]>(
