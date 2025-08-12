@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { ApiErrorCause } from '../types';
 
-export const api = axios.create({ baseURL: '/api', timeout: 15000 });
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL ?? '/api',
+  timeout: 15000
+});
 
 /**
  * Type guard: narrows "unknown" to a plain JSON-like object.

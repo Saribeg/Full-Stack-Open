@@ -1,39 +1,23 @@
 import { api } from './api';
-import { Patient, PatientFormValues, EntryWithoutId } from '../types';
+import { Patient, PatientFormValues, EntryWithoutId, Entry } from '../types';
 
-import { apiBaseUrl } from '../constants';
-
-const getAll = async () => {
-  const { data } = await api.get<Patient[]>(
-    `${apiBaseUrl}/patients`
-  );
-
+const getAll = async (): Promise<Patient[]> => {
+  const { data } = await api.get<Patient[]>('/patients');
   return data;
 };
 
-const getById = async (id: string) => {
-  const { data } = await api.get<Patient>(
-    `${apiBaseUrl}/patients/${id}`
-  );
-
+const getById = async (id: string): Promise<Patient> => {
+  const { data } = await api.get<Patient>(`/patients/${id}`);
   return data;
 };
 
-const create = async (object: PatientFormValues) => {
-  const { data } = await api.post<Patient>(
-    `${apiBaseUrl}/patients`,
-    object
-  );
-
+const create = async (patientData: PatientFormValues): Promise<Patient> => {
+  const { data } = await api.post<Patient>('/patients',patientData);
   return data;
 };
 
-const addEntry = async (patientId: string, newEntryData: EntryWithoutId) => {
-  const { data } = await api.post(
-    `${apiBaseUrl}/patients/${patientId}/entries`,
-    newEntryData
-  );
-
+const addEntry = async (patientId: string, newEntryData: EntryWithoutId): Promise<Entry> => {
+  const { data } = await api.post<Entry>(`/patients/${patientId}/entries`,newEntryData);
   return data;
 };
 

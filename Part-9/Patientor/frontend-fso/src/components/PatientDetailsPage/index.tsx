@@ -6,13 +6,15 @@ import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 
+import { Patient, Diagnosis } from '../../types';
+import { handleApiError } from '../../utils';
+
+import patientService from '../../services/patients';
+import diagnosisService from '../../services/diagnoses';
+
 import PatienEntries from './PatienEntries';
 import SidePanel from '../SidePanel';
 import NewEntryForm from './NewEntryForm';
-import { Patient, Diagnosis } from '../../types';
-import patientService from '../../services/patients';
-import diagnosisService from '../../services/diagnoses';
-import { handleApiError } from '../../utils';
 
 const PatientDetailsPage = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -98,7 +100,13 @@ const PatientDetailsPage = () => {
         title='Add New Entry'
         width={800}
       >
-        <NewEntryForm patientId={patient.id} diagnoses={diagnoses} setError={setError} setPatient={setPatient} setSidePanelOpen={setSidePanelOpen}/>
+        <NewEntryForm
+          patientId={patient.id}
+          diagnoses={diagnoses}
+          setError={setError}
+          setPatient={setPatient}
+          setSidePanelOpen={setSidePanelOpen}
+        />
       </SidePanel>
     </>
 

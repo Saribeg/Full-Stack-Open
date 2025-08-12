@@ -1,4 +1,4 @@
-// This is done by ChatGPT 5. The task was to use react-calendar along with MUI
+// This specific component is done by ChatGPT 5. The task was to use react-calendar along with MUI
 // to show range date picker in MUI style. Because MUI does not provide such for free.
 import { useMemo, useState } from 'react';
 import Calendar from 'react-calendar';
