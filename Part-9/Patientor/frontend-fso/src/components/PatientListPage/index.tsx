@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Box, Table, Button, TableHead, Typography, TableCell, TableRow, TableBody } from '@mui/material';
 
-import { PatientFormValues, Patient } from "../../types";
-import AddPatientModal from "../AddPatientModal";
+import { PatientFormValues, Patient } from '../../types';
+import AddPatientModal from '../AddPatientModal';
 
-import HealthRatingBar from "../HealthRatingBar";
+import HealthRatingBar from '../HealthRatingBar';
 
-import patientService from "../../services/patients";
+import patientService from '../../services/patients';
 
-import { handleApiError } from "../../utils";
+import { handleApiError } from '../../utils';
 
 interface Props {
   patients : Patient[]
@@ -40,13 +40,13 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
   };
 
   return (
-    <div className="App">
+    <div className='App'>
       <Box>
-        <Typography align="center" variant="h6">
+        <Typography align='center' variant='h6'>
           Patient list
         </Typography>
       </Box>
-      <Table style={{ marginBottom: "1em" }}>
+      <Table style={{ marginBottom: '1em' }}>
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
@@ -74,7 +74,7 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
         error={error ?? undefined}
         onClose={closeModal}
       />
-      <Button variant="contained" onClick={() => openModal()}>
+      <Button variant='contained' onClick={() => openModal()}>
         Add New Patient
       </Button>
     </div>
