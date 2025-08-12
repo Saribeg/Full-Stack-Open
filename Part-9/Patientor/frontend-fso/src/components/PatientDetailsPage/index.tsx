@@ -1,21 +1,24 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-import { Card, CardContent, CardHeader, Typography, Stack, Chip } from "@mui/material";
-import FemaleIcon from "@mui/icons-material/Female";
-import MaleIcon from "@mui/icons-material/Male";
-import TransgenderIcon from "@mui/icons-material/Transgender";
+import { Card, CardContent, CardHeader, Typography, Stack, Chip, Button, Divider } from '@mui/material';
+import FemaleIcon from '@mui/icons-material/Female';
+import MaleIcon from '@mui/icons-material/Male';
+import TransgenderIcon from '@mui/icons-material/Transgender';
 
-import PatienEntries from "./PatienEntries";
-import { Patient, Diagnosis } from "../../types";
-import patientService from "../../services/patients";
-import diagnosisService from "../../services/diagnoses";
-import { handleApiError } from "../../utils";
+import PatienEntries from './PatienEntries';
+import SidePanel from '../SidePanel';
+import NewEntryForm from './NewEntryForm';
+import { Patient, Diagnosis } from '../../types';
+import patientService from '../../services/patients';
+import diagnosisService from '../../services/diagnoses';
+import { handleApiError } from '../../utils';
 
 const PatientDetailsPage = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [sidePanelOpen, setSidePanelOpen] = useState<boolean>(false);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -42,31 +45,63 @@ const PatientDetailsPage = () => {
       });
   }, [navigate]);
 
-  if (error) return <div role="alert">{error}</div>;
   if (!patient) return <div>Loading...</div>;
 
   return (
-    <Card>
-      <CardHeader
-        title={
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography variant="h5">{patient.name}</Typography>
-            {patient.gender === "female" && <FemaleIcon fontSize="small" color="primary" />}
-            {patient.gender === "male" && <MaleIcon fontSize="small" color="primary" />}
-            {patient.gender === "other" && <TransgenderIcon fontSize="small" color="primary" />}
+    <>
+      {error && (
+        <div style={{ width: '100%', marginBottom: 16 }}>
+          <Typography
+            variant='body1'
+            sx={{
+              backgroundColor: 'error.main',
+              color: 'error.contrastText',
+              padding: 2,
+              borderRadius: 1,
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {error}
+          </Typography>
+        </div>
+      )}
+      <Card>
+        <CardHeader
+          title={
+            <Stack direction='row' alignItems='center' spacing={1}>
+              <Typography variant='h5'>{patient.name}</Typography>
+              {patient.gender === 'female' && <FemaleIcon fontSize='small' color='primary' />}
+              {patient.gender === 'male' && <MaleIcon fontSize='small' color='primary' />}
+              {patient.gender === 'other' && <TransgenderIcon fontSize='small' color='primary' />}
+            </Stack>
+          }
+          subheader={patient.occupation}
+        />
+        <CardContent>
+          <Stack direction='row' spacing={1} flexWrap='wrap'>
+            {patient.dateOfBirth && <Chip label={`DOB: ${patient.dateOfBirth}`} variant='outlined' />}
+            {patient.ssn && <Chip label={`SSN: ${patient.ssn}`} variant='outlined' />}
           </Stack>
-        }
-        subheader={patient.occupation}
-      />
-      <CardContent>
-        <Stack direction="row" spacing={1} flexWrap="wrap">
-          {patient.dateOfBirth && <Chip label={`DOB: ${patient.dateOfBirth}`} variant="outlined" />}
-          {patient.ssn && <Chip label={`SSN: ${patient.ssn}`} variant="outlined" />}
-        </Stack>
 
-        {patient.entries?.length ? <PatienEntries entries={patient.entries} diagnoses={diagnoses}/> : null}
-      </CardContent>
-    </Card>
+          <Divider sx={{ my: 2 }} />
+
+          <Button variant='contained' onClick={() => setSidePanelOpen(true)} sx={{ mb: '10px'}}>
+            Add Entry
+          </Button>
+          {patient.entries?.length ? <PatienEntries entries={patient.entries} diagnoses={diagnoses}/> : null}
+        </CardContent>
+      </Card>
+
+      <SidePanel
+        open={sidePanelOpen}
+        onClose={() => setSidePanelOpen(false)}
+        title='Add New Entry'
+        width={800}
+      >
+        <NewEntryForm patientId={patient.id} diagnoses={diagnoses} setError={setError} setPatient={setPatient} setSidePanelOpen={setSidePanelOpen}/>
+      </SidePanel>
+    </>
+
   );
 };
 
