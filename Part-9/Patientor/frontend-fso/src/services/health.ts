@@ -1,8 +1,7 @@
 import { api } from './api';
-import { apiBaseUrl } from '../constants';
 
-const ping = async () => {
-  await api.get(`${apiBaseUrl}/ping`);
+const ping = async (): Promise<void> => {
+  await api.get<void>('/ping');
 };
 
 export default { ping };

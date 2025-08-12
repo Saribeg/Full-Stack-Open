@@ -3,8 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Box, Table, Button, TableHead, Typography, TableCell, TableRow, TableBody } from '@mui/material';
 
 import { PatientFormValues, Patient } from '../../types';
-import AddPatientModal from '../AddPatientModal';
 
+import AddPatientModal from '../AddPatientModal';
 import HealthRatingBar from '../HealthRatingBar';
 
 import patientService from '../../services/patients';

@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { Card, CardContent, Typography, Stack, Chip, Divider } from '@mui/material';
 
-import EntryDetails from './EntryDetails';
-
 import { Entry, Diagnosis } from '../../types';
+
+import EntryDetails from './EntryDetails';
 
 type EntryWithDiagnoses = Entry & { diagnoses?: Diagnosis[] };
 
