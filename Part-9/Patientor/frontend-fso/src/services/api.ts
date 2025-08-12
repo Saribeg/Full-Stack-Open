@@ -24,6 +24,20 @@ export const isPlainRecord = (v: unknown): v is Record<string, unknown> => {
   return proto === Object.prototype || proto === null;
 };
 
+const formatZodErrors = (errors: unknown): string | undefined => {
+  if (!Array.isArray(errors)) return;
+
+  const lines = errors
+    .filter(isPlainRecord)
+    .map(err => {
+      const path = Array.isArray(err.path) ? err.path.join('.') : 'unknown';
+      const msg = typeof err.message === 'string' ? err.message : 'Invalid value';
+      return `Field "${path}" - Error "${msg}"`;
+    });
+
+  return lines.length ? lines.join('\n') : undefined;
+};
+
 api.interceptors.response.use(
   (res) => res,
   (err: unknown) => {
@@ -40,6 +54,16 @@ api.interceptors.response.use(
         message = data;
       } else if (isPlainRecord(data)) {
         // Basic version: for APIs that return either `error` or `message` (only one is expected)
+        const zodMessage = formatZodErrors(data.error);
+        if (zodMessage) {
+          message = zodMessage;
+        } else {
+          if (typeof data.error === 'string') {
+            message = data.error;
+          } else if (typeof data.message === 'string') {
+            message = data.message;
+          }
+        }
         const maybeError = data.error;
         const maybeMessage = data.message;
         if (typeof maybeError === 'string') {

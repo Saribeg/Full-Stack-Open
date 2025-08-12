@@ -1,8 +1,8 @@
-import type { NavigateFunction } from "react-router-dom";
-import type { Dispatch, SetStateAction } from "react";
+import type { NavigateFunction } from 'react-router-dom';
+import type { Dispatch, SetStateAction } from 'react';
 
-import type { PublicErrorInfo } from "../types";
-import type { ErrorWithCause } from "../types";
+import type { PublicErrorInfo } from '../types';
+import type { ErrorWithCause } from '../types';
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 
@@ -29,22 +29,28 @@ export const handleApiError = (
   const info = getErrorInfo(e);
 
   if (info.status === 404) {
-    navigate("/404", { replace: true });
+    navigate('/404', { replace: true });
     return;
   }
   if (info.isNetworkError) {
-    setError("Network error. Please check your connection and try again.");
+    setError('Network error. Please check your connection and try again.');
     return;
   }
   if (info.isTimeout) {
-    setError("Request timed out. Please try again.");
+    setError('Request timed out. Please try again.');
     return;
   }
-  setError(info.message || "Unexpected error");
+  setError(info.message || 'Unexpected error');
 };
 
 export const assertNever = (value: never): never => {
   throw new Error(
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
   );
+};
+
+export const isNonEmptyString = (value: string | undefined | null) => {
+  const hasValue = Boolean(value);
+  const notJustSpaces = value?.trim() !== '';
+  return hasValue && notJustSpaces;
 };

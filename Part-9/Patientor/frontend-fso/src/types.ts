@@ -7,20 +7,21 @@ export interface Diagnosis {
 }
 
 export enum Gender {
-  Male = "male",
-  Female = "female",
-  Other = "other"
+  Male = 'male',
+  Female = 'female',
+  Other = 'other'
 }
 
 // Entry
-export enum HealthCheckRating {
-  'Healthy' = 0,
-  'LowRisk' = 1,
-  'HighRisk' = 2,
-  'CriticalRisk' = 3
-}
+export const HealthCheckRating = {
+  Healthy: 0,
+  LowRisk: 1,
+  HighRisk: 2,
+  CriticalRisk: 3,
+} as const;
+export type HealthCheckRating = typeof HealthCheckRating[keyof typeof HealthCheckRating];
 
-interface SickLeave {
+export interface SickLeave {
   startDate: string,
   endDate: string,
 }
@@ -72,7 +73,7 @@ export interface Patient {
   entries?: Entry[];
 }
 
-export type PatientFormValues = Omit<Patient, "id" | "entries">;
+export type PatientFormValues = Omit<Patient, 'id' | 'entries'>;
 
 // Error
 export type ApiErrorCause = {
