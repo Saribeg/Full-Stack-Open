@@ -11,13 +11,20 @@ on:
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Part-11/full-stack-open-pokedex
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '16.16.0'
+          cache: 'npm'
+          cache-dependency-path: Part-11/full-stack-open-pokedex/package-lock.json
       - name: Install dependencies 
-        run: npm install  
+        run: npm ci  
 
       - name: Check style
         run: npm run eslint
