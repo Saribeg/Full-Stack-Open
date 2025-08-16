@@ -10,3 +10,13 @@ app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`server started on port ${PORT}`)
 })
+
+app.get('/version', (req, res) => {
+  res.send('1')
+})
+
+app.get('/health', (req, res) => {
+  // eslint-disable-next-line no-constant-condition
+  if (true) throw('Imitate Error temporarily for checking deployment')
+  res.send('ok')
+})
