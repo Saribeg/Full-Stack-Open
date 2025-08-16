@@ -1,0 +1,16 @@
+name: Hello World!
+
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - 'Part-11/full-stack-open-pokedex/**'
+  workflow_dispatch:
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say hello
+        run: echo "Hello World!"
