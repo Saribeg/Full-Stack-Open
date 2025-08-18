@@ -6,6 +6,13 @@ on:
       - main
     paths:
       - 'Part-11/full-stack-open-pokedex/**'
+      - '.github/workflows/fso-part-11-pokedex-pipeline.yml'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+    paths:
+      - 'Part-11/full-stack-open-pokedex/**'
+      - '.github/workflows/fso-part-11-pokedex-pipeline.yml'
   workflow_dispatch:
 
 jobs:
@@ -49,6 +56,9 @@ jobs:
           retention-days: 30
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
+        if: ${{ github.event_name == 'push' }}
+
       - run: flyctl deploy --remote-only
+        if: ${{ github.event_name == 'push' }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
