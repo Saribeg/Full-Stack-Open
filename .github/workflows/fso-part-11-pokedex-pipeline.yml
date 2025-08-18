@@ -15,15 +15,12 @@ on:
       - '.github/workflows/fso-part-11-pokedex-pipeline.yml'
   workflow_dispatch:
 
-env:
-  SHOULD_DEPLOY: ${{ github.event_name == 'push' && !(
-      contains(join(github.event.commits.*.message, ' '), '#skip') ||
-      contains(github.event.head_commit.message || '', '#skip')
-    ) }}
-
 jobs:
   CI-checks:
     runs-on: ubuntu-latest
+
+    outputs:
+      should_deploy: ${{ steps.gate.outputs.should_deploy }}
 
     defaults:
       run:
@@ -58,18 +55,27 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
-          path: playwright-report/
+          path: Part-11/full-stack-open-pokedex/playwright-report/
           retention-days: 30
+
+      - name: Decide if should deploy
+        id: gate
+        run: echo "should_deploy=${{ github.event_name == 'push'
+          && !contains(toJSON(github.event.commits.*.message), '#skip')
+          && !contains(github.event.head_commit.message || '', '#skip') }}" >> $GITHUB_OUTPUT
 
   tag_release:
     # We create a git tag before deploy 
     # so that the deployed version is always in sync with git history.
     runs-on: ubuntu-latest
     needs: [CI-checks]
-    if: ${{ github.env.SHOULD_DEPLOY == 'true' }}
+    if: ${{ needs.CI-checks.outputs.should_deploy == 'true' }}
+    outputs:
+      new_tag: ${{ steps.tag.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
+        id: tag
         uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -79,7 +85,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [tag_release]
-    if: ${{ github.env.SHOULD_DEPLOY == 'true' }}
+    if: ${{ needs.CI-checks.outputs.should_deploy == 'true' }}
 
     defaults:
       run:
@@ -88,6 +94,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only --image-label ${{ github.ref_name }}
+      - run: flyctl deploy --remote-only --image-label ${{ needs.tag_release.outputs.new_tag }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
