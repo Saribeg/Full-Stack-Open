@@ -1,4 +1,4 @@
-name: Deployment Pipeline For Part 11 of FSO Course Task pokedex
+name: CI/CD Pipeline For Part 11 of FSO Course Task pokedex
 
 on: 
   push:
@@ -6,10 +6,17 @@ on:
       - main
     paths:
       - 'Part-11/full-stack-open-pokedex/**'
+      - '.github/workflows/fso-part-11-pokedex-pipeline.yml'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+    paths:
+      - 'Part-11/full-stack-open-pokedex/**'
+      - '.github/workflows/fso-part-11-pokedex-pipeline.yml'
   workflow_dispatch:
 
 jobs:
-  simple_deployment_pipeline:
+  CI-checks:
     runs-on: ubuntu-latest
 
     defaults:
@@ -48,6 +55,15 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: CI-checks
+    if: ${{ github.event_name == 'push' }}
+    defaults:
+      run:
+        working-directory: Part-11/full-stack-open-pokedex
+    steps:
+      - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
         env:
