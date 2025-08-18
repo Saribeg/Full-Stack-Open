@@ -63,7 +63,7 @@ jobs:
     # so that the deployed version is always in sync with git history.
     runs-on: ubuntu-latest
     needs: [CI-checks]
-    if: ${{ env.SHOULD_DEPLOY == 'true' }}
+    if: ${{ github.env.SHOULD_DEPLOY == 'true' }}
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
@@ -76,7 +76,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [tag_release]
-    if: ${{ env.SHOULD_DEPLOY == 'true' }}
+    if: ${{ github.env.SHOULD_DEPLOY == 'true' }}
 
     defaults:
       run:
