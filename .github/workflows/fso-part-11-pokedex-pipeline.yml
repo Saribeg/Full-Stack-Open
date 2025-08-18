@@ -105,7 +105,7 @@ jobs:
 
     steps:
       - name: Notify success
-        if: ${{ needs.deploy.result == 'success' }}
+        if: ${{ needs.CI-checks.outputs.should_deploy == 'true' && needs.deploy.result == 'success' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
