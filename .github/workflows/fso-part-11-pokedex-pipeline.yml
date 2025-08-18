@@ -92,8 +92,6 @@ jobs:
         working-directory: Part-11/full-stack-open-pokedex
 
     steps:
-      - name: Force fail (for testing)
-        run: exit 1
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only --image-label ${{ needs.tag_release.outputs.new_tag }}
