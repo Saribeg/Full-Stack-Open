@@ -16,7 +16,10 @@ on:
   workflow_dispatch:
 
 env:
-  SHOULD_DEPLOY: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip') }}
+  SHOULD_DEPLOY: ${{ github.event_name == 'push' && !(
+      contains(join(github.event.commits.*.message, ' '), '#skip') ||
+      contains(github.event.head_commit.message || '', '#skip')
+    ) }}
 
 jobs:
   CI-checks:
