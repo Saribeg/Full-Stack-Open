@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Periodic health check:
+  periodic-health-check:
     runs-on: ubuntu-latest
     steps:
       - name: Check the pokedex app
