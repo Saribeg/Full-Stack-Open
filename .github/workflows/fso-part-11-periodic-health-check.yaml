@@ -2,7 +2,7 @@ name: Periodic health check for pokedex
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,4 +12,4 @@ jobs:
       - name: Check the pokedex app
         uses: jtalk/url-health-check-action@v4
         with:
-          url: https://fso-11-pokedex.fly.dev/periodic-health
+          url: https://fso-11-pokedex.fly.dev/health
