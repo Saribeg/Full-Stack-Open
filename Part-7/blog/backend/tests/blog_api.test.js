@@ -38,6 +38,48 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
     });
   });
 
+  describe('retrieval of existing blog by id', () => {
+    test('succeeds with status 200 and returns the correct blog', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToView = blogsAtStart[0];
+
+      const response = await api
+        .get(`/api/blogs/${blogToView.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const returnedBlog = response.body;
+
+      assert.strictEqual(returnedBlog.id, blogToView.id);
+      assert.strictEqual(returnedBlog.title, blogToView.title);
+      assert.strictEqual(returnedBlog.url, blogToView.url);
+      assert.ok(returnedBlog.user);
+      assert.ok(returnedBlog.user.username);
+    });
+
+    test('returns 404 if blog does not exist', async () => {
+      const nonExistingId = await helper.nonExistingId();
+
+      const response = await api
+        .get(`/api/blogs/${nonExistingId}`)
+        .expect(404);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, 'Blog not found');
+    });
+
+    test('returns 400 if id is invalid', async () => {
+      const invalidId = '12345invalidid';
+
+      const response = await api
+        .get(`/api/blogs/${invalidId}`)
+        .expect(400);
+
+      assert.ok(response.body.error);
+      assert.match(response.body.error, /malformatted|cast/i);
+    });
+  });
+
   describe('creation of a new blog', () => {
     test('a new blog can be added ', async () => {
       const newBlog = {
@@ -226,6 +268,82 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
 
       assert.ok(response.body.error);
       assert.strictEqual(response.body.error, 'Blog is not found');
+    });
+  });
+
+  describe('adding comments to blogs', () => {
+    test('succeeds with status 201 when adding a valid comment', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const validComment = { comment: 'This is a very thoughtful and insightful comment!' };
+
+      const response = await api
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send(validComment)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+
+      const updatedBlog = response.body;
+      assert.ok(updatedBlog.comments);
+      assert.ok(updatedBlog.comments.length > 0);
+
+      const addedComment = updatedBlog.comments.find(c => c.text === validComment.comment);
+      assert.ok(addedComment);
+      assert.ok(addedComment.id);
+      assert.strictEqual(addedComment.text, validComment.comment);
+    });
+
+    test('fails with 400 if comment is missing', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const response = await api
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send({})
+        .expect(400);
+
+      assert.ok(response.body.error);
+      assert.match(response.body.error, /comment/i);
+    });
+
+    test('fails with 400 if comment is shorter than minlength (20 chars)', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const shortComment = { comment: 'too short' };
+
+      const response = await api
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send(shortComment)
+        .expect(400);
+
+      assert.ok(response.body.error);
+      assert.match(response.body.error, /validation/i);
+    });
+
+    test('returns 404 if blog does not exist', async () => {
+      const nonExistingId = await helper.nonExistingId();
+
+      const response = await api
+        .post(`/api/blogs/${nonExistingId}/comments`)
+        .send({ comment: 'This is a valid long enough comment text!' })
+        .expect(404);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, 'Blog is not found');
+    });
+
+    test('returns 400 if blog id is invalid', async () => {
+      const invalidId = 'not-a-valid-id';
+
+      const response = await api
+        .post(`/api/blogs/${invalidId}/comments`)
+        .send({ comment: 'This is a valid long enough comment text!' })
+        .expect(400);
+
+      assert.ok(response.body.error);
+      assert.match(response.body.error, /malformatted|cast/i);
     });
   });
 });
