@@ -1,33 +1,79 @@
 const jwt = require('jsonwebtoken');
+const { v4: uuid } = require('uuid');
 const logger = require('./logger');
+const { SECRET, TEST_SECRET } = require('./config');
 const User = require('../models/user');
 
 const requestLogger = (request, response, next) => {
-  logger.info('Method:', request.method);
-  logger.info('Path:  ', request.path);
-  logger.info('Body:  ', request.body);
-  logger.info('---');
-  next();
-};
+  const correlationId = uuid();
+  request.correlationId = correlationId;
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' });
-};
-
-const errorHandler = (error, request, response, next) => {
-  logger.error(error.message);
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' });
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message });
-  } else if (error.code === 11000 || (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error'))) {
-    return response.status(400).json({ error: 'expected `username` to be unique' });
-  } else if (error.name ===  'JsonWebTokenError') {
-    return response.status(401).json({ error: 'token invalid' });
+  if (process.env.NODE_ENV === 'development') {
+    logger.info('Method:', request.method);
+    logger.info('Path:  ', request.originalUrl);
+    if (request.body && Object.keys(request.body).length > 0) {
+      logger.info('Body:  ', request.body);
+    }
+    logger.info('---');
+  } else {
+    response.on('finish', () => {
+      logger.info({
+        correlationId,
+        method: request.method,
+        path: request.originalUrl,
+        status: response.statusCode,
+        body: request.body ?? {},
+        ip: request.ip,
+        userAgent: request.get('user-agent')
+      });
+    });
   }
 
-  next(error);
+  return next();
+};
+
+const unknownEndpoint = (req, res) => {
+  logger.info({
+    correlationId: req.correlationId,
+    message: 'unknown endpoint'
+  });
+
+  return res.status(404).send({ error: 'unknown endpoint' });
+};
+
+const errorHandler = (error, request, response, _next) => {
+  let statusCode = 500;
+  let userError = { error: 'something went wrong' };
+
+  if (error.name === 'CastError') {
+    statusCode = 400;
+    userError = { error: 'malformatted id' };
+  } else if (error.name === 'ValidationError') {
+    statusCode = 400;
+    userError = { error: error.message };
+  } else if (
+    error.code === 11000 ||
+    (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error'))
+  ) {
+    statusCode = 400;
+    userError = { error: 'expected `username` to be unique' };
+  } else if (error.name === 'JsonWebTokenError') {
+    statusCode = 401;
+    userError = { error: 'token invalid' };
+  }
+
+  logger.error({
+    correlationId: request.correlationId,
+    status: statusCode,
+    userError,
+    originalError: {
+      name: error.name,
+      message: error.message,
+      ...(process.env.NODE_ENV === 'development' ? { stack: error.stack } : {}),
+    },
+  });
+
+  return response.status(statusCode).json(userError);
 };
 
 const tokenExtractor = (request, response, next) => {
@@ -52,7 +98,7 @@ const userExtractor = async (request, response, next) => {
   const token = authorization.replace('Bearer ', '');
   const decodedToken = jwt.verify(
     token,
-    (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') ? process.env.TEST_SECRET : process.env.SECRET
+    (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') ? TEST_SECRET : SECRET
   );
 
   if (!decodedToken.id) {

@@ -1,0 +1,56 @@
+name: CI/CD Pipeline For Part 7 of FSO Course and Project BlogApp
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Part-7/blog/backend/**'
+      - '.github/workflows/fso-part-7-main.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Part-7/blog/backend/**'
+      - '.github/workflows/fso-part-7-main.yml'
+  workflow_dispatch:
+
+jobs:
+  ci-checks:
+    uses: ./.github/workflows/reusable-express-backend-ci.yml
+    with:
+      working-directory: Part-7/blog/backend
+      node-versions: '["18","22"]'
+
+  tag-release:
+    needs: ci-checks
+    uses: ./.github/workflows/reusable-tag-release.yml
+    with:
+      should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
+      custom-tag: blogapp-v
+
+  fly-deploy:
+    needs: tag-release
+    uses: ./.github/workflows/reusable-fly-deploy.yml
+    with:
+      should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
+      working-directory: Part-7/blog/backend
+      image-label: ${{ needs['tag-release'].outputs.new_tag }}
+
+  health-check:
+    needs: fly-deploy
+    uses: ./.github/workflows/reusable-health-check.yml
+    with:
+      url: https://blogs-fso.fly.dev/health
+
+  notify:
+    needs: [ci-checks, tag-release, fly-deploy]
+    uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
+    with:
+      should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
+      ci-result: ${{ needs.ci-checks.result }}
+      tag-result: ${{ needs.tag-release.result }}
+      fly-result: ${{ needs.fly-deploy.result }}
+      health-result: ${{ needs.health-check.result }}
+      new-tag: ${{ needs.tag-release.outputs.new_tag }}
+
+
+

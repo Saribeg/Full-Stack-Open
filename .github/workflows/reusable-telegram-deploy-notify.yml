@@ -1,0 +1,62 @@
+name: Reusable Telegram Deploy Notify
+
+on:
+  workflow_call:
+    inputs:
+      should-deploy:
+        required: true
+        type: string
+      ci-result:
+        required: true
+        type: string
+      tag-result:
+        required: true
+        type: string
+      fly-result:
+        required: true
+        type: string
+      health-result:
+        required: true
+        type: string
+      new-tag:
+        required: true
+        type: string
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Notify Telegram Success
+        if: ${{ inputs.should-deploy == 'true' && inputs.fly-result == 'success' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ✅ Deploy succeeded
+            Tag `${{ inputs.new-tag }}` deployed
+            👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+      - name: Notify Telegram Failure
+        if: ${{ inputs.ci-result == 'failure' || inputs.tag-result == 'failure' || inputs.fly-result == 'failure' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            ❌ Build/Deploy failed
+
+            • Repository: ${{ github.repository }}
+            • Workflow: ${{ github.workflow }}
+            • Event: ${{ github.event_name }}
+            • Commit: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+            • Triggered by: ${{ github.actor }}
+
+            Job statuses:
+            • CI-checks: ${{ inputs.ci-result }}
+            • Tag-release: ${{ inputs.tag-result }}
+            • Fly-deploy: ${{ inputs.fly-result }}
+            • health-check: ${{ inputs.health-result }}
+
+            👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})

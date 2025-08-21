@@ -1,0 +1,83 @@
+name: Reusable CI Checks
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      node-versions:
+        required: false
+        type: string
+        default: '["22"]'
+    outputs:
+      should_deploy:
+        description: "Whether deployment should run"
+        value: ${{ jobs.ci-checks.outputs.should_deploy }}
+
+jobs:
+  ci-checks:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ${{ fromJson(inputs.node-versions) }}
+
+    outputs:
+      should_deploy: ${{ steps.gate.outputs.should_deploy }}
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+      - name: Copy Project
+        uses: actions/checkout@v4
+
+      - name: Install and Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Unit and Integration Tests
+        id: tests
+        run: npm run test:coverage
+
+      - name: Generate Test Coverage Report
+        id: test_reports
+        if: always() && steps.tests.conclusion != 'skipped'
+        run: npm run test:coverage:report
+
+      - name: Upload Test Coverage Report
+        if: always() && steps.test_reports.conclusion != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-coverage-report
+          path: ${{ inputs.working-directory }}/coverage/
+          retention-days: 2
+
+      - name: Check Unused Code
+        run: npm run check:dead
+        continue-on-error: true
+
+      - name: Security Audit
+        run: npm run audit
+
+      - name: Scan for Secrets with Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: detect --source . --no-git -v
+
+      - name: Decide if should deploy
+        id: gate
+        run: echo "should_deploy=${{ github.event_name == 'push'
+          && !contains(toJSON(github.event.commits.*.message), '#skip')
+          && !contains(github.event.head_commit.message || '', '#skip') }}" >> $GITHUB_OUTPUT
