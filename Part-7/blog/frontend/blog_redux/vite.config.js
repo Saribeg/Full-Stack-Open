@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,6 +11,30 @@ const __dirname = path.dirname(__filename);
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      plugins: [
+        visualizer({
+          filename: 'dist/stats-treemap.html',
+          template: 'treemap',
+          gzipSize: true,
+          brotliSize: true
+        }),
+        visualizer({
+          filename: 'dist/stats-network.html',
+          template: 'network',
+          gzipSize: true,
+          brotliSize: true
+        }),
+        visualizer({
+          filename: 'dist/stats-list.txt',
+          template: 'list',
+          gzipSize: true,
+          brotliSize: true
+        })
+      ]
+    }
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
@@ -24,9 +49,12 @@ export default defineConfig({
     }
   },
   test: {
-    include: ['tests/**/*.test.jsx'],
+    include: ['tests/**/*.test.{js,jsx}'],
     environment: 'jsdom',
     globals: true,
-    setupFiles: './testSetup.js'
+    setupFiles: './tests/setupTests.js',
+    getElementError: (message) => {
+      return new Error(message);
+    }
   }
 });

@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { AiOutlineClose } from 'react-icons/ai';
 import clsx from 'clsx';
 
-const modalRoot = document.getElementById('modal-root');
-
 const Modal = ({ isOpened = false, onClose, children }) => {
   if (!isOpened) return null;
 
+  const modalRoot = document.getElementById('modal-root');
+  if (!modalRoot) return null;
+
   return createPortal(
     <div
+      data-testid="overlay"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
       onClick={onClose}
     >

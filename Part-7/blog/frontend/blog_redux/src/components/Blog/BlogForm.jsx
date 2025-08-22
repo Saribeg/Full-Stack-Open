@@ -41,7 +41,8 @@ const BlogForm = ({ toggleForm }) => {
       .then(() => {
         resetForm();
         toggleForm();
-      });
+      })
+      .catch(() => {});
   };
 
   return (
