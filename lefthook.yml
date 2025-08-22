@@ -43,6 +43,7 @@
 
 extends:
   - ./Part-7/blog/backend/lefthook.yml
+  - ./Part-7/blog/frontend/blog_redux/lefthook.yml
 
 pre-commit:
   parallel: true

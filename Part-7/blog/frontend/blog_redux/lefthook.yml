@@ -1,0 +1,8 @@
+pre-commit:
+  parallel: true
+  commands:
+    fso:part-7:frontend:blog_redux:lint:
+      root: "Part-7/blog/frontend/blog_redux"
+      glob: "*.{js,jsx,cjs,mjs}"
+      run: npm run lint -- {staged_files}
+      stage_fixed: true

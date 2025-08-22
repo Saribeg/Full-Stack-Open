@@ -4,6 +4,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import vitest from 'eslint-plugin-vitest';
 import prettier from 'eslint-plugin-prettier';
+import vitestGlobals from 'eslint-config-vitest-globals/flat';
 
 const commonRules = {
   'react/react-in-jsx-scope': 'off',
@@ -48,20 +49,37 @@ export default [
     rules: commonRules
   },
   {
-    files: ['tests/**/*.test.jsx'],
+    files: ['tests/**/*.test.{js,jsx}', 'tests/setupTests.js'],
     languageOptions: {
       globals: {
         ...globals.browser,
         ...globals.node,
         ...globals.commonjs,
         ...globals.es2021,
-        ...vitest.environments.env.globals
+        ...vitestGlobals().languageOptions.globals
       }
     },
     plugins: {
       vitest
     },
-    rules: commonRules
+    rules: Object.assign(commonRules, {
+      'react/prop-types': 'off',
+      'no-empty-pattern': 'off'
+    })
+  },
+  {
+    files: [
+      'playwright.config.{js,ts}',
+      'vite.config.{js,ts}',
+      'eslint.config.{js,cjs}',
+      'tailwind.config.{js,cjs}',
+      'postcss.config.{js,cjs}'
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node
+      }
+    }
   },
   {
     ignores: ['dist/**']
