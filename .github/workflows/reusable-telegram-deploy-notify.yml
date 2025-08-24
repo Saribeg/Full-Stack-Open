@@ -12,7 +12,7 @@ on:
       tag-result:
         required: true
         type: string
-      deploy-result:   # универсально: Fly, Vercel, Netlify и т.д.
+      deploy-result:
         required: true
         type: string
       new-tag:

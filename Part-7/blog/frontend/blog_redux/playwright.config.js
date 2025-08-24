@@ -25,7 +25,7 @@ export default defineConfig({
     ? []
     : [
         {
-          command: 'npm run start:backend:dev',
+          command: 'npm run start:backend:test',
           url: `${BACK_URL}/health`,
           reuseExistingServer: true,
           timeout: 120_000,

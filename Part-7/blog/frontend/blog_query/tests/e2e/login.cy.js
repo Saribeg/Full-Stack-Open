@@ -3,6 +3,7 @@ describe('Login', () => {
 
   beforeEach(() => {
     cy.resetDb();
+    cy.seedInitialDbData();
     cy.createUser(user);
     cy.intercept('POST', '/api/login').as('login');
     cy.visit('/');

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "start:backend:dev": "cd ../../backend && npm run dev",
+    "start:backend:test": "cd ../../backend && npm run start:test",
     "start:full:dev": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend:dev\" \"npm run dev\"",
     "build": "vite build",
     "check:bundle": "npx bundlesize2",
