@@ -15,19 +15,19 @@ export default defineConfig({
     rollupOptions: {
       plugins: [
         visualizer({
-          filename: 'dist/stats-treemap.html',
+          filename: 'bundle-size-reports/stats-treemap.html',
           template: 'treemap',
           gzipSize: true,
           brotliSize: true
         }),
         visualizer({
-          filename: 'dist/stats-network.html',
+          filename: 'bundle-size-reports/stats-network.html',
           template: 'network',
           gzipSize: true,
           brotliSize: true
         }),
         visualizer({
-          filename: 'dist/stats-list.txt',
+          filename: 'bundle-size-reports/stats-list.txt',
           template: 'list',
           gzipSize: true,
           brotliSize: true
@@ -52,9 +52,6 @@ export default defineConfig({
     include: ['tests/**/*.test.{js,jsx}'],
     environment: 'jsdom',
     globals: true,
-    setupFiles: './tests/setupTests.js',
-    getElementError: (message) => {
-      return new Error(message);
-    }
+    setupFiles: './tests/setupTests.js'
   }
 });

@@ -34,6 +34,7 @@ const Notification = () => {
       slots={{ transition: Slide }}
     >
       <Alert
+        data-testid={`alert-${type || 'info'}`}
         onClose={handleClose}
         severity={type || 'info'}
         variant="filled"

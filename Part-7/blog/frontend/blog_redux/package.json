@@ -3,22 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "bundlesize": [
-    {
-      "path": "dist/assets/index-*.js",
-      "maxSize": "200kb"
-    },
-    {
-      "path": "dist/assets/*.css",
-      "maxSize": "100kb"
-    }
-  ],
   "scripts": {
     "dev": "vite",
     "start:backend:dev": "cd ../../backend && npm run dev",
     "start:full:dev": "concurrently -k -n BACKEND,FRONTEND -c yellow,cyan \"npm run start:backend:dev\" \"npm run dev\"",
     "build": "vite build",
-    "check:bundle": "bundlesize2",
+    "check:bundle": "npx bundlesize2",
     "format": "prettier --write .",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext js,jsx --fix",
@@ -31,6 +21,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
+    "test:e2e:ci": "npm run test:e2e",
     "check:dead": "knip --exports --dependencies",
     "audit": "npm audit --audit-level=critical",
     "check:outdated": "npm outdated"

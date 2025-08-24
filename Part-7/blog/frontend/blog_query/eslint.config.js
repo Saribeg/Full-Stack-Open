@@ -4,6 +4,7 @@ import stylistic from '@stylistic/eslint-plugin';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import vitest from 'eslint-plugin-vitest';
+import cypress from 'eslint-plugin-cypress';
 
 const commonRules = {
   'stylistic/indent': ['error', 2],
@@ -52,20 +53,44 @@ export default [
     rules: commonRules,
   },
   {
-    files: ['tests/**/*.test.jsx'],
+    files: ['tests/**/*.test.{js,jsx}', 'tests/setupTests.js', 'tests/utils/contextTestUtils.jsx'],
     languageOptions: {
       globals: {
         ...globals.browser,
         ...globals.node,
         ...globals.commonjs,
         ...globals.es2021,
-        ...vitest.environments.env.globals,
+        ...(vitest.environments?.env?.globals ?? {}),
       },
     },
     plugins: {
       vitest,
     },
-    rules: commonRules,
+    rules: {
+      ...commonRules,
+      'react/prop-types': 'off',
+      'no-empty-pattern': 'off',
+    },
+  },
+  {
+    files: ['tests/e2e/**/*.cy.{js,jsx,ts,tsx}'],
+    ...cypress.configs.globals,
+  },
+  {
+    files: ['tests/e2e/support/**/*.{js,jsx,ts,tsx}'],
+    ...cypress.configs.globals,
+  },
+  {
+    files: [
+      'cypress.config.{js,ts}',
+      'vite.config.{js,ts}',
+      'eslint.config.{js,cjs}'
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node
+      }
+    }
   },
   {
     ignores: ['dist/**'],

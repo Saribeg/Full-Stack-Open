@@ -6,7 +6,7 @@ const AuthStatus = ({ user }) => {
   const { name } = user;
 
   return (
-    <Stack direction="row" spacing={2} alignItems="center">
+    <Stack direction="row" spacing={2} alignItems="center" data-testid="auth-status">
       <Typography variant="body1" sx={{ fontWeight: 500 }}>
         {name}{' '}
         <Typography component="span" variant="body2" color="text.secondary">

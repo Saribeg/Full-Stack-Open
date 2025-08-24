@@ -1,0 +1,84 @@
+name: CI/CD Pipeline for front-end part of Part 7 of FSO Course - Project BlogApp
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Part-7/blog/frontend/blog_redux/**'
+      - 'Part-7/blog/frontend/blog_query/**'
+      - '.github/workflows/fso-part-7-frontend-ci_cd.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Part-7/blog/frontend/blog_redux/**'
+      - 'Part-7/blog/frontend/blog_query/**'
+      - '.github/workflows/fso-part-7-frontend-ci_cd.yml'
+  workflow_dispatch:
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      blog_redux: ${{ steps.filter.outputs.blog_redux }}
+      blog_query: ${{ steps.filter.outputs.blog_query }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            blog_redux:
+              - 'Part-7/blog/frontend/blog_redux/**'
+            blog_query:
+              - 'Part-7/blog/frontend/blog_query/**'
+
+  blog_redux:
+    needs: changes
+    if: needs.changes.outputs.blog_redux == 'true'
+    name: Frontend CI - blog_redux
+    uses: ./.github/workflows/reusable-frontend-ci.yml
+    with:
+      app_slug: blog_redux
+      working_directory: Part-7/blog/frontend/blog_redux
+      backend_action: ./.github/actions/start-backend-for-e2e
+      backend_directory: Part-7/blog/backend
+      backend_node_version: '22'
+      backend_port: 3003
+      backend_health_path: /health
+      backend_timeout_ms: 120000
+      frontend_node_version: '22'
+      e2e_library: playwright
+      frontend_port: 5173
+      frontend_url: 'http://127.0.0.1:5173'
+      frontend_timeout_ms: 120000
+      e2e_artifact_paths: |
+        Part-7/blog/frontend/blog_redux/playwright-report/**
+        Part-7/blog/frontend/blog_redux/test-results/**
+    secrets:
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+
+  blog_query:
+    needs: changes
+    if: needs.changes.outputs.blog_query == 'true'
+    name: Frontend CI - blog_query
+    uses: ./.github/workflows/reusable-frontend-ci.yml
+    with:
+      app_slug: blog_query
+      working_directory: Part-7/blog/frontend/blog_query
+      backend_action: ./.github/actions/start-backend-for-e2e
+      backend_directory: Part-7/blog/backend
+      backend_node_version: '22'
+      backend_port: 3003
+      backend_health_path: /health
+      backend_timeout_ms: 120000
+      frontend_node_version: '20'
+      e2e_library: cypress
+      frontend_port: 5173
+      frontend_url: 'http://127.0.0.1:5173'
+      frontend_timeout_ms: 120000
+      e2e_artifact_paths: |
+        Part-7/blog/frontend/blog_query/cypress/reports/**
+        Part-7/blog/frontend/blog_query/cypress/screenshots/**
+        Part-7/blog/frontend/blog_query/cypress/videos/**
+    secrets:
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}

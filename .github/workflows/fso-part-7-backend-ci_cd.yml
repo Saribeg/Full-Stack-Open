@@ -1,16 +1,16 @@
-name: CI/CD Pipeline For Part 7 of FSO Course and Project BlogApp
+name: CI/CD Pipeline for back-end part of Part 7 of FSO Course - Project BlogApp
 
 on:
   push:
     branches: [main]
     paths:
       - 'Part-7/blog/backend/**'
-      - '.github/workflows/fso-part-7-main.yml'
+      - '.github/workflows/fso-part-7-backend-ci_cd.yml'
   pull_request:
     branches: [main]
     paths:
       - 'Part-7/blog/backend/**'
-      - '.github/workflows/fso-part-7-main.yml'
+      - '.github/workflows/fso-part-7-backend-ci_cd.yml'
   workflow_dispatch:
 
 jobs:
