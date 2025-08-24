@@ -65,11 +65,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set test DB name per node
+        run: echo "TEST_DB_NAME=blog-test-${{ matrix.node-version }}" >> $GITHUB_ENV
+
       - name: Run Linter
         run: npm run lint
 
       - name: Run Unit and Integration Tests
         id: tests
+        env:
+          TEST_DB_NAME: ${{ env.TEST_DB_NAME }}
         run: npm run test:coverage
 
       - name: Generate Test Coverage Report
