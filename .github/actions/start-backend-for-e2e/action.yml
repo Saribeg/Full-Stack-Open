@@ -48,6 +48,10 @@ runs:
       env:
         NODE_ENV: test
         TEST_MONGODB_URI: ${{ env.TEST_MONGODB_URI }}
+        DEV_MONGODB_URI: ${{ env.TEST_MONGODB_URI }}
+        MONGODB_URI: ${{ env.TEST_MONGODB_URI }}
+        SECRET: sekret
+        TEST_SECRET: sekret
         PORT: ${{ inputs.port }}
       run: nohup npm run start:test > server.log 2>&1 &
 

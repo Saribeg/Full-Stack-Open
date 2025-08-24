@@ -14,7 +14,10 @@ const app = express();
 logger.info('connecting to MongoDB');
 
 mongoose
-  .connect(config.MONGODB_URI)
+  .connect(config.MONGODB_URI, {
+    // Will no impact if undefined and original URI already contains DB name.
+    dbName: config.MONGODB_DB_NAME
+  })
   .then(() => {
     logger.info('connected to MongoDB');
   })
