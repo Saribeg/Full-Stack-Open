@@ -25,7 +25,7 @@ jobs:
     uses: ./.github/workflows/reusable-tag-release.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
-      custom-tag: blogapp-v
+      custom-tag: blogapp-backend-v
 
   fly-deploy:
     needs: tag-release

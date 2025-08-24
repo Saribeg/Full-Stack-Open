@@ -54,8 +54,31 @@ jobs:
       e2e_artifact_paths: |
         Part-7/blog/frontend/blog_redux/playwright-report/**
         Part-7/blog/frontend/blog_redux/test-results/**
+      extra_files: vercel.json
     secrets:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+
+  tag-release-redux:
+    needs: blog_redux
+    if: needs.changes.outputs.blog_redux == 'true'
+    uses: ./.github/workflows/reusable-tag-release.yml
+    with:
+      should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
+      custom-tag: blogapp-redux-v
+
+  vercel-deploy-redux:
+    needs: [blog_redux, tag-release-redux]
+    if: needs.changes.outputs.blog_redux == 'true'
+    uses: ./.github/workflows/reusable-vercel-deploy.yml
+    with:
+      should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
+      artifact-name: blog_redux-dist
+      app_slug: blog_redux
+      image-label: ${{ needs.tag-release-redux.outputs.new_tag }}
+    secrets:
+      FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_REDUX }}
 
   blog_query:
     needs: changes
@@ -80,5 +103,28 @@ jobs:
         Part-7/blog/frontend/blog_query/cypress/reports/**
         Part-7/blog/frontend/blog_query/cypress/screenshots/**
         Part-7/blog/frontend/blog_query/cypress/videos/**
+      extra_files: vercel.json
     secrets:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+
+  tag-release-query:
+    needs: blog_query
+    if: needs.changes.outputs.blog_query == 'true'
+    uses: ./.github/workflows/reusable-tag-release.yml
+    with:
+      should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
+      custom-tag: blogapp-query-v
+
+  vercel-deploy-query:
+    needs: [blog_query, tag-release-query]
+    if: needs.changes.outputs.blog_query == 'true'
+    uses: ./.github/workflows/reusable-vercel-deploy.yml
+    with:
+      should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
+      artifact-name: blog_query-dist
+      app_slug: blog_query
+      image-label: ${{ needs.tag-release-query.outputs.new_tag }}
+    secrets:
+      FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_QUERY }}
