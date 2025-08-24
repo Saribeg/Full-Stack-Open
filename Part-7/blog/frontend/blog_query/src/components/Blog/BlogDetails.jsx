@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Box, Paper, Stack, Typography, Divider, IconButton, Button } from '@mui/material';
+import { Box, Paper, Stack, Typography, Divider, IconButton, Button, Link } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import CommentForm from './CommentForm';
@@ -52,13 +52,22 @@ const BlogDetails = () => {
 
   return (
     <Box>
-      <Paper elevation={3} square={false} sx={{ maxWidth: 600, ml: 0, p: 4 }}>
-        <PageTitle sx={{ mb: 4 }} variant="h4">{blog.title} <span className="blog-author">by {blog.author}</span></PageTitle>
+      <Paper elevation={3} square={false} sx={{ maxWidth: 600, ml: 0, p: 4 }} data-testid="blog-card">
+        <PageTitle sx={{ mb: 4 }} variant="h4" data-testid="blog-title">{blog.title} <span className="blog-author">by {blog.author}</span></PageTitle>
         <Divider sx={{ mb: 4 }}/>
         <Stack spacing={2} sx={{ mb: 4 }}>
           <Typography>Author: {blog.author || 'unknown'}</Typography>
-          <Typography>URL: <a href={blog.url}>{blog.url}</a></Typography>
-          {blog.user?.name && <Typography className='blog-user'>User: {blog.user.name}</Typography>}
+          <Typography>
+            URL{' '}
+            <Link
+              href={blog.url}
+              sx={{ wordBreak: 'break-all', whiteSpace: 'normal' }}
+              data-testid="blog-url"
+            >
+              {blog.url}
+            </Link>
+          </Typography>
+          {blog.user?.name && <Typography className='blog-user' data-testid="blog-user">User: {blog.user.name}</Typography>}
         </Stack>
         <Divider sx={{ mb: 4 }}/>
         <Stack direction="row" gap={5} alignItems="center">
@@ -67,10 +76,11 @@ const BlogDetails = () => {
               onClick={handleBlogUpdate}
               disabled={isLiking}
               color="error"
+              data-testid="blog-like"
             >
               <FavoriteIcon fontSize="large" />
             </IconButton>
-            <Typography variant="body1" sx={{ alignSelf: 'center', fontSize: '1.2rem', fontWeight: 500 }}>
+            <Typography variant="body1" sx={{ alignSelf: 'center', fontSize: '1.2rem', fontWeight: 500 }} data-testid="blog-likes">
               {blog.likes || 0}
             </Typography>
           </Stack>
@@ -83,6 +93,7 @@ const BlogDetails = () => {
                   onClick={handleBlogDelete}
                   disabled={isDeleting}
                   sx={{ px: 4, py: 1 }}
+                  data-testid="blog-delete"
                 >
                   Delete
                 </Button>
@@ -101,7 +112,7 @@ const BlogDetails = () => {
       {blog.comments?.length > 10 && <CommentForm id={blog.id} />}
 
       {blog.comments?.length > 0 && (
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 4 }} data-testid="blog-comments">
           <Typography variant="h6" sx={{ mb: 2 }}>
             Comments
           </Typography>
@@ -118,6 +129,7 @@ const BlogDetails = () => {
                 key={comment.id}
                 variant="outlined"
                 sx={{ p: 1.5 }}
+                data-testid="blog-comment"
               >
                 <Typography>{comment.text}</Typography>
               </Paper>

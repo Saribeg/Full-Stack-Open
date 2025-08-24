@@ -60,6 +60,7 @@ const Togglable = forwardRef((props, refs) => {
           fontWeight: 500,
           mb: 2,
         }}
+        data-testid="blog-create-toggle"
       >
         {visible ? 'Cancel' : buttonLabel}
       </Button>

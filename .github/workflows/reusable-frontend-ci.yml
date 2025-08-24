@@ -1,0 +1,170 @@
+name: Reusable Frontend CI Checks
+
+on:
+  workflow_call:
+    inputs:
+      app_slug:
+        required: true
+        type: string
+      working_directory:
+        required: true
+        type: string
+      backend_action:
+        required: true
+        type: string
+      backend_directory:
+        required: true
+        type: string
+      backend_node_version:
+        required: false
+        type: string
+        default: '22'
+      backend_port:
+        required: false
+        type: number
+        default: 3003
+      backend_health_path:
+        required: false
+        type: string
+        default: '/health'
+      backend_timeout_ms:
+        required: false
+        type: number
+        default: 60000
+      frontend_node_version:
+        required: false
+        type: string
+        default: '22'
+      e2e_library:
+        required: true
+        type: string
+      frontend_port:
+        required: false
+        type: number
+        default: 5173
+      frontend_url:
+        required: false
+        type: string
+        default: 'http://127.0.0.1:5173'
+      frontend_timeout_ms:
+        required: false
+        type: number
+        default: 60000
+      e2e_artifact_paths:
+        required: true
+        type: string
+
+    secrets:
+      TEST_MONGODB_URI:
+        required: true
+
+jobs:
+  ci-checks:
+    runs-on: ubuntu-latest
+
+    outputs:
+      should_deploy: ${{ steps.gate.outputs.should_deploy }}
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    steps:
+      - name: Copy Project
+        uses: actions/checkout@v4
+
+      # Backend must be up before build so VITE_API_URL is baked into the bundle
+      - name: Start API for E2E
+        id: api
+        uses: ${{ inputs.backend_action }}
+        with:
+          working-directory: ${{ inputs.backend_directory }}
+          node-version: ${{ inputs.backend_node_version }}
+          port: ${{ inputs.backend_port }}
+          health-path: ${{ inputs.backend_health_path }}
+          timeout-ms: ${{ inputs.backend_timeout_ms }}
+        env:
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+
+      - name: Install and Setup Node.js for front-end project
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.frontend_node_version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.working_directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        if: ${{ inputs.e2e_library == 'playwright' }}
+        run: npx playwright install --with-deps
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Unit Tests
+        run: npm run test:unit
+
+      - name: Run Components Tests
+        run: npm run test:components
+
+      - name: Run Integration Tests
+        run: npm run test:integration
+
+      - name: Build
+        run: npm run build
+
+      - name: Check Bundle Size
+        id: bundle-size
+        run: npm run check:bundle
+
+      - name: Upload Bundle Size reports (on failure)
+        if: always() && steps.bundle-size.conclusion == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.app_slug }}-bundle-size-reports
+          path: ${{ inputs.working_directory }}/bundle-size-reports/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      # Start the built frontend with Vite preview (background process) for e2e tests
+      - name: Preview
+        run: nohup npm run preview -- --port=${{ inputs.frontend_port }} --strictPort > preview.log 2>&1 &
+
+      # Block pipeline until the preview server responds
+      - name: Wait for preview
+        run: npx -y wait-on@7 ${{ inputs.frontend_url }} --timeout ${{ inputs.frontend_timeout_ms }}
+
+      - name: Run End-to-End Tests (${{ inputs.e2e_library }})
+        id: e2e-test
+        env:
+          E2E_BASE_URL: ${{ inputs.frontend_url }}
+          E2E_API_URL:  ${{ steps.api.outputs.base_url }}
+        run: npm run test:e2e:ci
+
+      - name: Upload E2E artifacts
+        if: always() && steps.e2e-test.conclusion == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.app_slug }}-e2e-artifacts
+          path: ${{ inputs.e2e_artifact_paths }}
+          if-no-files-found: ignore
+          retention-days: 1
+
+      - name: Check Unused Code
+        run: npm run check:dead
+      
+      - name: Security Audit
+        run: npm run audit
+
+      - name: Scan for Secrets with Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: detect --source . --no-git -v
+
+      - name: Decide if should deploy
+        id: gate
+        run: echo "should_deploy=${{ github.event_name == 'push'
+          && !contains(toJSON(github.event.commits.*.message), '#skip')
+          && !contains(github.event.head_commit.message || '', '#skip') }}" >> $GITHUB_OUTPUT

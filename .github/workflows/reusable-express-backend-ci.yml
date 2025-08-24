@@ -1,4 +1,4 @@
-name: Reusable CI Checks
+name: Reusable Express Backend CI Checks
 
 on:
   workflow_call:

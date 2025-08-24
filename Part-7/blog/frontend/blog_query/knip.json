@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "index.html",
+    "src/main.jsx"
+  ],
+  "project": [
+    "src/**/*.{js,jsx}"
+  ],
+  "ignore": [
+    "dist/**",
+    "coverage/**",
+    "test-results/**"
+  ],
+  "ignoreDependencies": [],
+  "rules": {
+    "dependencies": "warn",
+    "exports": "warn",
+    "types": "off"
+  }
+}
