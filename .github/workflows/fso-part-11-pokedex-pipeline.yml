@@ -16,7 +16,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      pokedex: ${{ steps.filter.outputs.pokedex }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            pokedex:
+              - 'Part-11/full-stack-open-pokedex/**'
+              - '.github/workflows/fso-part-11-pokedex-pipeline.yml'
+
   CI-checks:
+    needs: changes
+    if: ${{ needs.changes.outputs.pokedex == 'true' }}
     runs-on: ubuntu-latest
 
     outputs:
@@ -101,12 +117,12 @@ jobs:
 
   notify:
     runs-on: ubuntu-latest
-    needs: [CI-checks, tag_release, deploy]
+    needs: [changes, CI-checks, tag_release, deploy]
     if: always()
 
     steps:
       - name: Notify success
-        if: ${{ needs.CI-checks.outputs.should_deploy == 'true' && needs.deploy.result == 'success' }}
+        if: ${{ needs.changes.outputs.pokedex == 'true' && needs.CI-checks.outputs.should_deploy == 'true' && needs.deploy.result == 'success' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
@@ -118,7 +134,7 @@ jobs:
             [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
       - name: Notify failure
-        if: ${{ needs.CI-checks.result == 'failure' || needs.tag_release.result == 'failure' || needs.deploy.result == 'failure' }}
+        if: ${{ needs.changes.outputs.pokedex == 'true' && (needs.CI-checks.result == 'failure' || needs.tag_release.result == 'failure' || needs.deploy.result == 'failure') }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
