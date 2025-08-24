@@ -20,7 +20,6 @@ export default defineConfig({
     retries: { runMode: 1, openMode: 0 },
     setupNodeEvents(on, config) {
       mochawesome(on);
-      // пробрасываем API_URL внутрь Cypress env
       config.env = { ...(config.env ?? {}), API_URL: E2E_API_URL };
       return config;
     }

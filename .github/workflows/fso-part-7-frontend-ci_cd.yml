@@ -56,7 +56,7 @@ jobs:
         Part-7/blog/frontend/blog_redux/test-results/**
       extra_files: vercel.json
     secrets:
-      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI_REDUX }}
 
   tag-release-redux:
     needs: blog_redux
@@ -116,7 +116,7 @@ jobs:
         Part-7/blog/frontend/blog_query/cypress/videos/**
       extra_files: vercel.json
     secrets:
-      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI_QUERY }}
 
   tag-release-query:
     needs: blog_query
