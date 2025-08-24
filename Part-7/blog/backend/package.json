@@ -10,9 +10,9 @@
     "lint": "eslint .",
     "test": "cross-env NODE_ENV=test node --test --test-concurrency=1",
     "test:single": "npm test -- --test-only --test-concurrency=1",
-    "test:coverage": "c8 --all npm test",
-    "test:coverage:check": "c8 check-coverage --per-file",
-    "test:coverage:report": "c8 report",
+    "test:coverage": "c8 --config .c8rc.json npm test",
+    "test:coverage:check": "c8 --config .c8rc.json check-coverage --per-file",
+    "test:coverage:report": "c8 --config .c8rc.json report",
     "check:dead": "knip --exports --dependencies",
     "audit": "npm audit --audit-level=critical"
   },
