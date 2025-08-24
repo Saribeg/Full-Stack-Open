@@ -12,10 +12,7 @@ on:
       tag-result:
         required: true
         type: string
-      fly-result:
-        required: true
-        type: string
-      health-result:
+      deploy-result:   # универсально: Fly, Vercel, Netlify и т.д.
         required: true
         type: string
       new-tag:
@@ -28,7 +25,7 @@ jobs:
     if: always()
     steps:
       - name: Notify Telegram Success
-        if: ${{ inputs.should-deploy == 'true' && inputs.fly-result == 'success' }}
+        if: ${{ inputs.should-deploy == 'true' && inputs.deploy-result == 'success' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -39,7 +36,7 @@ jobs:
             👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
       - name: Notify Telegram Failure
-        if: ${{ inputs.ci-result == 'failure' || inputs.tag-result == 'failure' || inputs.fly-result == 'failure' }}
+        if: ${{ inputs.ci-result == 'failure' || inputs.tag-result == 'failure' || inputs.deploy-result == 'failure' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -56,7 +53,6 @@ jobs:
             Job statuses:
             • CI-checks: ${{ inputs.ci-result }}
             • Tag-release: ${{ inputs.tag-result }}
-            • Fly-deploy: ${{ inputs.fly-result }}
-            • health-check: ${{ inputs.health-result }}
+            • Deploy: ${{ inputs.deploy-result }}
 
             👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})

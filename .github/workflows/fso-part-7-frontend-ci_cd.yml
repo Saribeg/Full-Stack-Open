@@ -80,6 +80,17 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_REDUX }}
 
+  notify-redux:
+    needs: [blog_redux, tag-release-redux, vercel-deploy-redux]
+    if: needs.changes.outputs.blog_redux == 'true'
+    uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
+    with:
+      should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
+      ci-result: ${{ needs.blog_redux.result }}
+      tag-result: ${{ needs.tag-release-redux.result }}
+      deploy-result: ${{ needs.vercel-deploy-redux.result }}
+      new-tag: ${{ needs.tag-release-redux.outputs.new_tag }}
+
   blog_query:
     needs: changes
     if: needs.changes.outputs.blog_query == 'true'
@@ -128,3 +139,14 @@ jobs:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_QUERY }}
+
+  notify-query:
+    needs: [blog_query, tag-release-query, vercel-deploy-query]
+    if: needs.changes.outputs.blog_query == 'true'
+    uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
+    with:
+      should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
+      ci-result: ${{ needs.blog_query.result }}
+      tag-result: ${{ needs.tag-release-query.result }}
+      deploy-result: ${{ needs.vercel-deploy-query.result }}
+      new-tag: ${{ needs.tag-release-query.outputs.new_tag }}

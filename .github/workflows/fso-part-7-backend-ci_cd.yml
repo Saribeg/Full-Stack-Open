@@ -42,14 +42,13 @@ jobs:
       url: https://blogs-fso.fly.dev/health
 
   notify:
-    needs: [ci-checks, tag-release, fly-deploy]
+    needs: [ci-checks, tag-release, fly-deploy, health-check]
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
       ci-result: ${{ needs.ci-checks.result }}
       tag-result: ${{ needs.tag-release.result }}
-      fly-result: ${{ needs.fly-deploy.result }}
-      health-result: ${{ needs.health-check.result }}
+      deploy-result: ${{ needs.health-check.result }}
       new-tag: ${{ needs.tag-release.outputs.new_tag }}
 
 
