@@ -40,7 +40,6 @@ jobs:
     with:
       app_slug: blog_redux
       working_directory: Part-7/blog/frontend/blog_redux
-      backend_action: ./.github/actions/start-backend-for-e2e
       backend_directory: Part-7/blog/backend
       backend_node_version: '22'
       backend_port: 3003
@@ -99,7 +98,6 @@ jobs:
     with:
       app_slug: blog_query
       working_directory: Part-7/blog/frontend/blog_query
-      backend_action: ./.github/actions/start-backend-for-e2e
       backend_directory: Part-7/blog/backend
       backend_node_version: '22'
       backend_port: 3003

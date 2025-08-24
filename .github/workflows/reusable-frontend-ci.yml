@@ -9,9 +9,6 @@ on:
       working_directory:
         required: true
         type: string
-      backend_action:
-        required: true
-        type: string
       backend_directory:
         required: true
         type: string
@@ -80,7 +77,7 @@ jobs:
       # Backend must be up before build so VITE_API_URL is baked into the bundle
       - name: Start API for E2E
         id: api
-        uses: ${{ inputs.backend_action }}
+        uses: ./.github/actions/start-backend-for-e2e
         with:
           working-directory: ${{ inputs.backend_directory }}
           node-version: ${{ inputs.backend_node_version }}
