@@ -10,6 +10,19 @@ on:
         required: false
         type: string
         default: '["22"]'
+
+    secrets:
+      DEV_MONGODB_URI:
+        required: true
+      MONGODB_URI:
+        required: true
+      SECRET:
+        required: true
+      TEST_MONGODB_URI:
+        required: true
+      TEST_SECRET:
+        required: true
+
     outputs:
       should_deploy:
         description: "Whether deployment should run"
@@ -18,6 +31,14 @@ on:
 jobs:
   ci-checks:
     runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: test
+      DEV_MONGODB_URI: ${{ secrets.DEV_MONGODB_URI }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      SECRET: ${{ secrets.SECRET }}
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      TEST_SECRET: ${{ secrets.TEST_SECRET }}
 
     strategy:
       matrix:
@@ -60,7 +81,7 @@ jobs:
         if: always() && steps.test_reports.conclusion != 'skipped'
         uses: actions/upload-artifact@v4
         with:
-          name: test-coverage-report
+          name: test-coverage-report-node${{ matrix.node-version }}-run${{ github.run_attempt }}
           path: ${{ inputs.working-directory }}/coverage/
           retention-days: 2
 

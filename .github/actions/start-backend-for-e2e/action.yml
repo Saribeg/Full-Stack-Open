@@ -49,7 +49,7 @@ runs:
         NODE_ENV: test
         TEST_MONGODB_URI: ${{ env.TEST_MONGODB_URI }}
         PORT: ${{ inputs.port }}
-      run: nohup npm run start:test > ${{ inputs.working-directory }}/server.log 2>&1 &
+      run: nohup npm run start:test > server.log 2>&1 &
 
     - name: Wait for backend health
       shell: bash

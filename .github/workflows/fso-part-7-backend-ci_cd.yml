@@ -19,6 +19,12 @@ jobs:
     with:
       working-directory: Part-7/blog/backend
       node-versions: '["18","22"]'
+    secrets:
+      DEV_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      SECRET: sekret
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      TEST_SECRET: sekret
 
   tag-release:
     needs: ci-checks
@@ -28,7 +34,7 @@ jobs:
       custom-tag: blogapp-backend-v
 
   fly-deploy:
-    needs: tag-release
+    needs: [ci-checks, tag-release]
     uses: ./.github/workflows/reusable-fly-deploy.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
