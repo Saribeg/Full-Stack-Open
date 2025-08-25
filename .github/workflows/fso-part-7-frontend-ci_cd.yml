@@ -77,7 +77,8 @@ jobs:
     secrets:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_REDUX }}
+      # VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_REDUX }}
+      VERCEL_PROJECT_ID: 'prj_6XKuTqUP8rcBnr41JApKSyF8ngxA'
 
   notify-redux:
     needs: [blog_redux, tag-release-redux, vercel-deploy-redux]
@@ -136,7 +137,8 @@ jobs:
     secrets:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_QUERY }}
+      # VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_QUERY }}
+      VERCEL_PROJECT_ID: 'prj_9bFR1EaMi0KqD54nxHnonOxGAzGb'
 
   notify-query:
     needs: [blog_query, tag-release-query, vercel-deploy-query]
