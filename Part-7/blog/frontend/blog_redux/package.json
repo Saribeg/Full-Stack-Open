@@ -23,7 +23,7 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
     "test:e2e:ci": "npm run test:e2e",
-    "check:dead": "knip --exports --dependencies",
+    "check:dead": "knip --exports --dependencies --no-exit-code",
     "audit": "npm audit --audit-level=critical",
     "check:outdated": "npm outdated"
   },

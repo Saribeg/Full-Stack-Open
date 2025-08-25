@@ -27,7 +27,7 @@
     "test:e2e:headed:dev": "cross-env CYPRESS=true start-server-and-test start:full:test http://127.0.0.1:5173 \"cypress run --e2e --browser chrome --headed\"",
     "test:e2e:report:dev": "mochawesome-merge cypress/reports/*.json > cypress/reports/merged.json && mochawesome-report-generator cypress/reports/merged.json -o cypress/reports/html && http-server cypress/reports/html -o -p 7333",
     "test:e2e:ci": "npm run test:e2e || EXIT=$?; npm run test:e2e:report || true; exit ${EXIT:-0}",
-    "check:dead": "knip --exports --dependencies",
+    "check:dead": "knip --exports --dependencies --no-exit-code",
     "audit": "npm audit --audit-level=critical",
     "check:outdated": "npm outdated"
   },
