@@ -12,6 +12,10 @@ on:
       image-label:
         required: true
         type: string
+      
+    secrets:
+      FLY_API_TOKEN:
+        required: true
 
 jobs:
   fly-deploy:
