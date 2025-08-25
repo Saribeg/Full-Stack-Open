@@ -2,10 +2,9 @@ import { test, expect } from '@playwright/test';
 import { resetDb, seedDb } from './helpers/seed';
 import { fillAndSubmitLoginForm } from './helpers/login';
 
-test.describe('Login flow', () => {
+test.describe.serial('Login flow', () => {
   test.beforeEach(async ({}, testInfo) => {
     const { backendURL } = testInfo.project.use;
-    console.log('backendURL from Login flow beforeEach', backendURL);
     await resetDb(backendURL);
     await seedDb(backendURL);
   });
