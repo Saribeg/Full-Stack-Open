@@ -135,11 +135,17 @@ jobs:
 
       # Start the built frontend with Vite preview (background process) for e2e tests
       - name: Preview
-        run: nohup npm run preview -- --port=${{ inputs.frontend_port }} --strictPort > preview.log 2>&1 &
+        run: nohup npm run preview -- --port=${{ inputs.frontend_port }} --host 127.0.0.1 --strictPort > preview.log 2>&1 &
 
       # Block pipeline until the preview server responds
       - name: Wait for preview
+        id: vite-preview-ready
         run: npx -y wait-on@7 ${{ inputs.frontend_url }} --timeout ${{ inputs.frontend_timeout_ms }}
+
+      # Log error if Preview failed
+      - name: Tail preview log
+        if: always() && steps.vite-preview-ready.conclusion == 'failure'
+        run: tail -n 100 preview.log || true
 
       - name: Run End-to-End Tests (${{ inputs.e2e_library }})
         id: e2e-test
@@ -165,8 +171,9 @@ jobs:
 
       - name: Scan for Secrets with Gitleaks
         uses: gitleaks/gitleaks-action@v2
-        with:
-          args: detect --source . --no-git -v
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
 
       - name: Decide if should deploy
         id: gate
