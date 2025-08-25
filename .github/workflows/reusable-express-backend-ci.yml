@@ -105,6 +105,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml
+          GITLEAKS_ENABLE_SUMMARY: "false"
+          GITLEAKS_ENABLE_COMMENTS: "false"
 
       - name: Decide if should deploy
         id: gate

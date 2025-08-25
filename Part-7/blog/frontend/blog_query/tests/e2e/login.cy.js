@@ -1,3 +1,5 @@
+const api = () => Cypress.env('API_URL');
+
 describe('Login', () => {
   const user = { name: 'Test User', username: 'tester', password: 'secret' };
 
@@ -5,7 +7,7 @@ describe('Login', () => {
     cy.resetDb();
     cy.seedInitialDbData();
     cy.createUser(user);
-    cy.intercept('POST', '/api/login').as('login');
+    cy.intercept('POST', `${api()}/login`).as('login');
     cy.visit('/');
   });
 
