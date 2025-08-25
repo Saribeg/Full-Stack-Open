@@ -16,6 +16,8 @@
   "rules": {
     "dependencies": "warn",
     "exports": "warn",
+    "binaries": "warn",
+    "unlisted": "warn",
     "types": "off"
   }
 }

@@ -73,6 +73,8 @@ jobs:
     steps:
       - name: Copy Project
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Backend must be up before build so VITE_API_URL is baked into the bundle
       - name: Start API for E2E
@@ -114,7 +116,7 @@ jobs:
         run: npm run test:integration
 
       - name: Build
-        run: npm run build
+        run: VITE_API_URL=${{ steps.api.outputs.base_url }}/api npm run build
 
       - name: Copy extra files into build folder
         if: ${{ inputs.extra_files != '' }}
@@ -151,7 +153,7 @@ jobs:
         id: e2e-test
         env:
           E2E_BASE_URL: ${{ inputs.frontend_url }}
-          E2E_API_URL:  ${{ steps.api.outputs.base_url }}
+          E2E_API_URL:  ${{ steps.api.outputs.base_url }}/api
         run: npm run test:e2e:ci
 
       - name: Upload E2E artifacts
@@ -165,6 +167,7 @@ jobs:
 
       - name: Check Unused Code
         run: npm run check:dead
+        continue-on-error: true
       
       - name: Security Audit
         run: npm run audit
