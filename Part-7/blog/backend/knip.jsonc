@@ -17,5 +17,10 @@
   ],
   "ignoreDependencies": [
     "supertest"
-  ]
+  ],
+  "rules": {
+    "dependencies": "warn",
+    "exports": "warn",
+    "types": "off"
+  }
 }
