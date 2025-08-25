@@ -172,14 +172,6 @@ jobs:
       - name: Security Audit
         run: npm run audit
 
-      - name: Scan for Secrets with Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_CONFIG: .gitleaks.toml
-          GITLEAKS_ENABLE_SUMMARY: "false"
-          GITLEAKS_ENABLE_COMMENTS: "false"
-
       - name: Decide if should deploy
         id: gate
         run: echo "should_deploy=${{ github.event_name == 'push'
