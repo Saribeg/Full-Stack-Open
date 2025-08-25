@@ -59,7 +59,7 @@ jobs:
 
   tag-release-redux:
     needs: blog_redux
-    if: needs.changes.outputs.blog_redux == 'true'
+    if: needs.blog_redux.outputs.should_deploy == 'true'
     uses: ./.github/workflows/reusable-tag-release.yml
     with:
       should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
@@ -67,7 +67,7 @@ jobs:
 
   vercel-deploy-redux:
     needs: [blog_redux, tag-release-redux]
-    if: needs.changes.outputs.blog_redux == 'true'
+    if: needs.blog_redux.outputs.should_deploy == 'true'
     uses: ./.github/workflows/reusable-vercel-deploy.yml
     with:
       should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
@@ -82,7 +82,7 @@ jobs:
 
   notify-redux:
     needs: [blog_redux, tag-release-redux, vercel-deploy-redux]
-    if: needs.changes.outputs.blog_redux == 'true'
+    if: needs.blog_redux.outputs.should_deploy == 'true'
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
@@ -119,7 +119,7 @@ jobs:
 
   tag-release-query:
     needs: blog_query
-    if: needs.changes.outputs.blog_query == 'true'
+    if: needs.blog_query.outputs.should_deploy == 'true'
     uses: ./.github/workflows/reusable-tag-release.yml
     with:
       should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
@@ -127,7 +127,7 @@ jobs:
 
   vercel-deploy-query:
     needs: [blog_query, tag-release-query]
-    if: needs.changes.outputs.blog_query == 'true'
+    if: needs.blog_query.outputs.should_deploy == 'true'
     uses: ./.github/workflows/reusable-vercel-deploy.yml
     with:
       should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
@@ -142,7 +142,7 @@ jobs:
 
   notify-query:
     needs: [blog_query, tag-release-query, vercel-deploy-query]
-    if: needs.changes.outputs.blog_query == 'true'
+    if: needs.blog_query.outputs.should_deploy == 'true'
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
