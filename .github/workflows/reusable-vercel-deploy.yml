@@ -1,0 +1,48 @@
+name: Reusable Vercel Deploy (prebuilt)
+
+on:
+  workflow_call:
+    inputs:
+      should-deploy:
+        required: true
+        type: string
+      artifact-name:
+        required: true
+        type: string
+      app_slug:
+        required: true
+        type: string
+      image-label:
+        required: false
+        type: string
+        default: ""
+    secrets:
+      FSO_VERCEL_TOKEN:
+        required: true
+      VERCEL_ORG_ID:
+        required: true
+      VERCEL_PROJECT_ID:
+        required: true
+
+jobs:
+  vercel-deploy:
+    if: ${{ inputs.should-deploy == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download prebuilt artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: dist-bundle
+
+      - name: List downloaded files
+        run: ls -laR dist-bundle | head -n 200
+
+      - name: Deploy to Vercel (prebuilt)
+        run: |
+          npx vercel deploy dist-bundle --prod --yes \
+            --token "${{ secrets.FSO_VERCEL_TOKEN }}" \
+            --org-id "${{ secrets.VERCEL_ORG_ID }}" \
+            --project-id "${{ secrets.VERCEL_PROJECT_ID }}" \
+            --meta gitTag="${{ inputs.image-label }}" \
+            --meta appSlug="${{ inputs.app_slug }}"

@@ -28,7 +28,8 @@ const LoginForm = () => {
     event.preventDefault();
     dispatch(login({ username, password }))
       .unwrap()
-      .then(() => resetForm());
+      .then(() => resetForm())
+      .catch(() => {});
   };
 
   const { loading } = useSelector(selectLoginStatus);
@@ -40,7 +41,7 @@ const LoginForm = () => {
         <div className="flex w-full flex-col gap-6">
           <p className="text-center text-white/70">Log In to see blogs and work with them</p>
 
-          <Form onSubmit={handleLoginSubmit}>
+          <Form onSubmit={handleLoginSubmit} data-testid="login-form">
             <Input
               type="text"
               name="username"
@@ -48,6 +49,7 @@ const LoginForm = () => {
               onChange={handleChange(setUsername)}
               placeholder="Username"
               required
+              data-testid="username"
             />
             <Input
               type="password"
@@ -56,6 +58,7 @@ const LoginForm = () => {
               onChange={handleChange(setPassword)}
               placeholder="Password"
               required
+              data-testid="password"
             />
             <Button
               uiType="primary"

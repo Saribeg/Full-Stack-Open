@@ -1,0 +1,28 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "index.js"
+  ],
+  "project": [
+    "**/*.js"
+  ],
+  "ignore": [
+    // Express middleware are consumed dynamically via app.use(), so Knip cannot statically detect their usage.
+    "utils/middleware.js",
+    // Config variables are injected at runtime (via process.env), not imported directly.
+    "utils/config.js",
+    "tests/**/*.js",
+    "coverage/**",
+    "dist/**"
+  ],
+  "ignoreDependencies": [
+    "supertest"
+  ],
+  "rules": {
+    "dependencies": "warn",
+    "exports": "warn",
+    "binaries": "warn",
+    "unlisted": "warn",
+    "types": "off"
+  }
+}

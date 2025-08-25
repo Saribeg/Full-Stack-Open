@@ -6,7 +6,7 @@ const AuthStatus = ({ user }) => {
 
   return (
     <div className="flex items-center gap-4">
-      <p className="whitespace-nowrap">
+      <p className="whitespace-nowrap" data-testid="auth-status">
         <span className="font-semibold">{name}</span> <span>logged in</span>
       </p>
       <Logout name={name} />

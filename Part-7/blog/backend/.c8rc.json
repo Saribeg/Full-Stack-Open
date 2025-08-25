@@ -1,0 +1,26 @@
+{
+  "include": [
+    "**/*.js"
+  ],
+  "exclude": [
+    "tests/**/*.js",
+    "utils/testData.js",
+    "coverage",
+    "utils/config.js",
+    "index.js"
+  ],
+  "reporter": [
+    "text",
+    "html",
+    "lcov",
+    "json-summary"
+  ],
+  "all": true,
+  "check-coverage": true,
+  "branches": 80,
+  "functions": 90,
+  "lines": 90,
+  "statements": 90,
+  "report-dir": "coverage",
+  "skip-full": false
+}
