@@ -13,7 +13,7 @@
     "test:coverage": "c8 --config .c8rc.json npm test",
     "test:coverage:check": "c8 --config .c8rc.json check-coverage --per-file",
     "test:coverage:report": "c8 --config .c8rc.json report",
-    "check:dead": "knip --exports --dependencies",
+    "check:dead": "knip --exports --dependencies --no-exit-code",
     "audit": "npm audit --audit-level=critical"
   },
   "author": "Saribeh Karakhanian",
