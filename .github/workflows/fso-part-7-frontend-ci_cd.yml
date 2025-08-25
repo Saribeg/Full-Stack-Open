@@ -63,7 +63,7 @@ jobs:
     uses: ./.github/workflows/reusable-tag-release.yml
     with:
       should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
-      custom-tag: blogapp-redux-v
+      custom-tag: blogapp-redux-
 
   vercel-deploy-redux:
     needs: [blog_redux, tag-release-redux]
@@ -123,7 +123,7 @@ jobs:
     uses: ./.github/workflows/reusable-tag-release.yml
     with:
       should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
-      custom-tag: blogapp-query-v
+      custom-tag: blogapp-query-
 
   vercel-deploy-query:
     needs: [blog_query, tag-release-query]

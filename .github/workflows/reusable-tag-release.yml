@@ -30,4 +30,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
           WITH_V: true
-          CUSTOM_TAG: ${{ inputs.custom-tag }}
+          TAG_PREFIX: ${{ inputs.custom-tag }}
+          CUSTOM_TAG: ""
