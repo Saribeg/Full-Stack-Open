@@ -116,7 +116,7 @@ jobs:
         run: npm run test:integration
 
       - name: Build
-        run: VITE_API_URL=${{ steps.api.outputs.base_url }}/api npm run build
+        run: VITE_API_URL=${{ steps.api.outputs.base_url }} npm run build
 
       - name: Copy extra files into build folder
         if: ${{ inputs.extra_files != '' }}
@@ -177,6 +177,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITLEAKS_CONFIG: .gitleaks.toml
+          GITLEAKS_ENABLE_SUMMARY: "false"
+          GITLEAKS_ENABLE_COMMENTS: "false"
 
       - name: Decide if should deploy
         id: gate
