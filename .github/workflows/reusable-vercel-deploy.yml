@@ -39,10 +39,9 @@ jobs:
         run: ls -laR dist-bundle | head -n 200
 
       - name: Deploy to Vercel (prebuilt)
+        env:
+          VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          npx vercel deploy dist-bundle --prod --yes \
-            --token "${{ secrets.FSO_VERCEL_TOKEN }}" \
-            --org-id "${{ secrets.VERCEL_ORG_ID }}" \
-            --project-id "${{ secrets.VERCEL_PROJECT_ID }}" \
-            --meta gitTag="${{ inputs.image-label }}" \
-            --meta appSlug="${{ inputs.app_slug }}"
+          npx vercel deploy dist-bundle --prod --yes --token "$VERCEL_TOKEN"
