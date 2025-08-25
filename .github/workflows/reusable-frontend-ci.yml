@@ -59,6 +59,11 @@ on:
       TEST_MONGODB_URI:
         required: true
 
+    outputs:
+      should_deploy:
+        description: "Whether deployment should run"
+        value: ${{ jobs.ci-checks.outputs.should_deploy }}
+
 jobs:
   ci-checks:
     runs-on: ubuntu-latest
