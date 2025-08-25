@@ -4,7 +4,8 @@ const FRONT_PORT = 5173;
 const FRONT_URL = process.env.E2E_BASE_URL ?? `http://localhost:${FRONT_PORT}`;
 
 const BACK_PORT = 3003;
-const BACK_URL = process.env.E2E_API_URL ?? `http://localhost:${BACK_PORT}`;
+const RAW_BACK_URL = process.env.E2E_API_URL ?? `http://localhost:${BACK_PORT}`;
+const BACK_URL = RAW_BACK_URL.endsWith('/api') ? RAW_BACK_URL : `${RAW_BACK_URL}/api`;
 
 const isCI = !!process.env.CI;
 
@@ -26,7 +27,7 @@ export default defineConfig({
     : [
         {
           command: 'npm run start:backend:test',
-          url: `${BACK_URL}/health`,
+          url: `${RAW_BACK_URL}/health`,
           reuseExistingServer: true,
           timeout: 120_000,
           name: 'Backend'

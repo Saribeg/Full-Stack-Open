@@ -64,7 +64,8 @@ export default [
     },
     rules: Object.assign(commonRules, {
       'react/prop-types': 'off',
-      'no-empty-pattern': 'off'
+      'no-empty-pattern': 'off',
+      'no-console': 'off'
     })
   },
   {
