@@ -3,7 +3,9 @@ import { resetDb, seedDb } from './helpers/seed';
 import { fillAndSubmitLoginForm } from './helpers/login';
 
 test.describe('Login flow', () => {
-  test.beforeEach(async ({ backendURL }) => {
+  test.beforeEach(async ({}, testInfo) => {
+    const { backendURL } = testInfo.project.use;
+    console.log('backendURL from Login flow beforeEach', backendURL);
     await resetDb(backendURL);
     await seedDb(backendURL);
   });

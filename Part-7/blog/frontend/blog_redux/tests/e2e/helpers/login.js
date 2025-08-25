@@ -5,7 +5,7 @@ const fillAndSubmitLoginForm = async (page, username, password) => {
 };
 
 const loginByLocalStorage = async (page, request, username, password) => {
-  const response = await request.post('/api/login', {
+  const response = await request.post('/login', {
     data: { username, password }
   });
 
