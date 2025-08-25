@@ -54,6 +54,8 @@ jobs:
     steps:
       - name: Copy Project
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install and Setup Node.js
         uses: actions/setup-node@v4
