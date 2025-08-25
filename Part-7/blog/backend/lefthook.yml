@@ -1,0 +1,8 @@
+pre-commit:
+  parallel: true
+  commands:
+    fso:part-7:backend:lint:
+      root: "Part-7/blog/backend"
+      glob: "*.{js,cjs,mjs}"
+      run: npm run lint -- {staged_files}
+      stage_fixed: true

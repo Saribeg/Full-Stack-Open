@@ -1,0 +1,15 @@
+{
+  "name": "full-stack-open",
+  "version": "1.0.0",
+  "description": "This repository contains my personal solutions to the [**Full Stack Open**](https://fullstackopen.com/en/) course exercises. **Full Stack Open** is a free online web development course created by the University of Helsinki. I will be updating this repo as I progress through the course, part by part.",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "lefthook install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "lefthook": "^1.12.3"
+  }
+}

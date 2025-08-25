@@ -1,0 +1,61 @@
+name: CI/CD Pipeline for back-end part of Part 7 of FSO Course - Project BlogApp
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Part-7/blog/backend/**'
+      - '.github/workflows/fso-part-7-backend-ci_cd.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Part-7/blog/backend/**'
+      - '.github/workflows/fso-part-7-backend-ci_cd.yml'
+  workflow_dispatch:
+
+jobs:
+  ci-checks:
+    uses: ./.github/workflows/reusable-express-backend-ci.yml
+    with:
+      working-directory: Part-7/blog/backend
+      node-versions: '["18","22"]'
+    secrets:
+      DEV_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      SECRET: sekret
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      TEST_SECRET: sekret
+
+  tag-release:
+    needs: ci-checks
+    uses: ./.github/workflows/reusable-tag-release.yml
+    with:
+      should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
+      custom-tag: blogapp-backend-v
+
+  fly-deploy:
+    needs: [ci-checks, tag-release]
+    uses: ./.github/workflows/reusable-fly-deploy.yml
+    with:
+      should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
+      working-directory: Part-7/blog/backend
+      image-label: ${{ needs['tag-release'].outputs.new_tag }}
+
+  health-check:
+    needs: fly-deploy
+    uses: ./.github/workflows/reusable-health-check.yml
+    with:
+      url: https://blogs-fso.fly.dev/health
+
+  notify:
+    needs: [ci-checks, tag-release, fly-deploy, health-check]
+    uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
+    with:
+      should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
+      ci-result: ${{ needs.ci-checks.result }}
+      tag-result: ${{ needs.tag-release.result }}
+      deploy-result: ${{ needs.health-check.result }}
+      new-tag: ${{ needs.tag-release.outputs.new_tag }}
+
+
+

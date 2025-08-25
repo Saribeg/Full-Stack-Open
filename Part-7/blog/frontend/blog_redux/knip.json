@@ -1,0 +1,25 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "index.html",
+    "src/main.jsx"
+  ],
+  "project": [
+    "src/**/*.{js,jsx}"
+  ],
+  "ignore": [
+    "dist/**",
+    "coverage/**",
+    "test-results/**"
+  ],
+  "ignoreDependencies": [
+    "tailwindcss"
+  ],
+  "rules": {
+    "dependencies": "warn",
+    "exports": "warn",
+    "binaries": "warn",
+    "unlisted": "warn",
+    "types": "off"
+  }
+}

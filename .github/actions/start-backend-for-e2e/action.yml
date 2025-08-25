@@ -1,0 +1,71 @@
+name: Start Backend for E2E
+description: Start API in background and wait for /health
+
+inputs:
+  working-directory:
+    description: Path to backend directory
+    required: true
+  node-version:
+    description: Node.js version
+    required: false
+    default: "22"
+  port:
+    description: API port
+    required: false
+    default: "3003"
+  health-path:
+    description: Health path to wait for
+    required: false
+    default: "/health"
+  timeout-ms:
+    description: Wait timeout in ms
+    required: false
+    default: "120000"
+
+outputs:
+  base_url:
+    description: Local base URL of the started API
+    value: ${{ steps.out.outputs.base_url }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: npm
+        cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+    - name: Install backend deps
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: npm ci
+
+    - name: Start backend (NODE_ENV=test)
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        NODE_ENV: test
+        TEST_MONGODB_URI: ${{ env.TEST_MONGODB_URI }}
+        DEV_MONGODB_URI: ${{ env.TEST_MONGODB_URI }}
+        MONGODB_URI: ${{ env.TEST_MONGODB_URI }}
+        SECRET: sekret
+        TEST_SECRET: sekret
+        PORT: ${{ inputs.port }}
+      run: nohup npm run start:test > server.log 2>&1 &
+
+    - name: Wait for backend health
+      shell: bash
+      run: npx -y wait-on@7 http://127.0.0.1:${{ inputs.port }}${{ inputs.health-path }} --timeout ${{ inputs.timeout-ms }}
+
+    - name: Expose backend base_url
+      id: out
+      shell: bash
+      run: echo "base_url=http://127.0.0.1:${{ inputs.port }}" >> $GITHUB_OUTPUT
+
+    - name: Tail API log on failure
+      if: failure()
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: tail -n 200 server.log || true

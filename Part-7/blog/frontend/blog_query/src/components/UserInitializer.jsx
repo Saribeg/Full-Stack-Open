@@ -12,10 +12,10 @@ const UserInitializer = ({ children }) => {
 
   useEffect(() => {
     initializeUser(dispatchUser);
-    setReady(true);
+    Promise.resolve().then(() => setReady(true));
   }, [dispatchUser]);
 
-  if (!ready) return <Spinner />;
+  if (!ready) return <Spinner data-testid="spinner" />;
   return children;
 };
 

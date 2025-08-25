@@ -1,0 +1,4 @@
+title = "Full-Stack-Open Monorepo CI Scan"
+
+[log]
+level = "debug"

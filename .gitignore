@@ -138,3 +138,6 @@ dist
 
 # VSCode workspace files
 *.code-workspace
+
+# Bundle Size
+bundle-size-reports/

@@ -214,6 +214,52 @@ describe('Integration tests. Testing the CRUD API for users', () => {
       assert.strictEqual(response.body.error, 'invalid username or password');
     });
   });
+
+  describe('get existing user by id', () => {
+    test('succeeds with status 200 and returns the correct user', async () => {
+      const usersAtStart = await helper.usersInDb();
+      const userToView = usersAtStart[0];
+
+      const response = await api
+        .get(`/api/users/${userToView.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const returnedUser = response.body;
+
+      assert.strictEqual(returnedUser.id, userToView.id);
+      assert.strictEqual(returnedUser.username, userToView.username);
+      assert.ok(Array.isArray(returnedUser.blogs));
+
+      assert.ok(returnedUser.id);
+      assert.strictEqual(returnedUser._id, undefined);
+      assert.strictEqual(returnedUser.__v, undefined);
+      assert.strictEqual(returnedUser.passwordHash, undefined);
+    });
+
+    test('returns 404 if user does not exist', async () => {
+      const nonExistingId = await helper.nonExistingId();
+
+      const response = await api
+        .get(`/api/users/${nonExistingId}`)
+        .expect(404);
+
+      assert.ok(response.body.error);
+      assert.strictEqual(response.body.error, 'User not found');
+    });
+
+    test('returns 400 if id is invalid', async () => {
+      const invalidId = '12345invalidid';
+
+      const response = await api
+        .get(`/api/users/${invalidId}`)
+        .expect(400);
+
+      assert.ok(response.body.error);
+      assert.match(response.body.error, /malformatted|cast/i);
+    });
+  });
+
 });
 
 after(async () => {

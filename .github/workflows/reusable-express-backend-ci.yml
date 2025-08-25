@@ -1,0 +1,106 @@
+name: Reusable Express Backend CI Checks
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+      node-versions:
+        required: false
+        type: string
+        default: '["22"]'
+
+    secrets:
+      DEV_MONGODB_URI:
+        required: true
+      MONGODB_URI:
+        required: true
+      SECRET:
+        required: true
+      TEST_MONGODB_URI:
+        required: true
+      TEST_SECRET:
+        required: true
+
+    outputs:
+      should_deploy:
+        description: "Whether deployment should run"
+        value: ${{ jobs.ci-checks.outputs.should_deploy }}
+
+jobs:
+  ci-checks:
+    runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: test
+      DEV_MONGODB_URI: ${{ secrets.DEV_MONGODB_URI }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      SECRET: ${{ secrets.SECRET }}
+      TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      TEST_SECRET: ${{ secrets.TEST_SECRET }}
+
+    strategy:
+      matrix:
+        node-version: ${{ fromJson(inputs.node-versions) }}
+
+    outputs:
+      should_deploy: ${{ steps.gate.outputs.should_deploy }}
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+      - name: Copy Project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install and Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set test DB name per node
+        run: echo "TEST_DB_NAME=blog-test-${{ matrix.node-version }}" >> $GITHUB_ENV
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Unit and Integration Tests
+        id: tests
+        env:
+          TEST_DB_NAME: ${{ env.TEST_DB_NAME }}
+        run: npm run test:coverage
+
+      - name: Generate Test Coverage Report
+        id: test_reports
+        if: always() && steps.tests.conclusion != 'skipped'
+        run: npm run test:coverage:report
+
+      - name: Upload Test Coverage Report
+        if: always() && steps.test_reports.conclusion != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-coverage-report-node${{ matrix.node-version }}-run${{ github.run_attempt }}
+          path: ${{ inputs.working-directory }}/coverage/
+          retention-days: 2
+
+      - name: Check Unused Code
+        run: npm run check:dead
+        continue-on-error: true
+
+      - name: Security Audit
+        run: npm run audit
+
+      - name: Decide if should deploy
+        id: gate
+        run: echo "should_deploy=${{ github.event_name == 'push'
+          && !contains(toJSON(github.event.commits.*.message), '#skip')
+          && !contains(github.event.head_commit.message || '', '#skip') }}" >> $GITHUB_OUTPUT

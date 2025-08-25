@@ -81,6 +81,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
           WITH_V: true
+          CUSTOM_TAG: pokedex-v
 
   deploy:
     runs-on: ubuntu-latest
