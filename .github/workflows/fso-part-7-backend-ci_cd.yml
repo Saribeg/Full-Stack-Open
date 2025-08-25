@@ -40,6 +40,8 @@ jobs:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
       working-directory: Part-7/blog/backend
       image-label: ${{ needs['tag-release'].outputs.new_tag }}
+    secrets:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
   health-check:
     needs: fly-deploy
