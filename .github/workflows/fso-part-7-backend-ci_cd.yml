@@ -5,12 +5,10 @@ on:
     branches: [main]
     paths:
       - 'Part-7/blog/backend/**'
-      - '.github/workflows/fso-part-7-backend-ci_cd.yml'
   pull_request:
     branches: [main]
     paths:
       - 'Part-7/blog/backend/**'
-      - '.github/workflows/fso-part-7-backend-ci_cd.yml'
   workflow_dispatch:
 
 jobs:
@@ -43,6 +41,7 @@ jobs:
           fi
 
   ci-checks:
+    needs: changes
     uses: ./.github/workflows/reusable-express-backend-ci.yml
     with:
       working-directory: Part-7/blog/backend
