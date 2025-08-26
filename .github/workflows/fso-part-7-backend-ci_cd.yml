@@ -14,11 +14,40 @@ on:
   workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      audit_needed: ${{ steps.check.outputs.audit_needed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if dependencies changed
+        id: check
+        run: |
+          # Paths to backend dependency files
+          PKG_JSON="Part-7/blog/backend/package.json"
+          PKG_LOCK="Part-7/blog/backend/package-lock.json"
+
+          # Check if this is not the first commit
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+            if git diff --ignore-space-change --ignore-all-space --ignore-blank-lines --quiet HEAD^ HEAD -- "$PKG_JSON" "$PKG_LOCK"; then
+              echo "audit_needed=false" >> $GITHUB_OUTPUT
+            else
+              echo "audit_needed=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "First commit in branch → force audit"
+            echo "audit_needed=true" >> $GITHUB_OUTPUT
+          fi
+
   ci-checks:
     uses: ./.github/workflows/reusable-express-backend-ci.yml
     with:
       working-directory: Part-7/blog/backend
       node-versions: '["18","22"]'
+      audit-needed: ${{ needs.changes.outputs.audit_needed }}
     secrets:
       DEV_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
       MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
