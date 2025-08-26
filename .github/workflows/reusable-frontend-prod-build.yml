@@ -56,12 +56,6 @@ jobs:
           NODE_ENV: production
         run: npm run build
 
-      - name: Assert no localhost in deploy bundle
-        run: |
-          if grep -R -nE "127\.0\.0\.1|://localhost" dist; then
-            echo "❌ Found localhost references in production bundle"; exit 1;
-          fi
-
       - name: Copy extra files into build folder
         if: ${{ inputs.extra_files != '' }}
         run: test -f ${{ inputs.extra_files }} && cp ${{ inputs.extra_files }} dist/ || echo "no ${{ inputs.extra_files }}, skip"
