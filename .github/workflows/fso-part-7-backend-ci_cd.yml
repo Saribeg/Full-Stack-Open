@@ -83,7 +83,7 @@ jobs:
     # must run even if some previous jobs failed, so that we can notify about failures
     if: ${{ always() }}
     needs: [ci-checks, tag-generate, fly-deploy, health-check, tag-push]
-    uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
+    uses: ./.github/workflows/reusable-deploy-notify.yml
     with:
       project-name: 'FSO BlogApp Express Backend'
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
@@ -108,3 +108,4 @@ jobs:
     secrets:
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}

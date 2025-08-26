@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - part-11/task-11.20/optimize-ci-cd
     paths:
       - 'Part-11/full-stack-open-pokedex/**'
       - '.github/workflows/fso-part-11-pokedex-pipeline.yml'

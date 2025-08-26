@@ -43,7 +43,8 @@ jobs:
             ✅ Deploy succeeded
             Tag <code>${{ inputs.new-tag }}</code> deployed
 
-            ${{ inputs.statuses-text }}
+            • Repository: ${{ github.repository }}
+            • Actor:      ${{ github.actor }}
 
             👉 <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View run</a>
 

@@ -98,8 +98,7 @@ jobs:
     secrets:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      # VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_REDUX }}
-      VERCEL_PROJECT_ID: 'prj_6XKuTqUP8rcBnr41JApKSyF8ngxA'
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_REDUX }}
 
   tag-push-redux:
     needs: [vercel-deploy-redux, tag-generate-redux]
@@ -115,7 +114,7 @@ jobs:
     # must run even if previous jobs failed, so we can notify about failures
     if: ${{ always() }}
     needs: [ci-blog_redux, prod-build-redux, tag-generate-redux, vercel-deploy-redux, tag-push-redux]
-    uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
+    uses: ./.github/workflows/reusable-deploy-notify.yml
     with:
       project-name: 'FSO BlogApp Frontend (React + Redux + Tailwind CSS)'
       should-deploy: ${{ needs.ci-blog_redux.outputs.should_deploy }}
@@ -137,6 +136,7 @@ jobs:
     secrets:
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
   # -------------------------
   # Query app
@@ -195,8 +195,7 @@ jobs:
     secrets:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      # VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_QUERY }}
-      VERCEL_PROJECT_ID: 'prj_9bFR1EaMi0KqD54nxHnonOxGAzGb'
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_QUERY }}
 
   tag-push-query:
     needs: [vercel-deploy-query, tag-generate-query]
@@ -212,7 +211,7 @@ jobs:
     # must run even if previous jobs failed, so we can notify about failures
     if: ${{ always() }}
     needs: [ci-blog_query, prod-build-query, tag-generate-query, vercel-deploy-query, tag-push-query]
-    uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
+    uses: ./.github/workflows/reusable-deploy-notify.yml
     with:
       project-name: 'FSO BlogApp Frontend (React + TanStack Query + MUI)'
       should-deploy: ${{ needs.ci-blog_query.outputs.should_deploy }}
@@ -236,3 +235,4 @@ jobs:
     secrets:
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
