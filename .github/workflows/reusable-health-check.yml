@@ -11,8 +11,16 @@ jobs:
   health-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Health check
-        run: |
-          echo "Waiting for app to become healthy..."
-          sleep 10
-          curl -f ${{ inputs.url }}
+    - name: Health check
+      run: |
+        echo "Waiting for app to become healthy..."
+        for i in {1..24}; do
+          if curl -fsS ${{ inputs.url }} > /dev/null; then
+            echo "App is healthy!"
+            exit 0
+          fi
+          echo "Not healthy yet... retrying in 5s"
+          sleep 5
+        done
+        echo "App did not become healthy in time."
+        exit 1
