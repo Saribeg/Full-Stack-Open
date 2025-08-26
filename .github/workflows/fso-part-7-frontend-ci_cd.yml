@@ -6,13 +6,11 @@ on:
     paths:
       - 'Part-7/blog/frontend/blog_redux/**'
       - 'Part-7/blog/frontend/blog_query/**'
-      - '.github/workflows/fso-part-7-frontend-ci_cd.yml'
   pull_request:
     branches: [main]
     paths:
       - 'Part-7/blog/frontend/blog_redux/**'
       - 'Part-7/blog/frontend/blog_query/**'
-      - '.github/workflows/fso-part-7-frontend-ci_cd.yml'
   workflow_dispatch:
 
 jobs:
