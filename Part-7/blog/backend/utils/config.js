@@ -17,48 +17,45 @@ const mongoUri = makeValidator((input) => {
   return input;
 }, 'mongoUri');
 
-const env = cleanEnv(process.env, {
-  // On Fly.io default port is 8080
+const NODE_ENV = process.env.NODE_ENV ?? 'production';
+const IS_NON_PROD = NODE_ENV === 'development' || NODE_ENV === 'test';
+
+const baseSchema = {
   PORT: port({ default: 8080 }),
-
-  MONGODB_URI: mongoUri(),
-  DEV_MONGODB_URI: mongoUri(),
-  TEST_MONGODB_URI: mongoUri(),
-
-  SECRET: nonEmptyStr(),
-  TEST_SECRET: nonEmptyStr(),
-
   DB_NAME: str({ default: '' }),
-  DEV_DB_NAME: str({ default: '' }),
+};
+
+const prodSchema = {
+  MONGODB_URI: mongoUri(),
+  SECRET: nonEmptyStr(),
+};
+
+const nonProdSchema = {
+  TEST_MONGODB_URI: mongoUri(),
   TEST_DB_NAME: str({ default: '' }),
-});
+  TEST_SECRET: nonEmptyStr(),
+};
+
+const schema = {
+  ...baseSchema,
+  ...(IS_NON_PROD ? nonProdSchema : prodSchema),
+};
+
+const env = cleanEnv(process.env, schema);
 
 function getMongoUri() {
-  switch (process.env.NODE_ENV) {
-    case 'test':
-      return env.TEST_MONGODB_URI;
-    case 'development':
-      return env.DEV_MONGODB_URI;
-    default:
-      return env.MONGODB_URI;
-  }
+  return IS_NON_PROD ? env.TEST_MONGODB_URI : env.MONGODB_URI;
 }
 
 function getDbName() {
-  switch (process.env.NODE_ENV) {
-    case 'test':
-      return env.TEST_DB_NAME ?? env.DB_NAME;
-    case 'development':
-      return env.DEV_DB_NAME ?? env.DB_NAME;
-    default:
-      return env.DB_NAME;
-  }
+  return IS_NON_PROD ? env.TEST_DB_NAME ?? env.DB_NAME : env.DB_NAME;
 }
 
 module.exports = {
+  NODE_ENV,
   PORT: env.PORT,
   MONGODB_URI: getMongoUri(),
   MONGODB_DB_NAME: getDbName(),
-  SECRET: env.SECRET,
-  TEST_SECRET: env.TEST_SECRET,
+  SECRET: IS_NON_PROD ? env.TEST_SECRET : env.SECRET,
+  TEST_SECRET: IS_NON_PROD ? env.TEST_SECRET : undefined,
 };

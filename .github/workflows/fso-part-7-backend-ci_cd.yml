@@ -54,38 +54,42 @@ jobs:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
       TEST_SECRET: sekret
 
-  tag-release:
+  tag-generate:
     needs: ci-checks
-    uses: ./.github/workflows/reusable-tag-release.yml
+    uses: ./.github/workflows/reusable-tag-generate.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
-      custom-tag: blogapp-backend-
+      tag-prefix: blogapp-backend-
 
   fly-deploy:
-    needs: [ci-checks, tag-release]
+    needs: [ci-checks, tag-generate]
     uses: ./.github/workflows/reusable-fly-deploy.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
       working-directory: Part-7/blog/backend
-      image-label: ${{ needs['tag-release'].outputs.new_tag }}
+      image-label: ${{ needs['tag-generate'].outputs.new_tag }}
     secrets:
       FLY_API_TOKEN: ${{ secrets.FLY_FSO_BLOGAPP_TOKEN }}
+
+  tag-push:
+    needs: fly-deploy
+    uses: ./.github/workflows/reusable-tag-push.yml
+    with:
+      should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
+      tag-to-push: ${{ needs['tag-generate'].outputs.new_tag }}
 
   health-check:
     needs: fly-deploy
     uses: ./.github/workflows/reusable-health-check.yml
     with:
-      url: https://blogs-fso.fly.dev/health
+      url: https://blogs-fso.fly.dev/ready
 
   notify:
-    needs: [ci-checks, tag-release, fly-deploy, health-check]
+    needs: [ci-checks, tag-generate, tag-push, fly-deploy, health-check]
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
       ci-result: ${{ needs.ci-checks.result }}
-      tag-result: ${{ needs.tag-release.result }}
+      tag-result: ${{ needs.tag-push.result }}
       deploy-result: ${{ needs.health-check.result }}
-      new-tag: ${{ needs.tag-release.outputs.new_tag }}
-
-
-
+      new-tag: ${{ needs['tag-generate'].outputs.new_tag }}

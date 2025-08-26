@@ -16,6 +16,16 @@ primary_region = 'fra'
   min_machines_running = 1
   processes = ['app']
 
+  [[http_service.checks]]
+    interval = "10s"
+    timeout = "2s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/health"
+
+[deploy]
+  strategy = "canary"
+
 [[vm]]
   cpu_kind = 'shared'
   cpus = 1

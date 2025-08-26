@@ -38,7 +38,11 @@ app.use('/api/blogs', blogsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 
-app.get('/health', async (req, res) => {
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+app.get('/ready', async (req, res) => {
   const dbState = mongoose.connection.readyState;
 
   if (dbState === 1) {
