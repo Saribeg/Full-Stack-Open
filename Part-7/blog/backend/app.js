@@ -42,6 +42,7 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
+// Health check with database availability.
 app.get('/ready', async (req, res) => {
   const dbState = mongoose.connection.readyState;
 
