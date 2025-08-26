@@ -70,6 +70,8 @@ jobs:
       new_tag: ${{ steps.tag.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Generate next tag (dry-run)
         id: tag
         uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
@@ -81,7 +83,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [tag_generate]
+    needs: [ci_checks, tag_generate]
     if: ${{ needs.ci_checks.outputs.should_deploy == 'true' && needs.tag_generate.outputs.new_tag != ''}}
     defaults:
       run:
@@ -124,19 +126,21 @@ jobs:
           title: "✅ Deploy succeeded"
           description: |
             Project: FSO Part-11 Pokedex
-            Tag `${{ needs.tag_release.outputs.new_tag }}` deployed
+            Tag `${{ needs.tag_generate.outputs.new_tag }}` deployed
             [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
       - name: Notify failure
-        if: ${{ needs.CI-checks.result == 'failure' || needs.tag_generate.result == 'failure' || needs.deploy.result == 'failure' || needs.tag_push.result == 'failure' }}
+        if: ${{ needs.ci_checks.result == 'failure' || needs.tag_generate.result == 'failure' || needs.deploy.result == 'failure' || needs.tag_push.result == 'failure' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           status: failure
           title: "❌ Build/Deploy failed"
           description: |
+            Project: FSO Part-11 Pokedex
+
             Job statuses:
-            • CI-checks:   ${{ needs.CI-checks.result }}
+            • ci_checks:   ${{ needs.ci_checks.result }}
             • tag_generate: ${{ needs.tag_generate.result }}
             • deploy:      ${{ needs.deploy.result }}
             • tag_push:    ${{ needs.tag_push.result }}
