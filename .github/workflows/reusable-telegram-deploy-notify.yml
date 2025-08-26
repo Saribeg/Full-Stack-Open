@@ -3,31 +3,24 @@ name: Reusable Telegram Deploy Notify
 on:
   workflow_call:
     inputs:
+      project-name:
+        required: true
+        type: string
       should-deploy:
         required: true
         type: string
-      ci-result:
+      statuses-text:
         required: true
         type: string
-      tag-result:
-        required: true
-        type: string
-      deploy-result:
-        required: true
-        type: string
-      health-result:
-        required: false
-        type: string
-        default: ""
       new-tag:
         required: true
         type: string
 
     secrets:
-        TELEGRAM_CHAT_ID:
-          required: true
-        TELEGRAM_BOT_TOKEN:
-          required: true
+      TELEGRAM_CHAT_ID:
+        required: true
+      TELEGRAM_BOT_TOKEN:
+        required: true
 
 jobs:
   notify:
@@ -35,30 +28,30 @@ jobs:
     if: always()
     steps:
       - name: Notify Telegram Success
-        if: ${{ inputs.should-deploy == 'true' && inputs.deploy-result == 'success' }}
+        if: ${{ inputs.should-deploy == 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
+            🚀 <b>${{ inputs.project-name }}</b>
+
             ✅ Deploy succeeded
             Tag `${{ inputs.new-tag }}` deployed
 
-            Statuses:
-            • CI-checks:   ${{ inputs.ci-result }}
-            • Tag-push:    ${{ inputs.tag-result }}
-            • Fly deploy:  ${{ inputs.deploy-result }}
-            • Health (/ready): ${{ inputs.health-result }}
+            ${{ inputs.statuses-text }}
 
-            👉 View run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            👉 <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View run</a>
 
       - name: Notify Telegram Failure
-        if: ${{ inputs.ci-result == 'failure' || inputs.tag-result == 'failure' || inputs.deploy-result == 'failure' || inputs.health-result == 'failure' }}
+        if: ${{ inputs.should-deploy == 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
+            🚨 <b>${{ inputs.project-name }}</b>
+
             ❌ Build/Deploy failed
 
             • Repository: ${{ github.repository }}
@@ -67,10 +60,6 @@ jobs:
             • Commit:     ${{ github.sha }}
             • Actor:      ${{ github.actor }}
 
-            Job statuses:
-            • CI-checks:      ${{ inputs.ci-result }}
-            • Tag-push:       ${{ inputs.tag-result }}
-            • Fly deploy:     ${{ inputs.deploy-result }}
-            • Health (/ready): ${{ inputs.health-result }}
+            ${{ inputs.statuses-text }}
 
-            👉 View run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            👉 <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View run</a>

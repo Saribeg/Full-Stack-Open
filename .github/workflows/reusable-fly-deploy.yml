@@ -30,9 +30,3 @@ jobs:
       - run: flyctl deploy --remote-only --image-label ${{ inputs.image-label }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
-      - name: Health check
-        run: |
-          echo "Waiting for app to become healthy..."
-          sleep 10
-          curl -f https://blogs-fso.fly.dev/health

@@ -2,7 +2,7 @@ name: CI/CD Pipeline for back-end part of Part 7 of FSO Course - Project BlogApp
 
 on:
   push:
-    branches: [main]
+    branches: [main, part-11/task-11.20/optimize-ci-cd]
     paths:
       - 'Part-7/blog/backend/**'
   pull_request:
@@ -94,12 +94,16 @@ jobs:
     needs: [ci-checks, tag-generate, fly-deploy, health-check, tag-push]
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
+      project-name: 'FSO BlogApp Express Backend'
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
-      ci-result: ${{ needs.ci-checks.result }}
-      tag-result: ${{ needs.tag-push.result }}
-      deploy-result: ${{ needs.fly-deploy.result }}
-      health-result: ${{ needs.health-check.result }}
       new-tag: ${{ needs['tag-generate'].outputs.new_tag }}
+      statuses-text: |
+        Job statuses:
+        • CI-checks:       ${{ needs.ci-checks.result }}
+        • Tag-generate:    ${{ needs['tag-generate'].result }}
+        • Fly deploy:      ${{ needs.fly-deploy.result }}
+        • Health (/ready): ${{ needs['health-check'].result }}
+        • Tag-push:        ${{ needs['tag-push'].result }}
     secrets:
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
