@@ -23,6 +23,8 @@ jobs:
       audit_query: ${{ steps.filter.outputs.audit_query }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: dorny/paths-filter@v3
         id: filter
