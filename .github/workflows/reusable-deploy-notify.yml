@@ -35,6 +35,10 @@ jobs:
         channel: [telegram, discord]
 
     env:
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
       SUCCESS_MESSAGE: |
         🚀 **${{ inputs.project-name }}**
 
@@ -70,12 +74,12 @@ jobs:
         if: >-
           matrix.channel == 'telegram' &&
           inputs.is-success == 'true' &&
-          secrets.TELEGRAM_BOT_TOKEN != '' &&
-          secrets.TELEGRAM_CHAT_ID != ''
+          env.TELEGRAM_BOT_TOKEN != '' &&
+          env.TELEGRAM_CHAT_ID != ''
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: ${{ env.TELEGRAM_CHAT_ID }}
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
           format: markdown
           message: ${{ env.SUCCESS_MESSAGE }}
 
@@ -83,12 +87,12 @@ jobs:
         if: >-
           matrix.channel == 'telegram' &&
           inputs.is-success != 'true' &&
-          secrets.TELEGRAM_BOT_TOKEN != '' &&
-          secrets.TELEGRAM_CHAT_ID != ''
+          env.TELEGRAM_BOT_TOKEN != '' &&
+          env.TELEGRAM_CHAT_ID != ''
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: ${{ env.TELEGRAM_CHAT_ID }}
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
           format: markdown
           message: ${{ env.FAILURE_MESSAGE }}
 
@@ -99,10 +103,10 @@ jobs:
         if: >-
           matrix.channel == 'discord' &&
           inputs.is-success == 'true' &&
-          secrets.DISCORD_WEBHOOK != ''
+          env.DISCORD_WEBHOOK != ''
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ env.DISCORD_WEBHOOK }}
           status: success
           nodetail: true
           title: "✅ Deploy succeeded — ${{ inputs.project-name }}"
@@ -112,10 +116,10 @@ jobs:
         if: >-
           matrix.channel == 'discord' &&
           inputs.is-success != 'true' &&
-          secrets.DISCORD_WEBHOOK != ''
+          env.DISCORD_WEBHOOK != ''
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ env.DISCORD_WEBHOOK }}
           status: failure
           nodetail: true
           title: "❌ Build/Deploy failed — ${{ inputs.project-name }}"
