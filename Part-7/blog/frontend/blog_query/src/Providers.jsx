@@ -17,7 +17,7 @@ const queryClient = new QueryClient({
   },
 });
 
-
+// All providers centralized.
 const Providers = ({ children }) => (
   <QueryClientProvider client={queryClient}>
     <NotificationContextProvider>

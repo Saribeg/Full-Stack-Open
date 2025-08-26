@@ -22,6 +22,7 @@ export default defineConfig({
     video: 'retain-on-failure',
     screenshot: 'only-on-failure'
   },
+  // If CI - run necessary processes from CI / CD pipelines.
   webServer: isCI
     ? []
     : [

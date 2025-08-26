@@ -11,6 +11,7 @@ app.listen(PORT, () => {
   console.log(`server started on port ${PORT}`)
 })
 
+// For tag release or so.
 app.get('/version', (req, res) => {
   res.send('1')
 })
