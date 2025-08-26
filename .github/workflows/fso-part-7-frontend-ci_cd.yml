@@ -19,16 +19,26 @@ jobs:
     outputs:
       blog_redux: ${{ steps.filter.outputs.blog_redux }}
       blog_query: ${{ steps.filter.outputs.blog_query }}
+      audit_redux: ${{ steps.filter.outputs.audit_redux }}
+      audit_query: ${{ steps.filter.outputs.audit_query }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
             blog_redux:
               - 'Part-7/blog/frontend/blog_redux/**'
+            audit_redux:
+              - 'Part-7/blog/frontend/blog_redux/package.json'
+              - 'Part-7/blog/frontend/blog_redux/package-lock.json'
+
             blog_query:
               - 'Part-7/blog/frontend/blog_query/**'
+            audit_query:
+              - 'Part-7/blog/frontend/blog_query/package.json'
+              - 'Part-7/blog/frontend/blog_query/package-lock.json'
 
   blog_redux:
     needs: changes
@@ -52,6 +62,7 @@ jobs:
         Part-7/blog/frontend/blog_redux/playwright-report/**
         Part-7/blog/frontend/blog_redux/test-results/**
       extra_files: vercel.json
+      audit-needed: ${{ needs.changes.outputs.audit_redux }}
     secrets:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI_REDUX }}
 
@@ -78,11 +89,15 @@ jobs:
       VERCEL_PROJECT_ID: 'prj_6XKuTqUP8rcBnr41JApKSyF8ngxA'
 
   tag-push-redux:
-    needs: vercel-deploy-redux
-    if: needs.blog_redux.outputs.should_deploy == 'true' && needs['vercel-deploy-redux'].result == 'success'
+    needs: [vercel-deploy-redux, tag-generate-redux]
+    if: >
+      needs['vercel-deploy-redux'].result == 'success' &&
+      needs['tag-generate-redux'].result == 'success' &&
+      needs['tag-generate-redux'].outputs.new_tag != ''
+    permissions:
+      contents: write
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
-      should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
       tag-to-push: ${{ needs['tag-generate-redux'].outputs.new_tag }}
 
   notify-redux:
@@ -91,10 +106,13 @@ jobs:
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
-      ci-result:     ${{ needs.blog_redux.result }}
-      tag-result:    ${{ needs['tag-push-redux'].result }}
+      ci-result: ${{ needs.blog_redux.result }}
+      tag-result: ${{ needs['tag-push-redux'].result }}
       deploy-result: ${{ needs['vercel-deploy-redux'].result }}
-      new-tag:       ${{ needs['tag-generate-redux'].outputs.new_tag }}
+      new-tag: ${{ needs['tag-generate-redux'].outputs.new_tag }}
+    secrets:
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
   blog_query:
     needs: changes
@@ -119,6 +137,7 @@ jobs:
         Part-7/blog/frontend/blog_query/cypress/screenshots/**
         Part-7/blog/frontend/blog_query/cypress/videos/**
       extra_files: vercel.json
+      audit-needed: ${{ needs.changes.outputs.audit_query }}
     secrets:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI_QUERY }}
 
@@ -145,11 +164,15 @@ jobs:
       VERCEL_PROJECT_ID: 'prj_9bFR1EaMi0KqD54nxHnonOxGAzGb'
 
   tag-push-query:
-    needs: vercel-deploy-query
-    if: needs.blog_query.outputs.should_deploy == 'true' && needs['vercel-deploy-query'].result == 'success'
+    needs: [vercel-deploy-query, tag-generate-query]
+    if: >
+      needs['vercel-deploy-query'].result == 'success' &&
+      needs['tag-generate-query'].result == 'success' &&
+      needs['tag-generate-query'].outputs.new_tag != ''
+    permissions:
+      contents: write
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
-      should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
       tag-to-push: ${{ needs['tag-generate-query'].outputs.new_tag }}
 
   notify-query:
@@ -158,7 +181,10 @@ jobs:
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
-      ci-result:     ${{ needs.blog_query.result }}
-      tag-result:    ${{ needs['tag-push-query'].result }}
+      ci-result: ${{ needs.blog_query.result }}
+      tag-result: ${{ needs['tag-push-query'].result }}
       deploy-result: ${{ needs['vercel-deploy-query'].result }}
-      new-tag:       ${{ needs['tag-generate-query'].outputs.new_tag }}
+      new-tag: ${{ needs['tag-generate-query'].outputs.new_tag }}
+    secrets:
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

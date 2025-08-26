@@ -72,12 +72,16 @@ jobs:
       FLY_API_TOKEN: ${{ secrets.FLY_FSO_BLOGAPP_TOKEN }}
 
   tag-push:
-    needs: fly-deploy
-    if: needs.ci-checks.outputs.should_deploy == 'true' && needs.fly-deploy.result == 'success'
+    needs: [fly-deploy, tag-generate]
+    if: >
+      needs.fly-deploy.result == 'success' &&
+      needs.tag-generate.result == 'success' &&
+      needs.tag-generate.outputs.new_tag != ''
+    permissions:
+      contents: write
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
-      should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
-      tag-to-push: ${{ needs['tag-generate'].outputs.new_tag }}
+      tag-to-push: ${{ needs.tag-generate.outputs.new_tag }}
 
   health-check:
     needs: fly-deploy
@@ -91,8 +95,11 @@ jobs:
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
-      ci-result:     ${{ needs.ci-checks.result }}
-      tag-result:    ${{ needs.tag-push.result }}
+      ci-result: ${{ needs.ci-checks.result }}
+      tag-result: ${{ needs.tag-push.result }}
       deploy-result: ${{ needs.fly-deploy.result }}
       health-result: ${{ needs.health-check.result }}
-      new-tag:       ${{ needs['tag-generate'].outputs.new_tag }}
+      new-tag: ${{ needs['tag-generate'].outputs.new_tag }}
+    secrets:
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
