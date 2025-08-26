@@ -73,6 +73,7 @@ jobs:
 
   tag-push:
     needs: fly-deploy
+    if: needs.ci-checks.outputs.should_deploy == 'true' && needs.fly-deploy.result == 'success'
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
@@ -85,11 +86,13 @@ jobs:
       url: https://blogs-fso.fly.dev/ready
 
   notify:
-    needs: [ci-checks, tag-generate, tag-push, fly-deploy, health-check]
+    if: ${{ always() }}
+    needs: [ci-checks, tag-generate, fly-deploy, health-check, tag-push]
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
-      ci-result: ${{ needs.ci-checks.result }}
-      tag-result: ${{ needs.tag-push.result }}
-      deploy-result: ${{ needs.health-check.result }}
-      new-tag: ${{ needs['tag-generate'].outputs.new_tag }}
+      ci-result:     ${{ needs.ci-checks.result }}
+      tag-result:    ${{ needs.tag-push.result }}
+      deploy-result: ${{ needs.fly-deploy.result }}
+      health-result: ${{ needs.health-check.result }}
+      new-tag:       ${{ needs['tag-generate'].outputs.new_tag }}
