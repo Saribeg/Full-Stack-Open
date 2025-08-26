@@ -109,7 +109,8 @@ jobs:
           webhook: ${{ env.DISCORD_WEBHOOK }}
           status: success
           nodetail: true
-          title: "✅ Deploy succeeded — ${{ inputs.project-name }}"
+          title: >-
+            Production deployment${{ inputs.new-tag != '' && format(' ({0})', inputs.new-tag) || '' }}
           description: ${{ env.SUCCESS_MESSAGE }}
 
       - name: Discord | Failure
@@ -122,5 +123,6 @@ jobs:
           webhook: ${{ env.DISCORD_WEBHOOK }}
           status: failure
           nodetail: true
-          title: "❌ Build/Deploy failed — ${{ inputs.project-name }}"
+          title: >-
+            Production deployment${{ inputs.new-tag != '' && format(' ({0})', inputs.new-tag) || '' }}
           description: ${{ env.FAILURE_MESSAGE }}
