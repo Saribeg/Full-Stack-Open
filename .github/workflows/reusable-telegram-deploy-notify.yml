@@ -15,6 +15,10 @@ on:
       deploy-result:
         required: true
         type: string
+      health-result:
+        required: false
+        type: string
+        default: ""
       new-tag:
         required: true
         type: string
@@ -33,10 +37,17 @@ jobs:
           message: |
             ✅ Deploy succeeded
             Tag `${{ inputs.new-tag }}` deployed
-            👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Statuses:
+            • CI-checks:   ${{ inputs.ci-result }}
+            • Tag-push:    ${{ inputs.tag-result }}
+            • Fly deploy:  ${{ inputs.deploy-result }}
+            • Health (/ready): ${{ inputs.health-result }}
+
+            👉 View run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Notify Telegram Failure
-        if: ${{ inputs.ci-result == 'failure' || inputs.tag-result == 'failure' || inputs.deploy-result == 'failure' }}
+        if: ${{ inputs.ci-result == 'failure' || inputs.tag-result == 'failure' || inputs.deploy-result == 'failure' || inputs.health-result == 'failure' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -45,14 +56,15 @@ jobs:
             ❌ Build/Deploy failed
 
             • Repository: ${{ github.repository }}
-            • Workflow: ${{ github.workflow }}
-            • Event: ${{ github.event_name }}
-            • Commit: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-            • Triggered by: ${{ github.actor }}
+            • Workflow:   ${{ github.workflow }}
+            • Event:      ${{ github.event_name }}
+            • Commit:     ${{ github.sha }}
+            • Actor:      ${{ github.actor }}
 
             Job statuses:
-            • CI-checks: ${{ inputs.ci-result }}
-            • Tag-release: ${{ inputs.tag-result }}
-            • Deploy: ${{ inputs.deploy-result }}
+            • CI-checks:      ${{ inputs.ci-result }}
+            • Tag-push:       ${{ inputs.tag-result }}
+            • Fly deploy:     ${{ inputs.deploy-result }}
+            • Health (/ready): ${{ inputs.health-result }}
 
-            👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            👉 View run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
