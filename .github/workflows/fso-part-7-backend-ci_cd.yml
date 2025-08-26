@@ -2,7 +2,7 @@ name: CI/CD Pipeline for back-end part of Part 7 of FSO Course - Project BlogApp
 
 on:
   push:
-    branches: [main, part-11/task-11.20/optimize-ci-cd]
+    branches: [main]
     paths:
       - 'Part-7/blog/backend/**'
   pull_request:
@@ -99,7 +99,6 @@ jobs:
           needs['tag-push'].result == 'success'
         }}
       statuses-text: |
-        Job statuses:
         • CI-checks:       ${{ needs.ci-checks.result }}
         • Tag-generate:    ${{ needs['tag-generate'].result }}
         • Fly deploy:      ${{ needs.fly-deploy.result }}
