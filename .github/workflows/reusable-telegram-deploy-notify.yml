@@ -15,7 +15,9 @@ on:
       new-tag:
         required: true
         type: string
-
+      is-success:
+        required: true
+        type: string
     secrets:
       TELEGRAM_CHAT_ID:
         required: true
@@ -25,30 +27,33 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    if: always()
+    # run only if deploy was intended
+    if: ${{ inputs.should-deploy == 'true' }}
     steps:
       - name: Notify Telegram Success
-        if: ${{ inputs.should-deploy == 'true' }}
+        if: ${{ inputs.is-success == 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          format: html
           message: |
             🚀 <b>${{ inputs.project-name }}</b>
 
             ✅ Deploy succeeded
-            Tag `${{ inputs.new-tag }}` deployed
+            Tag <code>${{ inputs.new-tag }}</code> deployed
 
             ${{ inputs.statuses-text }}
 
             👉 <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">View run</a>
 
       - name: Notify Telegram Failure
-        if: ${{ inputs.should-deploy == 'true' }}
+        if: ${{ inputs.is-success != 'true' }}
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          format: html
           message: |
             🚨 <b>${{ inputs.project-name }}</b>
 
