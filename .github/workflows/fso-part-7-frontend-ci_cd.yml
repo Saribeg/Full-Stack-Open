@@ -70,7 +70,7 @@ jobs:
       should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
       artifact-name: blog_redux-dist
       app_slug: blog_redux
-      image-label: ${{ needs.tag-generate-redux.outputs.new_tag }}
+      image-label: ${{ needs['tag-generate-redux'].outputs.new_tag }}
     secrets:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -79,21 +79,22 @@ jobs:
 
   tag-push-redux:
     needs: vercel-deploy-redux
+    if: needs.blog_redux.outputs.should_deploy == 'true' && needs['vercel-deploy-redux'].result == 'success'
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
       should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
       tag-to-push: ${{ needs['tag-generate-redux'].outputs.new_tag }}
 
   notify-redux:
+    if: ${{ always() }}
     needs: [blog_redux, tag-generate-redux, vercel-deploy-redux, tag-push-redux]
-    if: needs.blog_redux.outputs.should_deploy == 'true'
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
-      ci-result: ${{ needs.blog_redux.result }}
-      tag-result: ${{ needs.tag-push-redux.result }}
-      deploy-result: ${{ needs.vercel-deploy-redux.result }}
-      new-tag: ${{ needs['tag-generate-redux'].outputs.new_tag }}
+      ci-result:     ${{ needs.blog_redux.result }}
+      tag-result:    ${{ needs['tag-push-redux'].result }}
+      deploy-result: ${{ needs['vercel-deploy-redux'].result }}
+      new-tag:       ${{ needs['tag-generate-redux'].outputs.new_tag }}
 
   blog_query:
     needs: changes
@@ -136,7 +137,7 @@ jobs:
       should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
       artifact-name: blog_query-dist
       app_slug: blog_query
-      image-label: ${{ needs.tag-generate-query.outputs.new_tag }}
+      image-label: ${{ needs['tag-generate-query'].outputs.new_tag }}
     secrets:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -145,18 +146,19 @@ jobs:
 
   tag-push-query:
     needs: vercel-deploy-query
+    if: needs.blog_query.outputs.should_deploy == 'true' && needs['vercel-deploy-query'].result == 'success'
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
       should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
       tag-to-push: ${{ needs['tag-generate-query'].outputs.new_tag }}
 
   notify-query:
+    if: ${{ always() }}
     needs: [blog_query, tag-generate-query, vercel-deploy-query, tag-push-query]
-    if: needs.blog_query.outputs.should_deploy == 'true'
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
       should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
-      ci-result: ${{ needs.blog_query.result }}
-      tag-result: ${{ needs.tag-push-query.result }}
-      deploy-result: ${{ needs.vercel-deploy-query.result }}
-      new-tag: ${{ needs['tag-generate-query'].outputs.new_tag }}
+      ci-result:     ${{ needs.blog_query.result }}
+      tag-result:    ${{ needs['tag-push-query'].result }}
+      deploy-result: ${{ needs['vercel-deploy-query'].result }}
+      new-tag:       ${{ needs['tag-generate-query'].outputs.new_tag }}
