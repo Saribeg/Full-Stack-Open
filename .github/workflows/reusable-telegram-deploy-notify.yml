@@ -23,6 +23,12 @@ on:
         required: true
         type: string
 
+    secrets:
+        TELEGRAM_CHAT_ID:
+          required: true
+        TELEGRAM_BOT_TOKEN:
+          required: true
+
 jobs:
   notify:
     runs-on: ubuntu-latest

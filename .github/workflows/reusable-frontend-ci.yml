@@ -54,6 +54,10 @@ on:
         required: false
         type: string
         default: ""
+      audit-needed:
+        required: false
+        type: string
+        default: 'true'
 
     secrets:
       TEST_MONGODB_URI:
@@ -175,6 +179,7 @@ jobs:
         continue-on-error: true
       
       - name: Security Audit
+        if: ${{ inputs.audit-needed == 'true' }}
         run: npm run audit
 
       - name: Decide if should deploy
