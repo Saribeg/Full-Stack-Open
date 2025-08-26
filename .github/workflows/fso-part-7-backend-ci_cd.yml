@@ -89,14 +89,15 @@ jobs:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
       new-tag: ${{ needs['tag-generate'].outputs.new_tag }}
       # success logic: deploy intended -> all deploy-stage jobs succeeded
-      is-success: ${{ 
-        needs.ci-checks.outputs.should_deploy == 'true' &&
-        needs.ci-checks.result == 'success' &&
-        needs['tag-generate'].result == 'success' &&
-        needs.fly-deploy.result == 'success' &&
-        needs['health-check'].result == 'success' &&
-        needs['tag-push'].result == 'success'
-      }}
+      is-success: >-
+        ${{ 
+          needs.ci-checks.outputs.should_deploy == 'true' &&
+          needs.ci-checks.result == 'success' &&
+          needs['tag-generate'].result == 'success' &&
+          needs.fly-deploy.result == 'success' &&
+          needs['health-check'].result == 'success' &&
+          needs['tag-push'].result == 'success'
+        }}
       statuses-text: |
         Job statuses:
         • CI-checks:       ${{ needs.ci-checks.result }}

@@ -118,14 +118,13 @@ jobs:
       project-name: 'FSO BlogApp Frontend (React + Redux + Tailwind CSS)'
       should-deploy: ${{ needs.ci-blog_redux.outputs.should_deploy }}
       new-tag: ${{ needs['tag-generate-redux'].outputs.new_tag }}
-      is-success: ${{ 
-        needs.ci-blog_redux.outputs.should_deploy == 'true' &&
-        needs.ci-blog_redux.result == 'success' &&
-        needs['prod-build-redux'].result == 'success' &&
-        needs['tag-generate-redux'].result == 'success' &&
-        needs['vercel-deploy-redux'].result == 'success' &&
-        needs['tag-push-redux'].result == 'success'
-      }}
+      is-success: >-
+        ${{ needs.ci-blog_redux.outputs.should_deploy == 'true' &&
+          needs.ci-blog_redux.result == 'success' &&
+          needs['prod-build-redux'].result == 'success' &&
+          needs['tag-generate-redux'].result == 'success' &&
+          needs['vercel-deploy-redux'].result == 'success' &&
+          needs['tag-push-redux'].result == 'success' }}
       statuses-text: |
         Job statuses:
         • CI-checks:     ${{ needs.ci-blog_redux.result }}
@@ -216,14 +215,15 @@ jobs:
       project-name: 'FSO BlogApp Frontend (React + TanStack Query + MUI)'
       should-deploy: ${{ needs.ci-blog_query.outputs.should_deploy }}
       new-tag: ${{ needs['tag-generate-query'].outputs.new_tag }}
-      is-success: ${{ 
-        needs.ci-blog_query.outputs.should_deploy == 'true' &&
-        needs.ci-blog_query.result == 'success' &&
-        needs['prod-build-query'].result == 'success' &&
-        needs['tag-generate-query'].result == 'success' &&
-        needs['vercel-deploy-query'].result == 'success' &&
-        needs['tag-push-query'].result == 'success'
-      }}
+      is-success: >-
+        ${{ 
+          needs.ci-blog_query.outputs.should_deploy == 'true' &&
+          needs.ci-blog_query.result == 'success' &&
+          needs['prod-build-query'].result == 'success' &&
+          needs['tag-generate-query'].result == 'success' &&
+          needs['vercel-deploy-query'].result == 'success' &&
+          needs['tag-push-query'].result == 'success'
+        }}
       statuses-text: |
         Job statuses:
         • CI-checks:     ${{ needs.ci-blog_query.result }}
