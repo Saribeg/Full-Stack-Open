@@ -1,0 +1,121 @@
+name: Reusable Deploy Notify (Markdown)
+
+on:
+  workflow_call:
+    inputs:
+      project-name:
+        required: true
+        type: string
+      should-deploy:
+        required: true
+        type: string
+      new-tag:
+        required: true
+        type: string
+      is-success:
+        required: true
+        type: string
+      statuses-text:
+        required: true
+        type: string
+    secrets:
+      TELEGRAM_CHAT_ID:
+        required: false
+      TELEGRAM_BOT_TOKEN:
+        required: false
+      DISCORD_WEBHOOK:
+        required: false
+
+x-success-message: &SUCCESS_MESSAGE |
+  🚀 **${{ inputs.project-name }}**
+
+  ✅ **Deploy succeeded**  
+  Tag `${{ inputs.new-tag }}` deployed
+
+  • Repository: `${{ github.repository }}`  
+  • Actor: `${{ github.actor }}`  
+
+  👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+x-failure-message: &FAILURE_MESSAGE |
+  🚨 **${{ inputs.project-name }}**
+
+  ❌ **Build/Deploy failed**
+
+  • Repository: `${{ github.repository }}`  
+  • Workflow: `${{ github.workflow }}`  
+  • Event: `${{ github.event_name }}`  
+  • Commit: `${{ github.sha }}`  
+  • Actor: `${{ github.actor }}`  
+
+  **Job statuses:**
+  ${{ inputs.statuses-text }}
+
+  👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+jobs:
+  notify:
+    if: ${{ inputs.should-deploy == 'true' && (secrets.TELEGRAM_BOT_TOKEN != '' || secrets.DISCORD_WEBHOOK != '') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        channel: [telegram, discord]
+
+    steps:
+      # =======================
+      # Telegram
+      # =======================
+      - name: Telegram | Success
+        if: >-
+          matrix.channel == 'telegram' &&
+          inputs.is-success == 'true' &&
+          secrets.TELEGRAM_BOT_TOKEN != '' &&
+          secrets.TELEGRAM_CHAT_ID != ''
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          format: markdown
+          message: *SUCCESS_MESSAGE
+
+      - name: Telegram | Failure
+        if: >-
+          matrix.channel == 'telegram' &&
+          inputs.is-success != 'true' &&
+          secrets.TELEGRAM_BOT_TOKEN != '' &&
+          secrets.TELEGRAM_CHAT_ID != ''
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          format: markdown
+          message: *FAILURE_MESSAGE
+
+      # =======================
+      # Discord
+      # =======================
+      - name: Discord | Success
+        if: >-
+          matrix.channel == 'discord' &&
+          inputs.is-success == 'true' &&
+          secrets.DISCORD_WEBHOOK != ''
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: success
+          nodetail: true
+          title: "✅ Deploy succeeded — ${{ inputs.project-name }}"
+          description: *SUCCESS_MESSAGE
+
+      - name: Discord | Failure
+        if: >-
+          matrix.channel == 'discord' &&
+          inputs.is-success != 'true' &&
+          secrets.DISCORD_WEBHOOK != ''
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: failure
+          nodetail: true
+          title: "❌ Build/Deploy failed — ${{ inputs.project-name }}"
+          description: *FAILURE_MESSAGE
