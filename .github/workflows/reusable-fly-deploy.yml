@@ -14,7 +14,7 @@ on:
         type: string
       
     secrets:
-      FLY_ORG_DEPLOY_TOKEN:
+      FLY_DEPLOY_TOKEN:
         required: true
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only --image-label ${{ inputs.image-label }}
         env:
-          FLY_ORG_DEPLOY_TOKEN: ${{ secrets.FLY_ORG_DEPLOY_TOKEN }}
+          FLY_DEPLOY_TOKEN: ${{ secrets.FLY_DEPLOY_TOKEN }}
 
       - name: Health check
         run: |

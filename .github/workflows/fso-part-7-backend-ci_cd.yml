@@ -41,7 +41,7 @@ jobs:
       working-directory: Part-7/blog/backend
       image-label: ${{ needs['tag-release'].outputs.new_tag }}
     secrets:
-      FLY_ORG_DEPLOY_TOKEN: ${{ secrets.FLY_ORG_DEPLOY_TOKEN }}
+      FLY_DEPLOY_TOKEN: ${{ secrets.FLY_FSO_BLOGAPP_TOKEN }}
 
   health-check:
     needs: fly-deploy
