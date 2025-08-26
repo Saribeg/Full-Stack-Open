@@ -1,4 +1,4 @@
-name: Reusable Deploy Notify (Markdown)
+name: Reusable Deploy Notify
 
 on:
   workflow_call:
