@@ -3,13 +3,7 @@ name: Reusable Vercel Deploy (prebuilt)
 on:
   workflow_call:
     inputs:
-      should-deploy:
-        required: true
-        type: string
       artifact-name:
-        required: true
-        type: string
-      app_slug:
         required: true
         type: string
       image-label:
@@ -26,7 +20,6 @@ on:
 
 jobs:
   vercel-deploy:
-    if: ${{ inputs.should-deploy == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Download prebuilt artifact
@@ -44,4 +37,9 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          npx --yes vercel@46.0.3 deploy dist-bundle --prod --yes --token "$VERCEL_TOKEN"
+          META_ARGS=""
+          if [ -n "${{ inputs.image-label }}" ]; then
+            META_ARGS="--meta gitTag=${{ inputs.image-label }}"
+          fi
+
+          npx --yes vercel@46.0.3 deploy dist-bundle --prod --yes --token "$VERCEL_TOKEN" $META_ARGS

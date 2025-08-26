@@ -6,17 +6,15 @@ on:
       - main
     paths:
       - 'Part-11/full-stack-open-pokedex/**'
-      - '.github/workflows/fso-part-11-pokedex-pipeline.yml'
   pull_request:
     branches: [main]
     types: [opened, synchronize]
     paths:
       - 'Part-11/full-stack-open-pokedex/**'
-      - '.github/workflows/fso-part-11-pokedex-pipeline.yml'
   workflow_dispatch:
 
 jobs:
-  CI-checks:
+  ci_checks:
     runs-on: ubuntu-latest
 
     outputs:
@@ -64,49 +62,60 @@ jobs:
           && !contains(toJSON(github.event.commits.*.message), '#skip')
           && !contains(github.event.head_commit.message || '', '#skip') }}" >> $GITHUB_OUTPUT
 
-  tag_release:
-    # We create a git tag before deploy 
-    # so that the deployed version is always in sync with git history.
+  tag_generate:
     runs-on: ubuntu-latest
-    needs: [CI-checks]
-    if: ${{ needs.CI-checks.outputs.should_deploy == 'true' }}
+    needs: [ci_checks]
+    if: ${{ needs.ci_checks.outputs.should_deploy == 'true' }}
     outputs:
       new_tag: ${{ steps.tag.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
-      - name: Bump version and push tag
+      - name: Generate next tag (dry-run)
         id: tag
         uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-          WITH_V: true
-          CUSTOM_TAG: pokedex-v
+          DRY_RUN: true
+          TAG_PREFIX: pokedex-v
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [tag_release]
-    if: ${{ needs.CI-checks.outputs.should_deploy == 'true' }}
-
+    needs: [tag_generate]
+    if: ${{ needs.ci_checks.outputs.should_deploy == 'true' && needs.tag_generate.outputs.new_tag != ''}}
     defaults:
       run:
         working-directory: Part-11/full-stack-open-pokedex
-
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only --image-label ${{ needs.tag_release.outputs.new_tag }}
+      - run: flyctl deploy --remote-only --image-label ${{ needs.tag_generate.outputs.new_tag }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
+  tag_push:
+    runs-on: ubuntu-latest
+    needs: [deploy, tag_generate]
+    if: ${{ needs.deploy.result == 'success' && needs.tag_generate.outputs.new_tag != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Push tag
+        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+          CUSTOM_TAG: ${{ needs.tag_generate.outputs.new_tag }}
+
   notify:
     runs-on: ubuntu-latest
-    needs: [CI-checks, tag_release, deploy]
+    needs: [ci_checks, tag_generate, deploy, tag_push]
     if: always()
 
     steps:
       - name: Notify success
-        if: ${{ needs.CI-checks.outputs.should_deploy == 'true' && needs.deploy.result == 'success' }}
+        if: ${{ needs.ci_checks.outputs.should_deploy == 'true' && needs.deploy.result == 'success' && needs.tag_push.result == 'success' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
@@ -114,11 +123,12 @@ jobs:
           nodetail: true
           title: "✅ Deploy succeeded"
           description: |
+            Project: FSO Part-11 Pokedex
             Tag `${{ needs.tag_release.outputs.new_tag }}` deployed
             [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
       - name: Notify failure
-        if: ${{ needs.CI-checks.result == 'failure' || needs.tag_release.result == 'failure' || needs.deploy.result == 'failure' }}
+        if: ${{ needs.CI-checks.result == 'failure' || needs.tag_generate.result == 'failure' || needs.deploy.result == 'failure' || needs.tag_push.result == 'failure' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
@@ -126,9 +136,7 @@ jobs:
           title: "❌ Build/Deploy failed"
           description: |
             Job statuses:
-            • CI-checks: ${{ needs.CI-checks.result }}
-            • tag_release: ${{ needs.tag_release.result }}
-            • deploy: ${{ needs.deploy.result }}
-
-
-      
+            • CI-checks:   ${{ needs.CI-checks.result }}
+            • tag_generate: ${{ needs.tag_generate.result }}
+            • deploy:      ${{ needs.deploy.result }}
+            • tag_push:    ${{ needs.tag_push.result }}

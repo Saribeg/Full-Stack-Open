@@ -15,30 +15,23 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      audit_needed: ${{ steps.check.outputs.audit_needed }}
+      audit_needed: ${{ steps.audit_flag.outputs.audit_needed }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Check if dependencies changed
-        id: check
-        run: |
-          # Paths to backend dependency files
-          PKG_JSON="Part-7/blog/backend/package.json"
-          PKG_LOCK="Part-7/blog/backend/package-lock.json"
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            deps_changed:
+              - 'Part-7/blog/backend/package.json'
+              - 'Part-7/blog/backend/package-lock.json'
 
-          # Check if this is not the first commit
-          if git rev-parse HEAD^ >/dev/null 2>&1; then
-            if git diff --ignore-space-change --ignore-all-space --ignore-blank-lines --quiet HEAD^ HEAD -- "$PKG_JSON" "$PKG_LOCK"; then
-              echo "audit_needed=false" >> $GITHUB_OUTPUT
-            else
-              echo "audit_needed=true" >> $GITHUB_OUTPUT
-            fi
-          else
-            echo "First commit in branch → force audit"
-            echo "audit_needed=true" >> $GITHUB_OUTPUT
-          fi
+      - name: Set audit flag
+        id: audit_flag
+        run: echo "audit_needed=${{ steps.filter.outputs.deps_changed }}" >> $GITHUB_OUTPUT
 
   ci-checks:
     needs: changes
@@ -48,11 +41,8 @@ jobs:
       node-versions: '["18","22"]'
       audit-needed: ${{ needs.changes.outputs.audit_needed }}
     secrets:
-      DEV_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-      MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-      SECRET: sekret
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-      TEST_SECRET: sekret
+      TEST_SECRET: ${{ secrets.TEST_JWT_SECRET }}
 
   tag-generate:
     needs: ci-checks
@@ -63,6 +53,7 @@ jobs:
 
   fly-deploy:
     needs: [ci-checks, tag-generate]
+    if: needs['tag-generate'].outputs.new_tag != ''
     uses: ./.github/workflows/reusable-fly-deploy.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
@@ -77,29 +68,43 @@ jobs:
       needs.fly-deploy.result == 'success' &&
       needs.tag-generate.result == 'success' &&
       needs.tag-generate.outputs.new_tag != ''
-    permissions:
-      contents: write
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
       tag-to-push: ${{ needs.tag-generate.outputs.new_tag }}
 
   health-check:
     needs: fly-deploy
+    if: needs.fly-deploy.result == 'success'
     uses: ./.github/workflows/reusable-health-check.yml
     with:
       url: https://blogs-fso.fly.dev/ready
 
   notify:
+    # must run even if some previous jobs failed, so that we can notify about failures
     if: ${{ always() }}
     needs: [ci-checks, tag-generate, fly-deploy, health-check, tag-push]
-    uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
+    uses: ./.github/workflows/reusable-deploy-notify.yml
     with:
+      project-name: 'FSO BlogApp Express Backend'
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
-      ci-result: ${{ needs.ci-checks.result }}
-      tag-result: ${{ needs.tag-push.result }}
-      deploy-result: ${{ needs.fly-deploy.result }}
-      health-result: ${{ needs.health-check.result }}
       new-tag: ${{ needs['tag-generate'].outputs.new_tag }}
+      # success logic: deploy intended -> all deploy-stage jobs succeeded
+      is-success: >-
+        ${{ 
+          needs.ci-checks.outputs.should_deploy == 'true' &&
+          needs.ci-checks.result == 'success' &&
+          needs['tag-generate'].result == 'success' &&
+          needs.fly-deploy.result == 'success' &&
+          needs['health-check'].result == 'success' &&
+          needs['tag-push'].result == 'success'
+        }}
+      statuses-text: |
+        • CI-checks:       ${{ needs.ci-checks.result }}
+        • Tag-generate:    ${{ needs['tag-generate'].result }}
+        • Fly deploy:      ${{ needs.fly-deploy.result }}
+        • Health (/ready): ${{ needs['health-check'].result }}
+        • Tag-push:        ${{ needs['tag-push'].result }}
     secrets:
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}

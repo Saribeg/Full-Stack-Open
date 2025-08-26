@@ -18,7 +18,9 @@ const mongoUri = makeValidator((input) => {
 }, 'mongoUri');
 
 const NODE_ENV = process.env.NODE_ENV ?? 'production';
-const IS_NON_PROD = NODE_ENV === 'development' || NODE_ENV === 'test';
+const isTest = NODE_ENV === 'test';
+const isDev  = NODE_ENV === 'development';
+const isProd = NODE_ENV === 'production';
 
 const baseSchema = {
   PORT: port({ default: 8080 }),
@@ -30,7 +32,12 @@ const prodSchema = {
   SECRET: nonEmptyStr(),
 };
 
-const nonProdSchema = {
+const devSchema = {
+  DEV_MONGODB_URI: mongoUri(),
+  TEST_SECRET: nonEmptyStr(), // dev reuses test secret
+};
+
+const testSchema = {
   TEST_MONGODB_URI: mongoUri(),
   TEST_DB_NAME: str({ default: '' }),
   TEST_SECRET: nonEmptyStr(),
@@ -38,17 +45,22 @@ const nonProdSchema = {
 
 const schema = {
   ...baseSchema,
-  ...(IS_NON_PROD ? nonProdSchema : prodSchema),
+  ...(isProd ? prodSchema : {}),
+  ...(isDev  ? devSchema  : {}),
+  ...(isTest ? testSchema : {}),
 };
 
 const env = cleanEnv(process.env, schema);
 
 function getMongoUri() {
-  return IS_NON_PROD ? env.TEST_MONGODB_URI : env.MONGODB_URI;
+  if (isTest) return env.TEST_MONGODB_URI;
+  if (isDev)  return env.DEV_MONGODB_URI;
+  return env.MONGODB_URI;
 }
 
 function getDbName() {
-  return IS_NON_PROD ? env.TEST_DB_NAME ?? env.DB_NAME : env.DB_NAME;
+  if (isTest) return env.TEST_DB_NAME || env.DB_NAME;
+  return env.DB_NAME;
 }
 
 module.exports = {
@@ -56,6 +68,6 @@ module.exports = {
   PORT: env.PORT,
   MONGODB_URI: getMongoUri(),
   MONGODB_DB_NAME: getDbName(),
-  SECRET: IS_NON_PROD ? env.TEST_SECRET : env.SECRET,
-  TEST_SECRET: IS_NON_PROD ? env.TEST_SECRET : undefined,
+  SECRET: isProd ? env.SECRET : env.TEST_SECRET,
+  TEST_SECRET: !isProd ? env.TEST_SECRET : undefined,
 };

@@ -1,0 +1,128 @@
+name: Reusable Deploy Notify (Markdown)
+
+on:
+  workflow_call:
+    inputs:
+      project-name:
+        required: true
+        type: string
+      should-deploy:
+        required: true
+        type: string
+      new-tag:
+        required: true
+        type: string
+      is-success:
+        required: true
+        type: string
+      statuses-text:
+        required: true
+        type: string
+    secrets:
+      TELEGRAM_CHAT_ID:
+        required: false
+      TELEGRAM_BOT_TOKEN:
+        required: false
+      DISCORD_WEBHOOK:
+        required: false
+
+jobs:
+  notify:
+    if: ${{ inputs.should-deploy == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        channel: [telegram, discord]
+
+    env:
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
+      SUCCESS_MESSAGE: |
+        🚀 **${{ inputs.project-name }}**
+
+        ✅ **Deploy succeeded**  
+        Tag `${{ inputs.new-tag }}` deployed
+
+        • Repository: `${{ github.repository }}`  
+        • Actor: `${{ github.actor }}`  
+
+        👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+      FAILURE_MESSAGE: |
+        🚨 **${{ inputs.project-name }}**
+
+        ❌ **Build/Deploy failed**
+
+        • Repository: `${{ github.repository }}`  
+        • Workflow: `${{ github.workflow }}`  
+        • Event: `${{ github.event_name }}`  
+        • Commit: `${{ github.sha }}`  
+        • Actor: `${{ github.actor }}`  
+
+        **Job statuses:**
+        ${{ inputs.statuses-text }}
+
+        👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+    steps:
+      # =======================
+      # Telegram
+      # =======================
+      - name: Telegram | Success
+        if: >-
+          matrix.channel == 'telegram' &&
+          inputs.is-success == 'true' &&
+          env.TELEGRAM_BOT_TOKEN != '' &&
+          env.TELEGRAM_CHAT_ID != ''
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ env.TELEGRAM_CHAT_ID }}
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
+          format: markdown
+          message: ${{ env.SUCCESS_MESSAGE }}
+
+      - name: Telegram | Failure
+        if: >-
+          matrix.channel == 'telegram' &&
+          inputs.is-success != 'true' &&
+          env.TELEGRAM_BOT_TOKEN != '' &&
+          env.TELEGRAM_CHAT_ID != ''
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ env.TELEGRAM_CHAT_ID }}
+          token: ${{ env.TELEGRAM_BOT_TOKEN }}
+          format: markdown
+          message: ${{ env.FAILURE_MESSAGE }}
+
+      # =======================
+      # Discord
+      # =======================
+      - name: Discord | Success
+        if: >-
+          matrix.channel == 'discord' &&
+          inputs.is-success == 'true' &&
+          env.DISCORD_WEBHOOK != ''
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ env.DISCORD_WEBHOOK }}
+          status: success
+          nodetail: true
+          title: >-
+            Production deployment${{ inputs.new-tag != '' && format(' ({0})', inputs.new-tag) || '' }}
+          description: ${{ env.SUCCESS_MESSAGE }}
+
+      - name: Discord | Failure
+        if: >-
+          matrix.channel == 'discord' &&
+          inputs.is-success != 'true' &&
+          env.DISCORD_WEBHOOK != ''
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ env.DISCORD_WEBHOOK }}
+          status: failure
+          nodetail: true
+          title: >-
+            Production deployment${{ inputs.new-tag != '' && format(' ({0})', inputs.new-tag) || '' }}
+          description: ${{ env.FAILURE_MESSAGE }}

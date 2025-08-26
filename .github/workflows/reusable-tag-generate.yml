@@ -3,10 +3,11 @@ name: Reusable Tag Generate
 on:
   workflow_call:
     inputs:
-      should-deploy:
-        required: true
-        type: string
       tag-prefix:
+        required: false
+        type: string
+        default: ""
+      should-deploy:
         required: false
         type: string
         default: ""
@@ -17,15 +18,18 @@ on:
 
 jobs:
   tag-generate:
+    # run only if should-deploy is not provided or explicitly "true"
+    if: ${{ inputs.should-deploy == '' || inputs.should-deploy == 'true' }}
     runs-on: ubuntu-latest
-    if: ${{ inputs.should-deploy == 'true' }}
     outputs:
       new_tag: ${{ steps.tag.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Generate next tag (dry-run)
         id: tag
-        uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
+        uses: anothrNick/github-tag-action@1.75.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
