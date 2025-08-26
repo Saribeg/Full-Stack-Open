@@ -2,7 +2,7 @@ name: CI/CD Pipeline for front-end part of Part 7 of FSO Course - Project BlogAp
 
 on:
   push:
-    branches: [main, part-11/task-11.20/optimize-ci-cd]
+    branches: [main]
     paths:
       - 'Part-7/blog/frontend/blog_redux/**'
       - 'Part-7/blog/frontend/blog_query/**'
@@ -127,7 +127,6 @@ jobs:
           needs['vercel-deploy-redux'].result == 'success' &&
           needs['tag-push-redux'].result == 'success' }}
       statuses-text: |
-        Job statuses:
         • CI-checks:     ${{ needs.ci-blog_redux.result }}
         • Prod build:    ${{ needs['prod-build-redux'].result }}
         • Tag-generate:  ${{ needs['tag-generate-redux'].result }}
@@ -226,7 +225,6 @@ jobs:
           needs['tag-push-query'].result == 'success'
         }}
       statuses-text: |
-        Job statuses:
         • CI-checks:     ${{ needs.ci-blog_query.result }}
         • Prod build:    ${{ needs['prod-build-query'].result }}
         • Tag-generate:  ${{ needs['tag-generate-query'].result }}
