@@ -53,6 +53,7 @@ jobs:
 
   fly-deploy:
     needs: [ci-checks, tag-generate]
+    if: needs['tag-generate'].outputs.new_tag != ''
     uses: ./.github/workflows/reusable-fly-deploy.yml
     with:
       should-deploy: ${{ needs.ci-checks.outputs.should_deploy }}
@@ -73,6 +74,7 @@ jobs:
 
   health-check:
     needs: fly-deploy
+    if: needs.fly-deploy.result == 'success'
     uses: ./.github/workflows/reusable-health-check.yml
     with:
       url: https://blogs-fso.fly.dev/ready
