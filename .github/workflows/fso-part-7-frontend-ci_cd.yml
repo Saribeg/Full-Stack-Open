@@ -2,7 +2,7 @@ name: CI/CD Pipeline for front-end part of Part 7 of FSO Course - Project BlogAp
 
 on:
   push:
-    branches: [main]
+    branches: [main, part-11/task-11.20/optimize-ci-cd]
     paths:
       - 'Part-7/blog/frontend/blog_redux/**'
       - 'Part-7/blog/frontend/blog_query/**'
@@ -40,7 +40,10 @@ jobs:
               - 'Part-7/blog/frontend/blog_query/package.json'
               - 'Part-7/blog/frontend/blog_query/package-lock.json'
 
-  blog_redux:
+  # -------------------------
+  # Redux app
+  # -------------------------
+  ci-blog_redux:
     needs: changes
     if: needs.changes.outputs.blog_redux == 'true'
     name: Frontend CI - blog_redux
@@ -61,26 +64,34 @@ jobs:
       e2e_artifact_paths: |
         Part-7/blog/frontend/blog_redux/playwright-report/**
         Part-7/blog/frontend/blog_redux/test-results/**
-      extra_files: vercel.json
       audit-needed: ${{ needs.changes.outputs.audit_redux }}
     secrets:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI_REDUX }}
 
+  prod-build-redux:
+    needs: ci-blog_redux
+    if: needs.ci-blog_redux.outputs.should_deploy == 'true'
+    uses: ./.github/workflows/reusable-frontend-prod-build.yml
+    with:
+      app_slug: blog_redux
+      working_directory: Part-7/blog/frontend/blog_redux
+      frontend_node_version: '22'
+      prod_api_url: https://blogs-fso.fly.dev
+      extra_files: vercel.json
+
   tag-generate-redux:
-    needs: blog_redux
+    needs: prod-build-redux
+    if: needs.prod-build-redux.result == 'success'
     uses: ./.github/workflows/reusable-tag-generate.yml
     with:
-      should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
       tag-prefix: blogapp-redux-
 
   vercel-deploy-redux:
-    needs: [blog_redux, tag-generate-redux]
-    if: needs.blog_redux.outputs.should_deploy == 'true'
+    needs: [prod-build-redux, tag-generate-redux]
+    if: needs.prod-build-redux.result == 'success' && needs['tag-generate-redux'].result == 'success'
     uses: ./.github/workflows/reusable-vercel-deploy.yml
     with:
-      should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
-      artifact-name: blog_redux-dist
-      app_slug: blog_redux
+      artifact-name: ${{ needs.prod-build-redux.outputs.artifact_name }}
       image-label: ${{ needs['tag-generate-redux'].outputs.new_tag }}
     secrets:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
@@ -102,19 +113,27 @@ jobs:
 
   notify-redux:
     if: ${{ always() }}
-    needs: [blog_redux, tag-generate-redux, vercel-deploy-redux, tag-push-redux]
+    needs: [ci-blog_redux, prod-build-redux, tag-generate-redux, vercel-deploy-redux, tag-push-redux]
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
-      should-deploy: ${{ needs.blog_redux.outputs.should_deploy }}
-      ci-result: ${{ needs.blog_redux.result }}
-      tag-result: ${{ needs['tag-push-redux'].result }}
-      deploy-result: ${{ needs['vercel-deploy-redux'].result }}
+      project-name: 'FSO BlogApp Frontend (React + Redux + Tailwind CSS)'
+      should-deploy: ${{ needs.ci-blog_redux.outputs.should_deploy }}
       new-tag: ${{ needs['tag-generate-redux'].outputs.new_tag }}
+      statuses-text: |
+        Job statuses:
+        • CI-checks:     ${{ needs.ci-blog_redux.result }}
+        • Prod build:    ${{ needs['prod-build-redux'].result }}
+        • Tag-generate:  ${{ needs['tag-generate-redux'].result }}
+        • Vercel deploy: ${{ needs['vercel-deploy-redux'].result }}
+        • Tag-push:      ${{ needs['tag-push-redux'].result }}
     secrets:
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-  blog_query:
+  # -------------------------
+  # Query app
+  # -------------------------
+  ci-blog_query:
     needs: changes
     if: needs.changes.outputs.blog_query == 'true'
     name: Frontend CI - blog_query
@@ -136,26 +155,34 @@ jobs:
         Part-7/blog/frontend/blog_query/cypress/reports/**
         Part-7/blog/frontend/blog_query/cypress/screenshots/**
         Part-7/blog/frontend/blog_query/cypress/videos/**
-      extra_files: vercel.json
       audit-needed: ${{ needs.changes.outputs.audit_query }}
     secrets:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI_QUERY }}
 
+  prod-build-query:
+    needs: ci-blog_query
+    if: needs.ci-blog_query.outputs.should_deploy == 'true'
+    uses: ./.github/workflows/reusable-frontend-prod-build.yml
+    with:
+      app_slug: blog_query
+      working_directory: Part-7/blog/frontend/blog_query
+      frontend_node_version: '22'
+      prod_api_url: https://blogs-fso.fly.dev
+      extra_files: vercel.json
+
   tag-generate-query:
-    needs: blog_query
+    needs: prod-build-query
+    if: needs.prod-build-query.result == 'success'
     uses: ./.github/workflows/reusable-tag-generate.yml
     with:
-      should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
       tag-prefix: blogapp-query-
 
   vercel-deploy-query:
-    needs: [blog_query, tag-generate-query]
-    if: needs.blog_query.outputs.should_deploy == 'true'
+    needs: [prod-build-query, tag-generate-query]
+    if: needs.prod-build-query.result == 'success' && needs['tag-generate-query'].result == 'success'
     uses: ./.github/workflows/reusable-vercel-deploy.yml
     with:
-      should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
-      artifact-name: blog_query-dist
-      app_slug: blog_query
+      artifact-name: ${{ needs.prod-build-query.outputs.artifact_name }}
       image-label: ${{ needs['tag-generate-query'].outputs.new_tag }}
     secrets:
       FSO_VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
@@ -177,14 +204,19 @@ jobs:
 
   notify-query:
     if: ${{ always() }}
-    needs: [blog_query, tag-generate-query, vercel-deploy-query, tag-push-query]
+    needs: [ci-blog_query, prod-build-query, tag-generate-query, vercel-deploy-query, tag-push-query]
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
     with:
-      should-deploy: ${{ needs.blog_query.outputs.should_deploy }}
-      ci-result: ${{ needs.blog_query.result }}
-      tag-result: ${{ needs['tag-push-query'].result }}
-      deploy-result: ${{ needs['vercel-deploy-query'].result }}
+      project-name: 'FSO BlogApp Frontend (React + TanStack Query + MUI)'
+      should-deploy: ${{ needs.ci-blog_query.outputs.should_deploy }}
       new-tag: ${{ needs['tag-generate-query'].outputs.new_tag }}
+      statuses-text: |
+        Job statuses:
+        • CI-checks:     ${{ needs.ci-blog_query.result }}
+        • Prod build:    ${{ needs['prod-build-query'].result }}
+        • Tag-generate:  ${{ needs['tag-generate-query'].result }}
+        • Vercel deploy: ${{ needs['vercel-deploy-query'].result }}
+        • Tag-push:      ${{ needs['tag-push-query'].result }}
     secrets:
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

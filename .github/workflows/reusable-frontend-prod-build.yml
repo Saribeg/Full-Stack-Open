@@ -1,0 +1,95 @@
+name: Reusable Frontend Prod Build
+
+on:
+  workflow_call:
+    inputs:
+      app_slug:
+        required: true
+        type: string
+      working_directory:
+        required: true
+        type: string
+      frontend_node_version:
+        required: false
+        type: string
+        default: '22'
+      prod_api_url:
+        required: true
+        type: string
+      extra_files:
+        required: false
+        type: string
+        default: ""
+    outputs:
+      artifact_name:
+        description: "Produced artifact name"
+        value: ${{ jobs.prod-build.outputs.artifact_name }}
+
+jobs:
+  prod-build:
+    runs-on: ubuntu-latest
+
+    outputs:
+      artifact_name: ${{ steps.meta.outputs.artifact_name }}
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_directory }}
+
+    steps:
+      - name: Copy Project
+        uses: actions/checkout@v4
+
+      - name: Install and Setup Node.js for production build
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.frontend_node_version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.working_directory }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for Deploy (prod API)
+        env:
+          VITE_API_URL: ${{ inputs.prod_api_url }}
+          NODE_ENV: production
+        run: npm run build
+
+      - name: Assert no localhost in deploy bundle
+        run: |
+          if grep -R -nE "127\.0\.0\.1|://localhost" dist; then
+            echo "❌ Found localhost references in production bundle"; exit 1;
+          fi
+
+      - name: Copy extra files into build folder
+        if: ${{ inputs.extra_files != '' }}
+        run: test -f ${{ inputs.extra_files }} && cp ${{ inputs.extra_files }} dist/ || echo "no ${{ inputs.extra_files }}, skip"
+
+      - name: Check Bundle Size
+        id: bundle-size
+        run: npm run check:bundle
+
+      - name: Upload Bundle Size reports (on failure)
+        if: always() && steps.bundle-size.conclusion == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.app_slug }}-bundle-size-reports
+          path: ${{ inputs.working_directory }}/bundle-size-reports/
+          retention-days: 1
+          if-no-files-found: ignore
+
+      - name: Set artifact meta
+        id: meta
+        run: echo "artifact_name=${{ inputs.app_slug }}-dist" >> $GITHUB_OUTPUT
+
+      - name: List dist
+        run: ls -la dist | head -n 200
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.artifact_name }}
+          path: ${{ inputs.working_directory }}/dist/**
+          if-no-files-found: error
+          retention-days: 1

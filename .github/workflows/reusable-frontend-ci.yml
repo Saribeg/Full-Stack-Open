@@ -50,10 +50,6 @@ on:
       e2e_artifact_paths:
         required: true
         type: string
-      extra_files:
-        required: false
-        type: string
-        default: ""
       audit-needed:
         required: false
         type: string
@@ -127,23 +123,6 @@ jobs:
       - name: Build
         run: VITE_API_URL=${{ steps.api.outputs.base_url }} npm run build
 
-      - name: Copy extra files into build folder
-        if: ${{ inputs.extra_files != '' }}
-        run: test -f ${{ inputs.extra_files }} && cp ${{ inputs.extra_files }} dist/ || echo "no ${{ inputs.extra_files }}, skip"
-
-      - name: Check Bundle Size
-        id: bundle-size
-        run: npm run check:bundle
-
-      - name: Upload Bundle Size reports (on failure)
-        if: always() && steps.bundle-size.conclusion == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.app_slug }}-bundle-size-reports
-          path: ${{ inputs.working_directory }}/bundle-size-reports/
-          retention-days: 1
-          if-no-files-found: ignore
-
       # Start the built frontend with Vite preview (background process) for e2e tests
       - name: Preview
         run: nohup npm run preview -- --port=${{ inputs.frontend_port }} --host 127.0.0.1 --strictPort > preview.log 2>&1 &
@@ -187,12 +166,3 @@ jobs:
         run: echo "should_deploy=${{ github.event_name == 'push'
           && !contains(toJSON(github.event.commits.*.message), '#skip')
           && !contains(github.event.head_commit.message || '', '#skip') }}" >> $GITHUB_OUTPUT
-
-      - name: Upload prebuilt artifact (dist)
-        if: ${{ steps.gate.outputs.should_deploy == 'true' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.app_slug }}-dist
-          path: ${{ inputs.working_directory }}/dist/**
-          if-no-files-found: error
-          retention-days: 1
