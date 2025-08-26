@@ -38,24 +38,10 @@ jobs:
       - name: List downloaded files
         run: ls -laR dist-bundle | head -n 200
 
-      - name: Install Vercel CLI (with retries)
-        env:
-          NPM_CONFIG_FUND: "false"
-          NPM_CONFIG_AUDIT: "false"
-        run: |
-          set -e
-          for i in 1 2 3; do
-            echo "Attempt $i: installing vercel@46.0.2..."
-            npm i -g vercel@46.0.2 && break || {
-              echo "retrying in $((i*10))s..."; sleep $((i*10));
-            }
-          done
-          vercel --version
-
       - name: Deploy to Vercel (prebuilt)
         env:
           VERCEL_TOKEN: ${{ secrets.FSO_VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
-          vercel deploy dist-bundle --prod --yes --token "$VERCEL_TOKEN"
+          npx --yes vercel@46.0.3 deploy dist-bundle --prod --yes --token "$VERCEL_TOKEN"
