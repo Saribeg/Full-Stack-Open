@@ -26,40 +26,41 @@ on:
       DISCORD_WEBHOOK:
         required: false
 
-x-success-message: &SUCCESS_MESSAGE |
-  🚀 **${{ inputs.project-name }}**
-
-  ✅ **Deploy succeeded**  
-  Tag `${{ inputs.new-tag }}` deployed
-
-  • Repository: `${{ github.repository }}`  
-  • Actor: `${{ github.actor }}`  
-
-  👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-x-failure-message: &FAILURE_MESSAGE |
-  🚨 **${{ inputs.project-name }}**
-
-  ❌ **Build/Deploy failed**
-
-  • Repository: `${{ github.repository }}`  
-  • Workflow: `${{ github.workflow }}`  
-  • Event: `${{ github.event_name }}`  
-  • Commit: `${{ github.sha }}`  
-  • Actor: `${{ github.actor }}`  
-
-  **Job statuses:**
-  ${{ inputs.statuses-text }}
-
-  👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
 jobs:
   notify:
-    if: ${{ inputs.should-deploy == 'true' && (secrets.TELEGRAM_BOT_TOKEN != '' || secrets.DISCORD_WEBHOOK != '') }}
+    if: ${{ inputs.should-deploy == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         channel: [telegram, discord]
+
+    env:
+      SUCCESS_MESSAGE: |
+        🚀 **${{ inputs.project-name }}**
+
+        ✅ **Deploy succeeded**  
+        Tag `${{ inputs.new-tag }}` deployed
+
+        • Repository: `${{ github.repository }}`  
+        • Actor: `${{ github.actor }}`  
+
+        👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+      FAILURE_MESSAGE: |
+        🚨 **${{ inputs.project-name }}**
+
+        ❌ **Build/Deploy failed**
+
+        • Repository: `${{ github.repository }}`  
+        • Workflow: `${{ github.workflow }}`  
+        • Event: `${{ github.event_name }}`  
+        • Commit: `${{ github.sha }}`  
+        • Actor: `${{ github.actor }}`  
+
+        **Job statuses:**
+        ${{ inputs.statuses-text }}
+
+        👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
     steps:
       # =======================
@@ -76,7 +77,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           format: markdown
-          message: *SUCCESS_MESSAGE
+          message: ${{ env.SUCCESS_MESSAGE }}
 
       - name: Telegram | Failure
         if: >-
@@ -89,7 +90,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           format: markdown
-          message: *FAILURE_MESSAGE
+          message: ${{ env.FAILURE_MESSAGE }}
 
       # =======================
       # Discord
@@ -105,7 +106,7 @@ jobs:
           status: success
           nodetail: true
           title: "✅ Deploy succeeded — ${{ inputs.project-name }}"
-          description: *SUCCESS_MESSAGE
+          description: ${{ env.SUCCESS_MESSAGE }}
 
       - name: Discord | Failure
         if: >-
@@ -118,4 +119,4 @@ jobs:
           status: failure
           nodetail: true
           title: "❌ Build/Deploy failed — ${{ inputs.project-name }}"
-          description: *FAILURE_MESSAGE
+          description: ${{ env.FAILURE_MESSAGE }}
