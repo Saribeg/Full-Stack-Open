@@ -105,13 +105,12 @@ jobs:
       needs['vercel-deploy-redux'].result == 'success' &&
       needs['tag-generate-redux'].result == 'success' &&
       needs['tag-generate-redux'].outputs.new_tag != ''
-    permissions:
-      contents: write
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
       tag-to-push: ${{ needs['tag-generate-redux'].outputs.new_tag }}
 
   notify-redux:
+    # must run even if previous jobs failed, so we can notify about failures
     if: ${{ always() }}
     needs: [ci-blog_redux, prod-build-redux, tag-generate-redux, vercel-deploy-redux, tag-push-redux]
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
@@ -119,6 +118,14 @@ jobs:
       project-name: 'FSO BlogApp Frontend (React + Redux + Tailwind CSS)'
       should-deploy: ${{ needs.ci-blog_redux.outputs.should_deploy }}
       new-tag: ${{ needs['tag-generate-redux'].outputs.new_tag }}
+      is-success: ${{ 
+        needs.ci-blog_redux.outputs.should_deploy == 'true' &&
+        needs.ci-blog_redux.result == 'success' &&
+        needs['prod-build-redux'].result == 'success' &&
+        needs['tag-generate-redux'].result == 'success' &&
+        needs['vercel-deploy-redux'].result == 'success' &&
+        needs['tag-push-redux'].result == 'success'
+      }}
       statuses-text: |
         Job statuses:
         • CI-checks:     ${{ needs.ci-blog_redux.result }}
@@ -196,13 +203,12 @@ jobs:
       needs['vercel-deploy-query'].result == 'success' &&
       needs['tag-generate-query'].result == 'success' &&
       needs['tag-generate-query'].outputs.new_tag != ''
-    permissions:
-      contents: write
     uses: ./.github/workflows/reusable-tag-push.yml
     with:
       tag-to-push: ${{ needs['tag-generate-query'].outputs.new_tag }}
 
   notify-query:
+    # must run even if previous jobs failed, so we can notify about failures
     if: ${{ always() }}
     needs: [ci-blog_query, prod-build-query, tag-generate-query, vercel-deploy-query, tag-push-query]
     uses: ./.github/workflows/reusable-telegram-deploy-notify.yml
@@ -210,6 +216,14 @@ jobs:
       project-name: 'FSO BlogApp Frontend (React + TanStack Query + MUI)'
       should-deploy: ${{ needs.ci-blog_query.outputs.should_deploy }}
       new-tag: ${{ needs['tag-generate-query'].outputs.new_tag }}
+      is-success: ${{ 
+        needs.ci-blog_query.outputs.should_deploy == 'true' &&
+        needs.ci-blog_query.result == 'success' &&
+        needs['prod-build-query'].result == 'success' &&
+        needs['tag-generate-query'].result == 'success' &&
+        needs['vercel-deploy-query'].result == 'success' &&
+        needs['tag-push-query'].result == 'success'
+      }}
       statuses-text: |
         Job statuses:
         • CI-checks:     ${{ needs.ci-blog_query.result }}

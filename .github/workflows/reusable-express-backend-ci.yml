@@ -16,12 +16,6 @@ on:
         default: "true"
 
     secrets:
-      DEV_MONGODB_URI:
-        required: true
-      MONGODB_URI:
-        required: true
-      SECRET:
-        required: true
       TEST_MONGODB_URI:
         required: true
       TEST_SECRET:
@@ -38,9 +32,6 @@ jobs:
 
     env:
       NODE_ENV: test
-      DEV_MONGODB_URI: ${{ secrets.DEV_MONGODB_URI }}
-      MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      SECRET: ${{ secrets.SECRET }}
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
       TEST_SECRET: ${{ secrets.TEST_SECRET }}
 

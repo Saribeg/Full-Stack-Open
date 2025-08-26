@@ -11,6 +11,8 @@ jobs:
   tag-push:
     runs-on: ubuntu-latest
     if: ${{ inputs.tag-to-push != '' }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:

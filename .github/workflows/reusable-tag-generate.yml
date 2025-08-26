@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: ""
+      should-deploy:
+        required: false
+        type: string
+        default: ""
     outputs:
       new_tag:
         description: "Next git tag (not pushed)"
@@ -14,6 +18,8 @@ on:
 
 jobs:
   tag-generate:
+    # run only if should-deploy is not provided or explicitly "true"
+    if: ${{ inputs.should-deploy == '' || inputs.should-deploy == 'true' }}
     runs-on: ubuntu-latest
     outputs:
       new_tag: ${{ steps.tag.outputs.new_tag }}
