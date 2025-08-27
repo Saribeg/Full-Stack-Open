@@ -93,6 +93,7 @@ jobs:
           timeout-ms: ${{ inputs.backend_timeout_ms }}
         env:
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          TEST_SECRET: ${{ secrets.TEST_JWT_SECRET }}
 
       - name: Install and Setup Node.js for front-end project
         uses: actions/setup-node@v4
