@@ -16,3 +16,14 @@ Start by running `npm install` inside the project folder
 
 ## Github Actions
 See `.github/workflows` in root monorepo folder `Full-Stack-Open`
+
+## CI/CD Notes
+
+In my workflow I decided to split the tagging step into two parts:
+
+1. **Generate tag (dry-run)** → calculate the next version without pushing it.  
+2. **Deploy** → use that tag as an image label for Fly.io deployment.  
+3. **Push tag** → only after a successful deploy, the tag is pushed to Git.
+
+This makes the pipeline closer to a real production setup, where the repository
+tags always correspond to versions that were actually deployed.
