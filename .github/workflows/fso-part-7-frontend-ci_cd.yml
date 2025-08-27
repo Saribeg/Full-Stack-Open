@@ -69,6 +69,7 @@ jobs:
       audit-needed: ${{ needs.changes.outputs.audit_redux }}
     secrets:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI_REDUX }}
+      TEST_SECRET: ${{ secrets.TEST_JWT_SECRET }}
 
   prod-build-redux:
     needs: ci-blog_redux
@@ -165,6 +166,7 @@ jobs:
       audit-needed: ${{ needs.changes.outputs.audit_query }}
     secrets:
       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI_QUERY }}
+      TEST_SECRET: ${{ secrets.TEST_JWT_SECRET }}
 
   prod-build-query:
     needs: ci-blog_query
