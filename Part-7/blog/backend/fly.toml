@@ -18,7 +18,7 @@ primary_region = 'fra'
 
   [[http_service.checks]]
     interval = "24h"
-    timeout = "2s"
+    timeout = "3s"
     grace_period = "10s"
     method = "GET"
     path = "/health"
