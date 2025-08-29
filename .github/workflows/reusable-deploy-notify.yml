@@ -39,14 +39,6 @@ jobs:
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
-      REPO: ${{ github.repository }}
-      REPO_URL: https://github.com/${{ github.repository }}
-      COMMIT_SHA: ${{ github.sha }}
-      COMMIT_URL: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
-      ACTOR: ${{ github.actor }}
-      ACTOR_URL: https://github.com/${{ github.actor }}
-      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
       # =======================
       # SUCCESS MESSAGE (Markdown)
       # =======================
@@ -57,11 +49,11 @@ jobs:
 
         ${{ inputs.new-tag != '' && format('Tag [{0}](https://github.com/{1}/releases/tag/{0})', inputs.new-tag, github.repository) || 'Tag: *(not specified)*' }}
 
-        • Repository: [${{ env.REPO }}](${{ env.REPO_URL }})
-        • Commit: [${{ env.COMMIT_SHA }}](${{ env.COMMIT_URL }})
-        • Actor: [${{ env.ACTOR }}](${{ env.ACTOR_URL }})
+        • Repository: [${{ github.repository }}](https://github.com/${{ github.repository }})
+        • Commit: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+        • Actor: [${{ github.actor }}](https://github.com/${{ github.actor }})
 
-        👉 [View run](${{ env.RUN_URL }})
+        👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
       # =======================
       # FAILURE MESSAGE (Markdown)
@@ -71,16 +63,16 @@ jobs:
 
         ❌ **Build/Deploy failed**
 
-        • Repository: [${{ env.REPO }}](${{ env.REPO_URL }})
+        • Repository: [${{ github.repository }}](https://github.com/${{ github.repository }})
         • Workflow: `${{ github.workflow }}`
         • Event: `${{ github.event_name }}`
-        • Commit: [${{ env.COMMIT_SHA }}](${{ env.COMMIT_URL }})
-        • Actor: [${{ env.ACTOR }}](${{ env.ACTOR_URL }})
+        • Commit: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+        • Actor: [${{ github.actor }}](https://github.com/${{ github.actor }})
 
         **Job statuses:**
         ${{ inputs.statuses-text }}
 
-        👉 [View run](${{ env.RUN_URL }})
+        👉 [View run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
     steps:
       # =======================
