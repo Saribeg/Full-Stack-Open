@@ -10,10 +10,11 @@ const AboutProject = () => (
         Full Stack Open
       </NativeLink>{' '}
       course by the University of Helsinki. It represents the Parts 1 - 7 implementation of the blog
-      application using <strong>Redux Toolkit</strong> for state management. This version focuses on
-      building a centralized, scalable architecture with Redux slices, thunks for asynchronous
-      logic, and a modular component structure. It also includes custom error handling and
-      notification logic designed to reduce boilerplate and improve developer experience.
+      application using <strong>Redux Toolkit</strong> for state management and{' '}
+      <strong>Tailwind CSS</strong> for styling. This version focuses on building a centralized,
+      scalable architecture with Redux slices, thunks for asynchronous logic, and a modular
+      component structure. It also includes custom error handling and notification logic designed to
+      reduce boilerplate and improve developer experience.
     </p>
   </Section>
 );

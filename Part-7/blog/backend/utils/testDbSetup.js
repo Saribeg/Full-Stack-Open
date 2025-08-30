@@ -84,6 +84,10 @@ const initialTestData = {
   ]
 };
 
+// Use `initialTestData` when running automated tests (integration, E2E, CI/CD).
+// It contains only a small, lightweight dataset.
+// For development demos or production showcases, switch to `initialDemoData`
+// which includes a larger, more representative dataset loaded from a separate file.
 const initialData = process.env.NODE_ENV === 'test' ? initialTestData : initialDemoData;
 
 const resetDb = async () => {
