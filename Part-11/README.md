@@ -185,4 +185,4 @@ I fought with YAML syntax, npm quirks, and cloud deployment dragons… and came 
 Earlier in my career I had experience with **Bitbucket Pipelines** in a commercial project - mostly consuming existing pipelines, reading logs, debugging test failures, and fixing things downstream.  
 Now, with this exercise, I’ve complemented that experience by **designing and building pipelines myself from scratch**, which feels like leveling up from user to architect. 🚀
 
-Big thanks to the FSO course for pushing me into this.
+Big thanks to the FSO course for pushing me into this. 🍀
