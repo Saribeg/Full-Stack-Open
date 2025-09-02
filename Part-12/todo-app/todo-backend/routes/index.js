@@ -24,4 +24,15 @@ router.get('/', async (req, res) => {
   });
 });
 
+/* GET statistics data. */
+router.get('/statistics', async (req, res) => {
+  if (getAsync && setAsync) {
+    const cached = await getAsync('added_todos');
+    const addedTodos = Number(cached) || 0;
+    res.send({ added_todos: addedTodos });
+  } else {
+    res.send('Redis is disabled');
+  }
+});
+
 module.exports = router;
