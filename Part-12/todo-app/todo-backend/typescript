@@ -1,0 +1,130 @@
+Script started on 2025-09-02 15:53:15+04:00 [TERM="xterm-256color" TTY="/dev/pts/4" COLUMNS="144" LINES="38"]
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+[?2004h]0;saribeg@DESKTOP-BLE2DJI: /mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[01;32msaribeg@DESKTOP-BLE2DJI[00m:[01;34m/mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[00m$ docker psrun -p 3000:3000   -e MONGO_URL='mongodb+srv://saribeg:Ksg888489!@full-stack-open.xiwlyum.mongodb.net/fso-todo?retryWrites=true&w=majority&appName=Full-Stack-Open'   -e REDIS_URL='redis://host.docker.internal:6379'   fso-12-todo-backend[A[A]0;saribeg@DESKTOP-BLE2DJI: /mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[01;32msaribeg@DESKTOP-BLE2DJI[00m:[01;34m/mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[00m$   -e REDIS_URL="redis://host.docker.internal:6379" `[K
+[K[A[C[C[C[C[C[C[C[C[A]0;saribeg@DESKTOP-BLE2DJI: /mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[01;32msaribeg@DESKTOP-BLE2DJI[00m:[01;34m/mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[00m$ [19Pdocker run -p 3000:3000 `
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cbuild -t fso-12-todo-backend .-v[Kbuild -t fso-12-todo-backend .cd /mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[A]0;saribeg@DESKTOP-BLE2DJI: /mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[01;32msaribeg@DESKTOP-BLE2DJI[00m:[01;34m/mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[00m$ [7Pdocker build -t fso-12-todo-backend .
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C-v[Kbuild -t fso-12-todo-backend .[12Prun -p 3000:3000 `  -e REDIS_URL="redis://host.docker.internal:6379" `[A]0;saribeg@DESKTOP-BLE2DJI: /mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[01;32msaribeg@DESKTOP-BLE2DJI[00m:[01;34m/mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[00m$ docker run -p 3000:3000   -e MONGO_URL='mongodb+srv://saribeg:Ksg888489!@full-stack-open.xiwlyum.mongodb.net/fso-todo?retryWrites=true&w=majority&appName=Full-Stack-Open'   -e REDIS_URL='redis://host.docker.internal:6379'   fso-12-todo-backend[A[A]0;saribeg@DESKTOP-BLE2DJI: /mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[01;32msaribeg@DESKTOP-BLE2DJI[00m:[01;34m/mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[00m$ [C[C[C[C[C[C[Cps[K
+[K
+[K[A[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kdockety [K[K[Kr container [K[K[K[K[K[K[K[K[K[Kexec it[K[K-it [7md3fddb9ac8fb[27md3fddb9ac8fb bash
+[?2004l[?2004hroot@d3fddb9ac8fb:/# [7mmongosh -u root -p example --authenticationDatabase admin[27mroot@d3fddb9ac8fb:/# mongosh -u root -p example --authenticationDatabase admin
+[?2004l]0;mongosh mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&authSource=adminCurrent Mongosh Log ID:	68b6db615fc948cf84fa334f
+Connecting to:		[1m[32mmongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+2.5.7[0m
+Using MongoDB:		8.0.13
+[1m[33mUsing Mongosh[0m:		2.5.7
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+
+To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+You can opt-out by running the disableTelemetry() command.
+
+[1G[0J [1G[?2004h[1m[33m------[0m
+   [1m[33mThe server generated these startup warnings when booting[0m
+   2025-09-02T10:42:46.501+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+   2025-09-02T10:42:46.822+00:00: For customers running the current memory allocator, we suggest changing the contents of the following sysfsFile
+   2025-09-02T10:42:46.822+00:00: For customers running the current memory allocator, we suggest changing the contents of the following sysfsFile
+   2025-09-02T10:42:46.822+00:00: We suggest setting the contents of sysfsFile to 0.
+   2025-09-02T10:42:46.822+00:00: vm.max_map_count is too low
+   2025-09-02T10:42:46.822+00:00: We suggest setting swappiness to 0 or 1, as swapping can cause performance problems.
+[1m[33m------[0m
+
+[1G[0Jtest> [7Gshow dbs
+[1madmin[0m     100.00 KiB
+[1mconfig[0m    108.00 KiB
+[1mfso-todo[0m   72.00 KiB
+[1mlocal[0m      72.00 KiB
+[1G[0Jtest> [7Guse the_database[1G[0Jtest> use the_databas[22G[1G[0Jtest> use the_databa[21G[1G[0Jtest> use the_datab[20G[1G[0Jtest> use the_data[19G[1G[0Jtest> use the_dat[18G[1G[0Jtest> use the_da[17G[1G[0Jtest> use the_d[16G[1G[0Jtest> use the_[15G[1G[0Jtest> use the[14G[1G[0Jtest> use th[13G[1G[0Jtest> use t[12G[1G[0Jtest> use [11G[1G[0Jtest> use[10G fso-todo
+switched to db fso-todo
+[1G[0Jfso-todo> [11Gshow collections
+[1mtodos[0m
+[1G[0Jfso-todo> [11Gdb.todos.find({})
+[
+  {
+    _id: ObjectId([32m'68b6ca25ebf0018734fa3350'[39m),
+    text: [32m'Write code'[39m,
+    done: [33mtrue[39m
+  },
+  {
+    _id: ObjectId([32m'68b6ca25ebf0018734fa3351'[39m),
+    text: [32m'Learn about containers'[39m,
+    done: [33mfalse[39m
+  },
+  {
+    _id: ObjectId([32m'68b6ca8cd34509420052dd6f'[39m),
+    text: [32m'test todo 1'[39m,
+    done: [33mfalse[39m,
+    __v: [33m0[39m
+  }
+]
+[1G[0Jfso-todo> [11Gdb.todos.insertOne({ text[33mtext[39m: [32m"[39m[32mL[39m[32me[39m[32ma[39m[32mr[39m[32mn[39m [32mD[39m[32mo[39m[32mc[39m[32mk[39m[32me[39m[32mr[39m[32m"[39m, d[36mdo[39mdone: fals[33mfalse[39m })
+{
+  acknowledged: [33mtrue[39m,
+  insertedId: ObjectId([32m'68b6dbcc5fc948cf84fa3350'[39m)
+}
+[1G[0Jfso-todo> [11Gdb.todos.find({})
+[
+  {
+    _id: ObjectId([32m'68b6ca25ebf0018734fa3350'[39m),
+    text: [32m'Write code'[39m,
+    done: [33mtrue[39m
+  },
+  {
+    _id: ObjectId([32m'68b6ca25ebf0018734fa3351'[39m),
+    text: [32m'Learn about containers'[39m,
+    done: [33mfalse[39m
+  },
+  {
+    _id: ObjectId([32m'68b6ca8cd34509420052dd6f'[39m),
+    text: [32m'test todo 1'[39m,
+    done: [33mfalse[39m,
+    __v: [33m0[39m
+  },
+  {
+    _id: ObjectId([32m'68b6dbcc5fc948cf84fa3350'[39m),
+    text: [32m'Learn Docker'[39m,
+    done: [33mfalse[39m
+  }
+]
+[1G[0Jfso-todo> [11Gdb.todos.insertOne({ text[33mtext[39m: [32m"[39m[32mI[39m[32mn[39m[32mc[39m[32mr[39m[32me[39m[32ma[39m[32ms[39m[32me[39m [32mt[39m[32mh[39m[32me[39m [32mn[39m[32mu[39m[32mm[39m[32mb[39m[32me[39m[32mr[39m [32mo[39m[32mf[39m [32mt[39m[32mo[39m[32mo[39m[32ml[39m[32ms[39m [32mi[39m[32mn[39m [32mm[39m[32my[39m [32mt[39m[32mo[39m[32mo[39m[32ml[39m [32mb[39m[32me[39m[32ml[39m[32mt[39m[32m"[39m, d[36mdo[39mdone: fals[33mfalse[39m })
+{
+  acknowledged: [33mtrue[39m,
+  insertedId: ObjectId([32m'68b6dbff5fc948cf84fa3351'[39m)
+}
+[1G[0Jfso-todo> [11G[1G[0Jfso-todo> db.todos.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my tool belt"[39m, [33mdone[39m: [33mfalse[39m })[100G[1G[0Jfso-todo> db.todos.find({})[28G
+[
+  {
+    _id: ObjectId([32m'68b6ca25ebf0018734fa3350'[39m),
+    text: [32m'Write code'[39m,
+    done: [33mtrue[39m
+  },
+  {
+    _id: ObjectId([32m'68b6ca25ebf0018734fa3351'[39m),
+    text: [32m'Learn about containers'[39m,
+    done: [33mfalse[39m
+  },
+  {
+    _id: ObjectId([32m'68b6ca8cd34509420052dd6f'[39m),
+    text: [32m'test todo 1'[39m,
+    done: [33mfalse[39m,
+    __v: [33m0[39m
+  },
+  {
+    _id: ObjectId([32m'68b6dbcc5fc948cf84fa3350'[39m),
+    text: [32m'Learn Docker'[39m,
+    done: [33mfalse[39m
+  },
+  {
+    _id: ObjectId([32m'68b6dbff5fc948cf84fa3351'[39m),
+    text: [32m'Increase the number of tools in my tool belt'[39m,
+    done: [33mfalse[39m
+  }
+]
+[1G[0Jfso-todo> [11Gexit
+[?2004l[?2004hroot@d3fddb9ac8fb:/# exit
+[?2004lexit
+[?2004h]0;saribeg@DESKTOP-BLE2DJI: /mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[01;32msaribeg@DESKTOP-BLE2DJI[00m:[01;34m/mnt/c/Users/sarib/Documents/Full-Stack-Open/Part-12/todo-app/todo-backend[00m$ учше[K[K[K[Kexit
+[?2004lexit
+
+Script done on 2025-09-02 16:02:00+04:00 [COMMAND_EXIT_CODE="0"]

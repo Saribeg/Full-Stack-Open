@@ -9,3 +9,8 @@ services:
       MONGO_INITDB_DATABASE: fso-todo
     volumes: 
       - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+  redis:
+    image: redis:7-alpine
+    container_name: fso-todo-redis
+    ports:
+      - "6379:6379"
