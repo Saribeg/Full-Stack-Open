@@ -1,0 +1,6 @@
+services:
+  app:
+    image: fso-12-todo-backend
+    build: .
+    ports:
+      - 3000:3000
