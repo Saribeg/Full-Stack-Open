@@ -105,6 +105,34 @@ describe('Integration tests. Middlewares.', () => {
         assert.ok('ip' in payload);
         assert.ok('userAgent' in payload);
       });
+
+      test('production: skips logging for GET /health with Consul Health Check UA', async () => {
+        process.env.NODE_ENV = 'production';
+
+        await api
+          .get('/health')
+          .set('User-Agent', 'Consul Health Check')
+          .expect(200)
+          .expect('Content-Type', /application\/json/);
+
+        assert.strictEqual(info.mock.callCount(), 0);
+      });
+
+      test('production: logs GET /health when UA is not Consul', async () => {
+        process.env.NODE_ENV = 'production';
+
+        await api
+          .get('/health')
+          .set('User-Agent', 'Mozilla/5.0')
+          .expect(200)
+          .expect('Content-Type', /application\/json/);
+
+        assert.strictEqual(info.mock.callCount(), 1);
+        const payload = info.mock.calls[0].arguments[0];
+        assert.strictEqual(payload.path, '/health');
+        assert.strictEqual(payload.method, 'GET');
+        assert.strictEqual(payload.status, 200);
+      });
     });
 
     describe('unknownEndpoint', () => {
