@@ -141,3 +141,6 @@ dist
 
 # Bundle Size
 bundle-size-reports/
+
+# Docker
+redis_data
