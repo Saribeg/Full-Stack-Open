@@ -17,6 +17,13 @@ const requestLogger = (request, response, next) => {
     logger.info('---');
   } else {
     response.on('finish', () => {
+      if (
+        request.originalUrl === '/health' &&
+      (request.get('user-agent') || '').includes('Consul Health Check')
+      ) {
+        return;
+      }
+
       logger.info({
         correlationId,
         method: request.method,

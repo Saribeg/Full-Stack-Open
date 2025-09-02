@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
-    "dev:mongo": "cross-env MONGO_URL=mongodb://the_username:the_password@localhost:3456/fso-todo npm run dev"
+    "dev:dbs": "cross-env MONGO_URL=mongodb://the_username:the_password@localhost:3456/fso-todo REDIS_URL=redis://localhost:6379 npm run dev"
   },
   "dependencies": {
     "cors": "^2.8.5",
