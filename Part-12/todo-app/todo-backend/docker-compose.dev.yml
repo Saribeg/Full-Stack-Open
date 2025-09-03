@@ -1,4 +1,18 @@
 services:
+  server:
+    image: fso-12-todo-back-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:3000
+    environment: 
+      - REDIS_URL=redis://redis:6379
+      - MONGO_URL=mongodb://the_username:the_password@mongo:27017/fso-todo
+    container_name: fso-12-todo-back-dev
   mongo:
     image: mongo
     ports:
