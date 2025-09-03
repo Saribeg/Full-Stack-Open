@@ -23,7 +23,7 @@ const Providers = ({ children }) => (
     <NotificationContextProvider>
       <UserContextProvider>
         <UserInitializer>
-          <BrowserRouter>
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
             {children}
           </BrowserRouter>
         </UserInitializer>

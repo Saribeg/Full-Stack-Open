@@ -1,5 +1,8 @@
 import clsx from 'clsx';
 
+const REDUX_URL = import.meta.env.VITE_REDUX_URL;
+const QUERY_URL = import.meta.env.VITE_QUERY_URL;
+
 const Links = () => {
   const linkStyles = clsx(
     'relative inline-block text-[#004a55] no-underline font-semibold',
@@ -15,22 +18,12 @@ const Links = () => {
     <div>
       <ul className="flex flex-wrap items-center justify-center gap-3 text-base md:gap-6 md:text-xl">
         <li>
-          <a
-            href="https://blogs-redux-fso.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkStyles}
-          >
+          <a href={REDUX_URL} target="_blank" rel="noopener noreferrer" className={linkStyles}>
             Blog (Redux ver.)
           </a>
         </li>
         <li>
-          <a
-            href="https://blogs-query-fso.vercel.app/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkStyles}
-          >
+          <a href={QUERY_URL} target="_blank" rel="noopener noreferrer" className={linkStyles}>
             Blog (Query ver.)
           </a>
         </li>
