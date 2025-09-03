@@ -1,4 +1,14 @@
 services:
+
+  backend:
+    build:
+      context: ./todo-backend
+      dockerfile: dev.Dockerfile
+    volumes:
+    - ./todo-backend:/usr/src/app
+    - /usr/src/app/node_modules
+    container_name: todo-backend-dev
+
   frontend:
     build:
       context: ./todo-frontend
@@ -13,4 +23,5 @@ services:
       - 8080:80
     container_name: reverse-proxy
     depends_on:
+      - backend
       - frontend
