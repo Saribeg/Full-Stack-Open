@@ -16,7 +16,6 @@
     "check:dead": "knip --exports --dependencies --no-exit-code",
     "audit": "npm audit --audit-level=critical"
   },
-  "author": "Saribeh Karakhanian",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
