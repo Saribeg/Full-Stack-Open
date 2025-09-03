@@ -23,7 +23,9 @@ RUN npm run test:ci
 # Docker does not duplicate files here: it reuses the snapshot of test-stage (like a git commit).
 FROM test-stage AS build-stage
 
-ENV VITE_BACKEND_URL=http://localhost:3000/
+ARG VITE_BACKEND_URL=/api
+
+ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
 
 RUN npm run build
 
