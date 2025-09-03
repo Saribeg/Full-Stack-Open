@@ -1,0 +1,12 @@
+services:
+  app:
+    image: fso-12-todo-front-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 5173:5173
+    container_name: fso-12-todo-front-dev
