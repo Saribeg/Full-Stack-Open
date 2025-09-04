@@ -12,6 +12,10 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV="production"
 
+# Install dumb-init (safe init process)
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y dumb-init && \
+    rm -rf /var/lib/apt/lists/*
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build
@@ -22,7 +26,7 @@ RUN apt-get update -qq && \
 
 # Install node modules
 COPY package-lock.json package.json ./
-RUN npm ci
+RUN npm ci --omit=dev
 
 # Copy application code
 COPY . .
@@ -33,6 +37,9 @@ FROM base
 
 # Copy built application
 COPY --from=build /app /app
+
+# Use dumb-init as entrypoint
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 8080
