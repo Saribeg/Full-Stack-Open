@@ -196,6 +196,20 @@ docker compose up --build
 
 ---
 
+## Time Tracking
+
+Starting from Part 7 of the course, I began tracking my work time with **Toggl**.  
+Here’s the breakdown for Part 12 (Containers):
+
+| Task | Time |
+| ---- | ---- |
+| **Part-12a. Introduction to Containers** | 3&nbsp;hours&nbsp;9&nbsp;min |
+| **Part-12b. Building and configuring environments** | 7&nbsp;hours&nbsp;6&nbsp;min |
+| **Part-12c. Basics of Orchestration** | 14&nbsp;hours&nbsp;1&nbsp;min |
+| **Total** | **24&nbsp;hours&nbsp;16&nbsp;min** |
+
+---
+
 ## Takeaways
 
 Compared to the earlier Part 12 exercises (where we ran Mongo and Redis locally), this setup takes a slightly different direction: it relies on **Atlas** for MongoDB and avoids Redis entirely.  
