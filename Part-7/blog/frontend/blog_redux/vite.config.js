@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [react(), tailwindcss()],
   build: {
     rollupOptions: {
@@ -41,6 +42,8 @@ export default defineConfig({
     }
   },
   server: {
+    host: true,
+    allowedHosts: ['*'],
     proxy: {
       '/api': {
         target: 'http://localhost:3003',

@@ -1,0 +1,59 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file: './backend/dev.env'
+    container_name: blogapp-backend-dev
+
+  frontend-landing:
+    build:
+      context: ./frontend/blog-fso-landing
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend/blog-fso-landing:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - VITE_REDUX_URL=/redux/
+      - VITE_QUERY_URL=/query/
+    container_name: blogapp-frontend-landing-dev
+
+  frontend-redux:
+    build:
+      context: ./frontend/blog_redux
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend/blog_redux:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - VITE_API_URL=/api
+      - VITE_BASE_PATH=/redux/
+    container_name: blogapp-frontend-redux-dev
+
+  frontend-query:
+    build:
+      context: ./frontend/blog_query
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend/blog_query:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - VITE_API_URL=/api
+      - VITE_BASE_PATH=/query/
+    container_name: blogapp-frontend-query-dev
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - backend
+      - frontend-landing
+      - frontend-redux
+      - frontend-query
