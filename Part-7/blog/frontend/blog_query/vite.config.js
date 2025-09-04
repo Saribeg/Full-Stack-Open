@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 const isCypress = process.env.CYPRESS === 'true';
 
 export default defineConfig({
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [react()],
   build: {
     rollupOptions: {
@@ -46,7 +47,10 @@ export default defineConfig({
         port: 5173,
         strictPort: true,
       }
-      : {}),
+      : {
+        host: true,
+        allowedHosts: ['*'],
+      }),
     proxy: {
       '/api': {
         target: 'http://localhost:3003',
