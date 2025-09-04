@@ -1,49 +1,46 @@
-
 # deps & logs
 node_modules
-/node_modules
 *.log
-npm-debug.log*
-fly.toml
 
 # VCS / Docker
-/.git
 .git
 .gitignore
-.dockerignore
 Dockerfile
 docker-compose*.yml
+.dockerignore
 
-# Environment files (используешь env_file)
+# Environment files (используешь ARG/ENV/env_file)
 *.env
 *.env.*
 .envrc
 
-# Tests & coverage
+# Tests & reports
 coverage
 *.test.*
 *.spec.*
 __tests__/
-jest.config.*
-vitest.config.*
 cypress
-playwright*
+playwright-report
 test-results
+.vitest
+.jest
 
 # Editor / workspace
 .vscode
 .idea
 *.code-workspace
 
-# Dev-only configs / docs
-.eslintrc*
+# Project configs NOT needed at runtime/build
+bundlesize.config.json
 eslint.config.js
-.prettier*
-.editorconfig
+knip.json
 lefthook.yml
 README.md
-.github/
+vercel.json
+.prettier*
+.editorconfig
 .husky/
+.github/
 
 # OS junk
 .DS_Store
