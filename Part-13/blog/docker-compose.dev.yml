@@ -25,6 +25,11 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@db:5432/blog
       PORT: 3001
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend-sql:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       db:
         condition: service_healthy
