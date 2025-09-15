@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./utils/db');
+const middleware = require('./utils/middlewares');
 
 const blogsRouter = require('./controllers/blogs');
 
@@ -23,5 +24,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/blogs', blogsRouter);
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;
