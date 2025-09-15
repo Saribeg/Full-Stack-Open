@@ -23,6 +23,11 @@ Blog.init({
   likes: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
+    validate: {
+      isInt: {
+        msg: 'likes must be an integer'
+      }
+    }
   },
 },
 {
