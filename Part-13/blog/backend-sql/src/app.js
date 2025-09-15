@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./db');
+const sequelize = require('./utils/db');
 
 const blogsRouter = require('./controllers/blogs');
 
