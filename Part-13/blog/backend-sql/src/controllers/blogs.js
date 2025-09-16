@@ -13,7 +13,10 @@ blogsRouter.get('/', async (req, res) => {
     ];
   }
 
-  const blogs = await Blog.scope('withUserName').findAll({ where });
+  const blogs = await Blog.scope('withUserName').findAll({
+    where,
+    order: [['likes', 'DESC'],]
+  });
 
   res.json(blogs);
 });
