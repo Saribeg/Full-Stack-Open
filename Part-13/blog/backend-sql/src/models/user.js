@@ -1,7 +1,13 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../utils/db');
 
-class User extends Model {}
+class User extends Model {
+  toJSON() {
+    const values = { ...this.get() };
+    delete values.passwordHash;
+    return values;
+  }
+}
 
 User.init({
   id: {
@@ -12,7 +18,10 @@ User.init({
   username: {
     type: DataTypes.STRING,
     unique: true,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isEmail: true
+    }
   },
   name: {
     type: DataTypes.STRING,
@@ -28,6 +37,9 @@ User.init({
   modelName: 'user',
   defaultScope: {
     attributes: { exclude: ['passwordHash'] }
+  },
+  scopes: {
+    withPassword: { attributes: { include: ['passwordHash'] } }
   }
 });
 
