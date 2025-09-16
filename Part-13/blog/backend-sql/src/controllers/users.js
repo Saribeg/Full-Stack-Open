@@ -3,14 +3,14 @@ const usersRouter = require('express').Router();
 const { User } = require('../models');
 
 usersRouter.get('/', async (req, res) => {
-  const users = await User.findAll();
+  const users = await User.scope('withBlogs').findAll();
 
   res.json(users);
 });
 
 usersRouter.get('/:id', async (req, res) => {
   const id = req.params.id;
-  const user = await User.findByPk(id);
+  const user = await User.scope('withBlogs').findByPk(id);
 
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
@@ -59,7 +59,9 @@ usersRouter.put('/:username', async (req, res) => {
   user.username = newUsername;
   await user.save();
 
-  res.json(user);
+  const updatedUser = await User.scope('withBlogs').findByPk(user.id);
+
+  res.json(updatedUser);
 });
 
 module.exports = usersRouter;

@@ -3,7 +3,7 @@ const { Blog } = require('../models');
 const { blogFinder, userExtractor } = require('../utils/middlewares');
 
 blogsRouter.get('/', async (req, res) => {
-  const blogs = await Blog.findAll();
+  const blogs = await Blog.scope('withUserName').findAll();
 
   res.json(blogs);
 });
@@ -25,7 +25,7 @@ blogsRouter.post('/', userExtractor, async (req, res) => {
     url,
     likes: likes || 0,
     userId: user.id
-  });
+  }).then(b => b.reload(Blog.options.scopes.withUserName));
 
   res.status(201).json(blog);
 });
@@ -36,7 +36,9 @@ blogsRouter.put('/:id', blogFinder, async (req, res) => {
   }
 
   const { title, author, url, likes } = req.body;
-  const updated = await req.blog.update({ title, author, url, likes });
+  const updated = await req.blog
+    .update({ title, author, url, likes })
+    .then(b => b.reload(Blog.options.scopes.withUserName));
 
   return res.json(updated);
 });
