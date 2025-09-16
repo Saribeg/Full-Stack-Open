@@ -3,6 +3,7 @@ const cors = require('cors');
 const sequelize = require('./utils/db');
 const middleware = require('./utils/middlewares');
 
+const usersRouter = require('./controllers/users');
 const blogsRouter = require('./controllers/blogs');
 
 const app = express();
@@ -23,6 +24,7 @@ app.get('/health', (req, res) => {
   res.send('Working');
 });
 
+app.use('/api/users', usersRouter);
 app.use('/api/blogs', blogsRouter);
 
 app.use(middleware.unknownEndpoint);
