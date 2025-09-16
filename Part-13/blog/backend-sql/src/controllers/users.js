@@ -1,0 +1,65 @@
+const bcrypt = require('bcrypt');
+const usersRouter = require('express').Router();
+const { User } = require('../models');
+
+usersRouter.get('/', async (req, res) => {
+  const users = await User.findAll();
+
+  res.json(users);
+});
+
+usersRouter.get('/:id', async (req, res) => {
+  const id = req.params.id;
+  const user = await User.findByPk(id);
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  res.json(user);
+});
+
+usersRouter.post('/', async (req, res) => {
+  const { username, name, password } = req.body;
+
+  if (!password) {
+    return res.status(400).json({ error: '`password` is required' });
+  }
+
+  if (password.length < 3) {
+    return res.status(400).json({ error: '`password` must be at least 3 characters long' });
+  }
+
+  const saltRounds = 10;
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+
+  const user = await User.create({
+    username,
+    name,
+    passwordHash,
+  });
+
+  res.status(201).json(user);
+});
+
+usersRouter.put('/:username', async (req, res) => {
+  const { username } = req.params;
+  const { newUsername } = req.body;
+
+  if (!newUsername) {
+    return res.status(400).json({ error: '`newUsername` is required' });
+  }
+
+  const user = await User.findOne({ where: { username } });
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  user.username = newUsername;
+  await user.save();
+
+  res.json(user);
+});
+
+module.exports = usersRouter;
