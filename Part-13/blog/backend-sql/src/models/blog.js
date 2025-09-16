@@ -34,7 +34,7 @@ Blog.init({
   sequelize,
   modelName: 'blog',
   timestamps: false,
-  underscored: true,
+  underscored: true
 });
 
 module.exports = Blog;

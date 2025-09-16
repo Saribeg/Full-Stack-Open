@@ -4,7 +4,7 @@ const { Blog, User } = require('../models');
 const { SECRET, TEST_SECRET } = require('../utils/config');
 
 const blogFinder = async (req, res, next) => {
-  req.blog = await Blog.findByPk(req.params.id);
+  req.blog = await Blog.scope('withUserName').findByPk(req.params.id);
   next();
 };
 
