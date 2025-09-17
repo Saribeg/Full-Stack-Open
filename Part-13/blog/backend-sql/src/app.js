@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./utils/db');
+const { connectToDatabase } = require('./utils/db');
 const middleware = require('./utils/middlewares');
 
 const usersRouter = require('./controllers/users');
@@ -11,16 +11,6 @@ const authorsRouter = require('./controllers/authors');
 const app = express();
 app.use(cors());
 app.use(express.json());
-
-(async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('Database connection established');
-  } catch (err) {
-    console.error('Unable to connect to the database:', err);
-    process.exit(1);
-  }
-})();
 
 app.get('/health', (req, res) => {
   res.send('Working');
@@ -33,5 +23,11 @@ app.use('/api/authors', authorsRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
+
+const init = async () => {
+  await connectToDatabase();
+};
+
+init();
 
 module.exports = app;
