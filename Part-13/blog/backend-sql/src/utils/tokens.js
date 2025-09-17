@@ -48,7 +48,7 @@ const setRefreshSession = async (res, userId, { deviceId, ip, userAgent }) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    path: '/api/refresh',
+    path: process.env.NODE_ENV === 'production' ? '/api/refresh' : '/',
     maxAge: expiresAt.getTime() - Date.now(),
   });
 
@@ -90,7 +90,7 @@ const clearRefreshCookie = (res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    path: '/api/refresh',
+    path: process.env.NODE_ENV === 'production' ? '/api/refresh' : '/',
   });
 };
 
