@@ -31,12 +31,13 @@ blogsRouter.get('/:id', blogFinder, async (req, res) => {
 
 blogsRouter.post('/', userExtractor, async (req, res) => {
   const user = req.user;
-  const { title, author, url, likes } = req.body;
+  const { title, author, url, likes, year } = req.body;
   const blog = await Blog.create({
     title,
     author,
     url,
     likes: likes || 0,
+    year: year,
     userId: user.id
   }).then(b => b.reload(Blog.options.scopes.withUserName));
 
