@@ -1,9 +1,11 @@
 const User = require('./user');
 const Blog = require('./blog');
 const ReadingList = require('./readingList');
+const Session = require('./session');
 
 User.hasMany(Blog);
 Blog.belongsTo(User);
+Session.belongsTo(User);
 
 User.addScope('withBlogs', {
   include: {
@@ -38,9 +40,11 @@ Blog.addScope('withUserName', {
 
 User.belongsToMany(Blog, { through: ReadingList, as: 'readings' });
 Blog.belongsToMany(User, { through: ReadingList });
+User.hasMany(Session);
 
 module.exports = {
   User,
   Blog,
-  ReadingList
+  ReadingList,
+  Session
 };
