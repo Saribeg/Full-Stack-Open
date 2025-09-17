@@ -1,5 +1,4 @@
 const { Model, DataTypes } = require('sequelize');
-
 const { sequelize } = require('../utils/db');
 
 class Session extends Model {}
@@ -24,6 +23,18 @@ Session.init({
     type: DataTypes.DATE,
     allowNull: false
   },
+  ip: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  deviceId: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  userAgent: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
 }, {
   sequelize,
   modelName: 'session',

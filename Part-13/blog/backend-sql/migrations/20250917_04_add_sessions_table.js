@@ -22,6 +22,18 @@ module.exports = {
         type: DataTypes.DATE,
         allowNull: false
       },
+      device_id: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      ip: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      user_agent: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -35,7 +47,8 @@ module.exports = {
     }, {
       indexes: [
         { fields: ['user_id'] },
-        { fields: ['hashed_refresh_token'] }
+        { fields: ['hashed_refresh_token'] },
+        { fields: ['device_id'] }
       ]
     });
   },
