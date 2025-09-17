@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const usersRouter = require('express').Router();
 const { User, Blog } = require('../models');
+const { userExtractor } = require('../utils/middlewares');
 
 usersRouter.get('/', async (req, res) => {
   const users = await User.scope('withBlogs').findAll();
@@ -66,7 +67,7 @@ usersRouter.post('/', async (req, res) => {
   res.status(201).json(user);
 });
 
-usersRouter.put('/:username', async (req, res) => {
+usersRouter.put('/:username', userExtractor, async (req, res) => {
   const { username } = req.params;
   const { newUsername } = req.body;
 
@@ -78,6 +79,10 @@ usersRouter.put('/:username', async (req, res) => {
 
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
+  }
+
+  if (req.user.id !== user.id) {
+    return res.status(403).json({ error: 'You can only update your own account' });
   }
 
   user.username = newUsername;

@@ -44,9 +44,13 @@ blogsRouter.post('/', userExtractor, async (req, res) => {
   res.status(201).json(blog);
 });
 
-blogsRouter.put('/:id', blogFinder, async (req, res) => {
+blogsRouter.put('/:id', userExtractor, blogFinder, async (req, res) => {
   if (!req.blog) {
     return res.status(404).json({ error: 'Blog not found' });
+  }
+
+  if (req.blog.userId !== req.user.id) {
+    return res.status(403).json({ error: 'blog can be updated only by user who created it' });
   }
 
   const { title, author, url, likes } = req.body;
