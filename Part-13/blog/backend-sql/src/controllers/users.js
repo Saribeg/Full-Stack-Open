@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const usersRouter = require('express').Router();
-const { User } = require('../models');
+const { User, Blog } = require('../models');
 
 usersRouter.get('/', async (req, res) => {
   const users = await User.scope('withBlogs').findAll();
@@ -10,7 +10,30 @@ usersRouter.get('/', async (req, res) => {
 
 usersRouter.get('/:id', async (req, res) => {
   const id = req.params.id;
-  const user = await User.scope('withBlogsAndReadings').findByPk(id);
+  const { read } = req.query;
+
+  const ownBlogs = {
+    model: Blog,
+    attributes: { exclude: ['userId'] }
+  };
+
+  const readings = {
+    model: Blog,
+    as: 'readings',
+    attributes: { exclude: ['userId'] },
+    through: {
+      attributes: ['id', 'read']
+    }
+  };
+
+  if (['true', 'false'].includes(read)) {
+    readings.through.where = { read: read === 'true' };
+  }
+
+  const user = await User.findByPk(id, {
+    attributes: ['id', 'name', 'username'],
+    include: [ownBlogs, readings]
+  });
 
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
@@ -18,6 +41,7 @@ usersRouter.get('/:id', async (req, res) => {
 
   res.json(user);
 });
+
 
 usersRouter.post('/', async (req, res) => {
   const { username, name, password } = req.body;
