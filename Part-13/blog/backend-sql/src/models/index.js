@@ -1,5 +1,6 @@
 const User = require('./user');
 const Blog = require('./blog');
+const ReadingList = require('./readingList');
 
 User.hasMany(Blog);
 Blog.belongsTo(User);
@@ -19,7 +20,11 @@ Blog.addScope('withUserName', {
   }
 });
 
+User.belongsToMany(Blog, { through: ReadingList, as: 'readings' });
+Blog.belongsToMany(User, { through: ReadingList });
+
 module.exports = {
   User,
-  Blog
+  Blog,
+  ReadingList
 };
