@@ -1,7 +1,6 @@
-const jwt = require('jsonwebtoken');
 const { ValidationError, UniqueConstraintError, ForeignKeyConstraintError } = require('sequelize');
 const { Blog, User } = require('../models');
-const { SECRET, TEST_SECRET } = require('../utils/config');
+const { verifyAccessToken }= require('../utils/tokens');
 
 const blogFinder = async (req, res, next) => {
   req.blog = await Blog.scope('withUserName').findByPk(req.params.id);
@@ -45,16 +44,18 @@ const errorHandler = (error, req, res, _next) => {
 
 const userExtractor = async (req, res, next) => {
   const authorization = req.get('authorization');
-
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'token missing or invalid' });
   }
 
   const token = authorization.replace('Bearer ', '');
-  const decodedToken = jwt.verify(
-    token,
-    (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') ? TEST_SECRET : SECRET
-  );
+  let decodedToken;
+
+  try {
+    decodedToken = verifyAccessToken(token);
+  } catch {
+    return res.status(401).json({ error: 'token invalid or expired' });
+  }
 
   if (!decodedToken.id) {
     return res.status(401).json({ error: 'token invalid (missing id)' });
@@ -63,6 +64,10 @@ const userExtractor = async (req, res, next) => {
   const user = await User.findByPk(decodedToken.id);
   if (!user) {
     return res.status(401).json({ error: 'user not found for token' });
+  }
+
+  if (user.disabled) {
+    return res.status(403).json({ error: 'user disabled' });
   }
 
   req.user = user;
