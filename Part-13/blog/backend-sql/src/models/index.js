@@ -23,7 +23,7 @@ User.addScope('withBlogsAndReadings', {
       model: Blog,
       as: 'readings',
       attributes: { exclude: ['userId'] },
-      through: { attributes: [] }
+      through: { attributes: ['id', 'read'] }
     }
   ]
 });

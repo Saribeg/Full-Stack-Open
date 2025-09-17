@@ -4,11 +4,12 @@ const { ReadingList } = require('../models');
 
 readingListsRouter.post('/', userExtractor, async (req, res) => {
   const user = req.user;
-  const { blogId } = req.body;
+  const { blogId, read } = req.body;
 
   const readingList = await ReadingList.create({
     userId: user.id,
-    blogId
+    blogId,
+    read: read || false
   });
 
   res.status(201).json(readingList);
