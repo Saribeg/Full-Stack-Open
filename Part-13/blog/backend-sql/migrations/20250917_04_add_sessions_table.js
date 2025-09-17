@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
         references: { model: 'users', key: 'id' },
       },
-      refresh_token: {
+      hashed_refresh_token: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
@@ -35,7 +35,7 @@ module.exports = {
     }, {
       indexes: [
         { fields: ['user_id'] },
-        { fields: ['refresh_token'] }
+        { fields: ['hashed_refresh_token'] }
       ]
     });
   },

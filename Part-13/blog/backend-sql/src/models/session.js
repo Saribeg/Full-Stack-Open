@@ -15,7 +15,7 @@ Session.init({
     allowNull: false,
     references: { model: 'users', key: 'id' },
   },
-  refreshToken: {
+  hashedRefreshToken: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true
@@ -31,7 +31,7 @@ Session.init({
   timestamps: true,
   indexes: [
     { fields: ['userId'] },
-    { fields: ['refreshToken'] }
+    { fields: ['hashedRefreshToken'] }
   ]
 });
 
