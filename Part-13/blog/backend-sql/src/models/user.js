@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../utils/db');
+const { sequelize } = require('../utils/db');
 
 class User extends Model {
   toJSON() {
