@@ -10,7 +10,7 @@ usersRouter.get('/', async (req, res) => {
 
 usersRouter.get('/:id', async (req, res) => {
   const id = req.params.id;
-  const user = await User.scope('withBlogs').findByPk(id);
+  const user = await User.scope('withBlogsAndReadings').findByPk(id);
 
   if (!user) {
     return res.status(404).json({ error: 'User not found' });
