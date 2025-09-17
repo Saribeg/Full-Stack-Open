@@ -12,6 +12,22 @@ User.addScope('withBlogs', {
   }
 });
 
+User.addScope('withBlogsAndReadings', {
+  attributes: ['id', 'name', 'username'],
+  include: [
+    {
+      model: Blog,
+      attributes: { exclude: ['userId'] }
+    },
+    {
+      model: Blog,
+      as: 'readings',
+      attributes: { exclude: ['userId'] },
+      through: { attributes: [] }
+    }
+  ]
+});
+
 Blog.addScope('withUserName', {
   attributes: { exclude: ['userId'] },
   include: {

@@ -7,6 +7,7 @@ const usersRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
 const blogsRouter = require('./controllers/blogs');
 const authorsRouter = require('./controllers/authors');
+const readingListsRouter = require('./controllers/readingLists');
 
 const app = express();
 app.use(cors());
@@ -20,6 +21,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/blogs', blogsRouter);
 app.use('/api/authors', authorsRouter);
+app.use('/api/readinglists', readingListsRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
