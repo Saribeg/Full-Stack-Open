@@ -15,7 +15,8 @@ module.exports = {
       },
       refresh_token: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       expires_at: {
         type: DataTypes.DATE,
@@ -31,6 +32,11 @@ module.exports = {
         allowNull: false,
         defaultValue: DataTypes.NOW
       }
+    }, {
+      indexes: [
+        { fields: ['user_id'] },
+        { fields: ['refresh_token'] }
+      ]
     });
   },
 

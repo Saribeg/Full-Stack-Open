@@ -17,7 +17,8 @@ Session.init({
   },
   refreshToken: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
   expiresAt: {
     type: DataTypes.DATE,
@@ -27,7 +28,11 @@ Session.init({
   sequelize,
   modelName: 'session',
   underscored: true,
-  timestamps: true
+  timestamps: true,
+  indexes: [
+    { fields: ['userId'] },
+    { fields: ['refreshToken'] }
+  ]
 });
 
 module.exports = Session;
