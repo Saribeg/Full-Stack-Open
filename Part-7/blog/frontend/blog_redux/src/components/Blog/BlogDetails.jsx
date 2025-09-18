@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import CommentForm from './CommentForm';
+import CommentItem from './CommentItem';
 import Button from '../ui/Form/Button';
 import PageTitle from '../PageTitle';
 import NativeLink from '../ui/NativeLink';
@@ -73,12 +74,12 @@ const BlogDetails = () => {
             <h3 className="mb-4 text-2xl">Comments</h3>
             <ul className="flex flex-col gap-2">
               {blog.comments.map((comment) => (
-                <li
+                <CommentItem
                   key={comment.id}
-                  className="relative rounded-2xl border border-cyan-800 bg-gradient-to-b from-[#0b1120] to-[#071625] p-4 text-lg leading-relaxed text-cyan-100/90 shadow-[0_0_6px_#0891b233]"
-                >
-                  {comment.text}
-                </li>
+                  comment={comment}
+                  authUser={authUser}
+                  blogId={blog.id}
+                />
               ))}
             </ul>
           </>

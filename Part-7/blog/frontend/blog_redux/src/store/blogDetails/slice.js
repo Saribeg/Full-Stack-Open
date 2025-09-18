@@ -9,6 +9,8 @@ const blogDetailsSlice = createSlice({
       fetch: { loading: false, error: null },
       like: { loading: false, error: null },
       comment: { loading: false, error: null },
+      updateComment: { loading: false, error: null },
+      deleteComment: { loading: false, error: null },
       delete: { loading: false, error: null }
     }
   },

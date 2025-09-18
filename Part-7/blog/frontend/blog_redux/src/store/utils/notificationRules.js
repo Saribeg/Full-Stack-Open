@@ -38,11 +38,11 @@ export const notificationRules = {
     },
     comment: {
       success: {
-        isEnabled: true,
+        isEnabled: false,
         popup: true,
         getMessage: (result) => {
           const last = result.comments.at(-1);
-          return `Thanks, ${result.user.name}, for commenting "${result.title}" by ${result.author}! 💬 Comment "${last?.text ?? '...'}" added successfully!`;
+          return `Thanks for commenting "${result.title}" by ${result.author}! 💬 Comment "${last?.text ?? '...'}" added successfully!`;
         }
       },
       error: { isEnabled: true, popup: false, placement: 'CommentForm', duration: -1 }

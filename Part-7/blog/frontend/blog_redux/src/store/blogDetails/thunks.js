@@ -22,3 +22,19 @@ export const deleteBlog = createThunkWithNotify('blogDetails/delete', async (id)
   await blogService.deleteBlog(id);
   return id;
 });
+
+export const updateComment = createThunkWithNotify(
+  'blogDetails/updateComment',
+  async ({ blogId, commentId, comment }) => {
+    const updated = await blogService.updateComment({ blogId, commentId, comment });
+    return updated;
+  }
+);
+
+export const deleteComment = createThunkWithNotify(
+  'blogDetails/deleteComment',
+  async ({ blogId, commentId }) => {
+    const updatedBlog = await blogService.deleteComment({ blogId, commentId });
+    return updatedBlog;
+  }
+);

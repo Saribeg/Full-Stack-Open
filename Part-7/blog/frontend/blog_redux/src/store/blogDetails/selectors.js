@@ -11,3 +11,7 @@ export const selectCreateCommentStatus = (state) => state.blogDetails.status.com
 export const selectLikeBlogStatus = (state) => state.blogDetails.status.like;
 
 export const selectDeleteBlogStatus = (state) => state.blogDetails.status.delete;
+
+export const selectUpdateCommentStatus = (state) => state.blogDetails.status.updateComment;
+
+export const selectDeleteCommentStatus = (state) => state.blogDetails.status.deleteComment;
