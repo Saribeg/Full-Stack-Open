@@ -9,28 +9,32 @@ import Form from '../ui/Form/Form';
 import InlineNotification from '../Notification/InlineNotification';
 import TextLink from '../ui/TextLink';
 
-import { selectLoginStatus } from '../../store/auth/selectors';
-import { login } from '../../store/auth/thunks';
+import { registerUser } from '../../store/users/thunks';
+import { selectRegisterStatus } from '../../store/users/selectors';
 
-const LoginForm = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
+const RegisterForm = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleChange = (setter) => (event) => {
-    setter(event.target.value);
+  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+
+  const { loading } = useSelector(selectRegisterStatus);
+
+  const handleChange = (setter) => (e) => {
+    setter(e.target.value);
   };
 
   const resetForm = () => {
     setUsername('');
+    setName('');
     setPassword('');
   };
 
-  const dispatch = useDispatch();
-  const handleLoginSubmit = (event) => {
-    event.preventDefault();
-    dispatch(login({ username, password }))
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(registerUser({ username, name, password }))
       .unwrap()
       .then(() => {
         resetForm();
@@ -39,16 +43,14 @@ const LoginForm = () => {
       .catch(() => {});
   };
 
-  const { loading } = useSelector(selectLoginStatus);
-
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="flex w-full max-w-md flex-col items-center gap-10">
         <Logo large />
         <div className="flex w-full flex-col gap-6">
-          <p className="text-center text-white/70">Log In to see blogs and work with them</p>
+          <p className="text-center text-white/70">Register to start using BlogApp</p>
 
-          <Form onSubmit={handleLoginSubmit} data-testid="login-form">
+          <Form onSubmit={handleSubmit} data-testid="register-form">
             <Input
               type="text"
               name="username"
@@ -56,7 +58,16 @@ const LoginForm = () => {
               onChange={handleChange(setUsername)}
               placeholder="Username"
               required
-              data-testid="username"
+              data-testid="register-username"
+            />
+            <Input
+              type="text"
+              name="name"
+              value={name}
+              onChange={handleChange(setName)}
+              placeholder="Full Name"
+              required
+              data-testid="register-name"
             />
             <Input
               type="password"
@@ -65,21 +76,21 @@ const LoginForm = () => {
               onChange={handleChange(setPassword)}
               placeholder="Password"
               required
-              data-testid="password"
+              data-testid="register-password"
             />
             <Button
               uiType="primary"
               type="submit"
-              id="login"
-              data-testid="login"
+              id="register"
+              data-testid="register"
               disabled={loading}
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Registering...' : 'Register'}
             </Button>
             <p className="mt-4 text-center text-white/70">
-              Don’t have an account? <TextLink to="/register">Register here</TextLink>
+              Already have an account? <TextLink to="/login">Log in here</TextLink>
             </p>
-            <InlineNotification placement="LoginForm" />
+            <InlineNotification placement="RegisterForm" />
           </Form>
         </div>
       </div>
@@ -87,4 +98,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

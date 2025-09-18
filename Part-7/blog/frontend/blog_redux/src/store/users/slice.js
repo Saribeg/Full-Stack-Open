@@ -8,7 +8,8 @@ const usersSlice = createSlice({
     selectedUser: null,
     status: {
       fetch: { loading: false, error: null },
-      fetchById: { loading: false, error: null }
+      fetchById: { loading: false, error: null },
+      register: { loading: false, error: null }
     }
   },
   reducers: {},

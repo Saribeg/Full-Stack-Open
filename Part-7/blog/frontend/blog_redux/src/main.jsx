@@ -5,7 +5,11 @@ import { Provider } from 'react-redux';
 import store from './store';
 import App from './App';
 
+import { initialize } from './store/auth/thunks';
+
 import './index.css';
+
+store.dispatch(initialize());
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>

@@ -1,24 +1,26 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Typography } from '@mui/material';
 
 import PageTitle from '../PageTitle';
 
 import UserContext from '../../contexts/UserContext';
 import { useNotification } from '../../hooks';
-import { loginUser } from '../../utils/user';
+import { registerUser } from '../../utils/user';
 
 import {
   Box,
   TextField,
   Button,
   Paper,
-  Stack
+  Stack,
+  Typography
 } from '@mui/material';
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+
   const notify = useNotification();
   const { dispatchUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -26,19 +28,22 @@ const LoginForm = () => {
   const handleChange = (setter) => (event) => {
     setter(event.target.value);
   };
+
   const resetForm = () => {
     setUsername('');
+    setName('');
     setPassword('');
   };
-  const handleLoginSubmit = async (event) => {
+
+  const handleRegisterSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const userData = await loginUser(dispatchUser, { username, password });
+      const userData = await registerUser(dispatchUser, { username, name, password });
       resetForm();
       navigate('/');
       notify({
-        message: `Welcome, ${userData.name}! 😊`,
+        message: `Welcome, ${userData.name}! 🎉`,
         type: 'success'
       });
     } catch (error) {
@@ -63,12 +68,12 @@ const LoginForm = () => {
         elevation={3}
         sx={{
           p: { xs: 3, sm: 4, md: 5 },
-          minHeight: { xs: 'auto', md: 350 },
+          minHeight: { xs: 'auto', md: 400 },
           borderRadius: 2
         }}
       >
-        <Stack spacing={3} component="form" onSubmit={handleLoginSubmit}>
-          <PageTitle variant="h5">Log in to see blogs and work with them</PageTitle>
+        <Stack spacing={3} component="form" onSubmit={handleRegisterSubmit}>
+          <PageTitle variant="h5">Register to start using BlogApp</PageTitle>
 
           <TextField
             id="username"
@@ -76,9 +81,15 @@ const LoginForm = () => {
             value={username}
             onChange={handleChange(setUsername)}
             required
-            slotProps={{
-              htmlInput: { 'data-testid': 'username' }
-            }}
+            fullWidth
+          />
+
+          <TextField
+            id="name"
+            label="Full Name"
+            value={name}
+            onChange={handleChange(setName)}
+            required
             fullWidth
           />
 
@@ -89,9 +100,6 @@ const LoginForm = () => {
             value={password}
             onChange={handleChange(setPassword)}
             required
-            slotProps={{
-              htmlInput: { 'data-testid': 'password' }
-            }}
             fullWidth
           />
 
@@ -100,14 +108,13 @@ const LoginForm = () => {
             variant="contained"
             size="large"
             fullWidth
-            id="login"
-            data-testid="login"
+            id="register"
           >
-            Login
+            Register
           </Button>
 
           <Typography align="center" variant="body2">
-            Don’t have an account? <Link to="/register">Register here</Link>
+            Already have an account? <Link to="/login">Log in here</Link>
           </Typography>
         </Stack>
       </Paper>
@@ -115,4 +122,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
