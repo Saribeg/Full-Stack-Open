@@ -112,7 +112,32 @@ const createInitialBlogs = async (users) => {
   for (const user of users) {
     const userBlogsData = initialData.blogs
       .filter(blog => blog.user === user.username)
-      .map(blog => ({ ...blog, user: user._id }));
+      .map(blog => {
+        const comments = blog.comments
+          ? blog.comments.map(c => {
+            // choose random user different from blog owner
+            const otherUsers = users.filter(u => u._id.toString() !== user._id.toString());
+            const randomUser = otherUsers[Math.floor(Math.random() * otherUsers.length)];
+
+            // random date in last 10 days
+            const daysAgo = Math.floor(Math.random() * 10);
+            const createdAt = new Date();
+            createdAt.setDate(createdAt.getDate() - daysAgo);
+
+            return {
+              ...c,
+              user: randomUser._id,
+              createdAt
+            };
+          })
+          : [];
+
+        return {
+          ...blog,
+          user: user._id,
+          comments
+        };
+      });
 
     const savedBlogs = await Blog.insertMany(userBlogsData);
     allSavedBlogs.push(...savedBlogs);
