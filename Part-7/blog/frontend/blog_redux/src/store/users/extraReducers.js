@@ -1,5 +1,5 @@
 import { addCases } from '../utils/addCases';
-import { fetchUsers, fetchUserById } from './thunks';
+import { fetchUsers, fetchUserById, registerUser } from './thunks';
 import { logout } from '../auth/thunks';
 
 export const extraReducers = (builder) => {
@@ -10,6 +10,11 @@ export const extraReducers = (builder) => {
       }
     })
     .for(fetchUserById, 'fetchById', {
+      fulfilled: (state, action) => {
+        state.selectedUser = action.payload;
+      }
+    })
+    .for(registerUser, 'register', {
       fulfilled: (state, action) => {
         state.selectedUser = action.payload;
       }

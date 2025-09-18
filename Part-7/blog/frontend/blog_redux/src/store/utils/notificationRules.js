@@ -80,6 +80,14 @@ export const notificationRules = {
     fetchById: {
       success: { isEnabled: false },
       error: { isEnabled: true, popup: false, placement: 'UserDetails', duration: -1 }
+    },
+    register: {
+      success: {
+        isEnabled: true,
+        popup: true,
+        getMessage: (result) => `Welcome aboard, ${result.name}! 🎉 Your account has been created.`
+      },
+      error: { isEnabled: true, popup: false, placement: 'RegisterForm', duration: -1 }
     }
   }
 };

@@ -16,8 +16,17 @@ const executeCentralizedNotification = (typePrefix, notificationType, dataOrErro
       ? `Successfully ${operation}d ${resource}`
       : dataOrError.message || `Failed to ${operation} ${resource}`;
 
-  const message =
-    typeof settings.getMessage === 'function' ? settings.getMessage(dataOrError) : defaultMessage;
+  let message = defaultMessage;
+  if (typeof settings.getMessage === 'function') {
+    try {
+      message = settings.getMessage(dataOrError);
+    } catch (e) {
+      if (import.meta.env.MODE === 'development') {
+        console.warn(`[notify] getMessage() threw for ${typePrefix}/${notificationType}:`, e);
+      }
+      message = defaultMessage;
+    }
+  }
 
   notify?.({
     type: notificationType,

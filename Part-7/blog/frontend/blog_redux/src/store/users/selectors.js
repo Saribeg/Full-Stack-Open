@@ -32,3 +32,5 @@ export const selectUserDetailsState = (state) => ({
 });
 
 export const selectCurrentUser = (state) => state.users.selectedUser;
+
+export const selectRegisterStatus = (state) => state.users.status.register;
