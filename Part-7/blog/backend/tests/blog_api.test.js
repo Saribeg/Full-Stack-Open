@@ -278,7 +278,7 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
 
       const validComment = { comment: 'This is a very thoughtful and insightful comment!' };
 
-      const response = await api
+      const response = await authenticatedApi
         .post(`/api/blogs/${blogToComment.id}/comments`)
         .send(validComment)
         .expect(201)
@@ -292,13 +292,14 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
       assert.ok(addedComment);
       assert.ok(addedComment.id);
       assert.strictEqual(addedComment.text, validComment.comment);
+      assert.strictEqual(addedComment.user.id, authenticatedUser.id);
     });
 
     test('fails with 400 if comment is missing', async () => {
       const blogsAtStart = await helper.blogsInDb();
       const blogToComment = blogsAtStart[0];
 
-      const response = await api
+      const response = await authenticatedApi
         .post(`/api/blogs/${blogToComment.id}/comments`)
         .send({})
         .expect(400);
@@ -313,7 +314,7 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
 
       const shortComment = { comment: 'too short' };
 
-      const response = await api
+      const response = await authenticatedApi
         .post(`/api/blogs/${blogToComment.id}/comments`)
         .send(shortComment)
         .expect(400);
@@ -325,7 +326,7 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
     test('returns 404 if blog does not exist', async () => {
       const nonExistingId = await helper.nonExistingId();
 
-      const response = await api
+      const response = await authenticatedApi
         .post(`/api/blogs/${nonExistingId}/comments`)
         .send({ comment: 'This is a valid long enough comment text!' })
         .expect(404);
@@ -337,13 +338,249 @@ describe('Integration tests. Testing the CRUD API for blogs', () => {
     test('returns 400 if blog id is invalid', async () => {
       const invalidId = 'not-a-valid-id';
 
-      const response = await api
+      const response = await authenticatedApi
         .post(`/api/blogs/${invalidId}/comments`)
         .send({ comment: 'This is a valid long enough comment text!' })
         .expect(400);
 
       assert.ok(response.body.error);
       assert.match(response.body.error, /malformatted|cast/i);
+    });
+
+    test('fails with 401 if token is missing', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const response = await api
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send({ comment: 'This is a valid long enough comment text!' })
+        .expect(401);
+
+      assert.ok(response.body.error);
+      assert.match(response.body.error, /token/i);
+    });
+  });
+
+  describe('editing comments', () => {
+    test('succeeds with status 200 when editing own comment', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const newComment = { comment: 'This is a very thoughtful and insightful comment!' };
+      const addResponse = await authenticatedApi
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send(newComment)
+        .expect(201);
+
+      const addedComment = addResponse.body.comments.find(c => c.text === newComment.comment);
+
+      const updatedText = 'This is an updated comment that is definitely long enough!';
+      const editResponse = await authenticatedApi
+        .put(`/api/blogs/${blogToComment.id}/comments/${addedComment.id}`)
+        .send({ comment: updatedText })
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const updatedBlog = editResponse.body;
+      const editedComment = updatedBlog.comments.find(c => c.id === addedComment.id);
+
+      assert.strictEqual(editedComment.text, updatedText);
+      assert.ok(editedComment.editedAt);
+    });
+
+    test('fails with 400 if comment text is missing', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const newComment = { comment: 'This is a valid initial comment long enough!' };
+      const addResponse = await authenticatedApi
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send(newComment)
+        .expect(201);
+
+      const addedComment = addResponse.body.comments.find(c => c.text === newComment.comment);
+
+      const response = await authenticatedApi
+        .put(`/api/blogs/${blogToComment.id}/comments/${addedComment.id}`)
+        .send({})
+        .expect(400);
+
+      assert.match(response.body.error, /comment/i);
+    });
+
+    test('fails with 400 if comment text is shorter than minlength (20 chars)', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const newComment = { comment: 'This is a valid initial comment long enough!' };
+      const addResponse = await authenticatedApi
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send(newComment)
+        .expect(201);
+
+      const addedComment = addResponse.body.comments.find(c => c.text === newComment.comment);
+
+      const response = await authenticatedApi
+        .put(`/api/blogs/${blogToComment.id}/comments/${addedComment.id}`)
+        .send({ comment: 'too short' })
+        .expect(400);
+
+      assert.match(response.body.error, /validation/i);
+    });
+
+    test('returns 404 if blog does not exist', async () => {
+      const nonExistingBlogId = await helper.nonExistingId();
+
+      const response = await authenticatedApi
+        .put(`/api/blogs/${nonExistingBlogId}/comments/123456789012`)
+        .send({ comment: 'This is a valid long enough comment text!' })
+        .expect(404);
+
+      assert.strictEqual(response.body.error, 'Blog is not found');
+    });
+
+    test('returns 404 if comment does not exist', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const response = await authenticatedApi
+        .put(`/api/blogs/${blogToComment.id}/comments/123456789012`)
+        .send({ comment: 'This is a valid long enough comment text!' })
+        .expect(404);
+
+      assert.strictEqual(response.body.error, 'Comment is not found');
+    });
+
+    test('fails with 401 if trying to edit someone else’s comment', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const newUser = {
+        username: 'anotheruser',
+        name: 'Another User',
+        password: 'sekret'
+      };
+
+      await api.post('/api/users').send(newUser).expect(201);
+
+      const { agent: otherApi } = await helper.getAuthenticatedAgent({
+        username: newUser.username,
+        password: newUser.password
+      });
+
+      const newComment = { comment: 'This is a valid comment by another user.' };
+      const addResponse = await otherApi
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send(newComment)
+        .expect(201);
+
+      const addedComment = addResponse.body.comments.find(c => c.text === newComment.comment);
+
+      const response = await authenticatedApi
+        .put(`/api/blogs/${blogToComment.id}/comments/${addedComment.id}`)
+        .send({ comment: 'Trying to edit someone else’s comment!' })
+        .expect(401);
+
+      assert.match(response.body.error, /own comments/i);
+    });
+
+    test('fails with 401 if token is missing', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const response = await api
+        .put(`/api/blogs/${blogToComment.id}/comments/123456789012`)
+        .send({ comment: 'This is a valid long enough comment text!' })
+        .expect(401);
+
+      assert.match(response.body.error, /token/i);
+    });
+  });
+
+  describe('deleting comments', () => {
+    test('succeeds with status 200 when deleting own comment', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const newComment = { comment: 'This is my comment and I will delete it later.' };
+      const addResponse = await authenticatedApi
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send(newComment)
+        .expect(201);
+
+      const addedComment = addResponse.body.comments.find(c => c.text === newComment.comment);
+
+      const deleteResponse = await authenticatedApi
+        .delete(`/api/blogs/${blogToComment.id}/comments/${addedComment.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+
+      const updatedBlog = deleteResponse.body;
+      const deletedComment = updatedBlog.comments.find(c => c.id === addedComment.id);
+
+      assert.strictEqual(deletedComment, undefined);
+    });
+
+    test('returns 404 if blog does not exist', async () => {
+      const nonExistingBlogId = await helper.nonExistingId();
+
+      const response = await authenticatedApi
+        .delete(`/api/blogs/${nonExistingBlogId}/comments/123456789012`)
+        .expect(404);
+
+      assert.strictEqual(response.body.error, 'Blog is not found');
+    });
+
+    test('returns 404 if comment does not exist', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const response = await authenticatedApi
+        .delete(`/api/blogs/${blogToComment.id}/comments/123456789012`)
+        .expect(404);
+
+      assert.strictEqual(response.body.error, 'Comment is not found');
+    });
+
+    test('fails with 401 if trying to delete someone else’s comment', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const newUser = {
+        username: 'deleter',
+        name: 'Other User',
+        password: 'sekret'
+      };
+      await api.post('/api/users').send(newUser).expect(201);
+      const { agent: otherApi } = await helper.getAuthenticatedAgent({
+        username: newUser.username,
+        password: newUser.password
+      });
+
+      const newComment = { comment: 'Comment by another user to be protected.' };
+      const addResponse = await otherApi
+        .post(`/api/blogs/${blogToComment.id}/comments`)
+        .send(newComment)
+        .expect(201);
+
+      const addedComment = addResponse.body.comments.find(c => c.text === newComment.comment);
+
+      const response = await authenticatedApi
+        .delete(`/api/blogs/${blogToComment.id}/comments/${addedComment.id}`)
+        .expect(401);
+
+      assert.match(response.body.error, /own comments/i);
+    });
+
+    test('fails with 401 if token is missing', async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToComment = blogsAtStart[0];
+
+      const response = await api
+        .delete(`/api/blogs/${blogToComment.id}/comments/123456789012`)
+        .expect(401);
+
+      assert.match(response.body.error, /token/i);
     });
   });
 });

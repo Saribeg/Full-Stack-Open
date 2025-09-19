@@ -65,7 +65,7 @@ describe('testDbSetup utilities', () => {
   });
 
   describe('createInitialBlogs', () => {
-    test('associates blogs with the correct users', async () => {
+    test('associates blogs with the correct users and populates comments', async () => {
       const users = await createInitialUsers();
       const blogs = await createInitialBlogs(users);
 
@@ -75,6 +75,13 @@ describe('testDbSetup utilities', () => {
         const user = await User.findById(blog.user);
         assert.ok(user, 'user for blog exists');
         assert.ok(user.blogs.some(id => id.equals(blog._id)), 'user.blogs contains blog');
+
+        if (blog.comments && blog.comments.length > 0) {
+          for (const comment of blog.comments) {
+            assert.ok(comment.user, 'comment has user');
+            assert.ok(comment.createdAt instanceof Date, 'comment has createdAt');
+          }
+        }
       }
     });
   });
