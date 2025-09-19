@@ -143,9 +143,77 @@ export const useCreateComment = (options = {}) => {
       ...options,
       onSuccess: (data, variables, context) => {
         const last = data.comments.at(-1);
+        const preview =
+          last?.text?.length > 20
+            ? last.text.slice(0, 20) + '...'
+            : last?.text ?? '...';
         notify({
           type: 'info',
-          message: `Thanks, ${data.user.name}, for commenting "${data.title}" by ${data.author}! 💬 Comment "${last?.text ?? '...'}" added successfully!`,
+          message: `Thanks for commenting "${data.title}" by ${data.author}! 💬 Comment "${preview}" added successfully!`,
+        });
+        options?.onSuccess?.(data, variables, context);
+      },
+      onError: (err, variables, context) => {
+        notify({
+          type: 'error',
+          message: err.response?.data?.error || err.message,
+        });
+        options?.onError?.(err, variables, context);
+      },
+    },
+  });
+};
+
+// Update existing comment
+export const useUpdateComment = (options = {}) => {
+  const notify = useNotification();
+
+  return useEnhancedMutation(blogService.updateComment, {
+    invalidate: [['blogs']],
+    update: [
+      {
+        key: (updatedBlog) => ['selectedBlog', updatedBlog.id],
+        updater: (updatedBlog) => updatedBlog,
+      },
+    ],
+    mutationOptions: {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        notify({
+          type: 'success',
+          message: '✏️ Your comment was updated successfully!',
+        });
+        options?.onSuccess?.(data, variables, context);
+      },
+      onError: (err, variables, context) => {
+        notify({
+          type: 'error',
+          message: err.response?.data?.error || err.message,
+        });
+        options?.onError?.(err, variables, context);
+      },
+    },
+  });
+};
+
+// Delete existing comment
+export const useDeleteComment = (options = {}) => {
+  const notify = useNotification();
+
+  return useEnhancedMutation(blogService.deleteComment, {
+    invalidate: [['blogs']],
+    update: [
+      {
+        key: (updatedBlog) => ['selectedBlog', updatedBlog.id],
+        updater: (updatedBlog) => updatedBlog,
+      },
+    ],
+    mutationOptions: {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        notify({
+          type: 'info',
+          message: '🗑️ Comment deleted successfully.',
         });
         options?.onSuccess?.(data, variables, context);
       },

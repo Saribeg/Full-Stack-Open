@@ -5,6 +5,7 @@ import { Box, Paper, Stack, Typography, Divider, IconButton, Button, Link } from
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import CommentForm from './CommentForm';
+import CommentItem from './CommentItem';
 import PageTitle from '../PageTitle';
 import BlogDeleteDialog from './BlogDeleteDialog';
 import Spinner from '../Spinner';
@@ -118,25 +119,19 @@ const BlogDetails = () => {
           </Typography>
           <Stack
             component="ul"
-            spacing={1}
+            spacing={2}
             sx={{
               listStyle: 'none',
               pl: 0,
             }}
           >
             {blog.comments.map((comment) => (
-              <Paper
-                key={comment.id}
-                variant="outlined"
-                sx={{ p: 1.5 }}
-                data-testid="blog-comment"
-              >
-                <Typography>{comment.text}</Typography>
-              </Paper>
+              <CommentItem key={comment.id} comment={comment} blogId={blog.id} />
             ))}
           </Stack>
         </Box>
       )}
+
 
       <CommentForm id={blog.id} />
     </Box>
