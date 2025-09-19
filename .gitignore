@@ -144,3 +144,26 @@ bundle-size-reports/
 
 # Docker
 redis_data
+
+# Vitest / Jest / Coverage
+coverage/
+.nyc_output/
+
+# Playwright
+.playwright/
+playwright-report/
+test-results/
+
+# Cypress
+cypress/reports/
+cypress/screenshots/
+cypress/videos/
+
+# Bundle size reports
+bundle-size-reports/
+
+# Knip cache
+.knip/
+
+# Logs and misc
+logs/

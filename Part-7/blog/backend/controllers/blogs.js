@@ -3,14 +3,18 @@ const middleware = require('../utils/middleware');
 const Blog = require('../models/blog');
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+  const blogs = await Blog.find({})
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments.user', { username: 1, name: 1 });
 
   response.json(blogs);
 });
 
 blogsRouter.get('/:id', async (request, response) => {
   const id = request.params.id;
-  const blog = await Blog.findById(id).populate('user', { username: 1, name: 1 });
+  const blog = await Blog.findById(id)
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments.user', { username: 1, name: 1 });
 
   if (!blog) {
     return response.status(404).json({ error: 'Blog not found' });
@@ -48,7 +52,9 @@ blogsRouter.put('/:id', async (request, response) => {
       runValidators: true, // Apply schema validations when updating
       context: 'query'     // For correct work of custom validators
     }
-  ).populate('user');
+  )
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments.user', { username: 1, name: 1 });
 
   if (!updatedBlog) {
     return response.status(404).json({ error: 'Blog is not found' });
@@ -77,14 +83,15 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
   response.status(204).end();
 });
 
-blogsRouter.post('/:id/comments', async (request, response) => {
+blogsRouter.post('/:id/comments', middleware.userExtractor, async (request, response) => {
   const { comment } = request.body;
+  const user = request.user;
 
   if (!comment || typeof comment !== 'string') {
     return response.status(400).json({ error: 'Comment is required and must be a string' });
   }
 
-  const newComment = { text: comment };
+  const newComment = { text: comment, user: user._id };
 
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
@@ -94,13 +101,79 @@ blogsRouter.post('/:id/comments', async (request, response) => {
       runValidators: true, // Apply schema validations when updating
       context: 'query'     // For correct work of custom validators
     }
-  ).populate('user');;
+  )
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments.user', { username: 1, name: 1 });
 
   if (!updatedBlog) {
     return response.status(404).json({ error: 'Blog is not found' });
   }
 
   response.status(201).json(updatedBlog);
+});
+
+blogsRouter.put('/:id/comments/:commentId', middleware.userExtractor, async (request, response) => {
+  const { comment } = request.body;
+  const user = request.user;
+
+  if (!comment || typeof comment !== 'string') {
+    return response.status(400).json({ error: 'Comment is required and must be a string' });
+  }
+
+  const blog = await Blog.findById(request.params.id);
+
+  if (!blog) {
+    return response.status(404).json({ error: 'Blog is not found' });
+  }
+
+  const targetComment = blog.comments.id(request.params.commentId);
+
+  if (!targetComment) {
+    return response.status(404).json({ error: 'Comment is not found' });
+  }
+
+  if (targetComment.user.toString() !== user._id.toString()) {
+    return response.status(401).json({ error: 'You can edit only your own comments' });
+  }
+
+  targetComment.text = comment;
+  targetComment.editedAt = new Date();
+  await blog.save();
+
+  const updatedBlog = await Blog.findById(blog._id)
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments.user', { username: 1, name: 1 });
+
+  response.json(updatedBlog);
+});
+
+blogsRouter.delete('/:id/comments/:commentId', middleware.userExtractor, async (request, response) => {
+  const user = request.user;
+
+  const blog = await Blog.findById(request.params.id);
+
+  if (!blog) {
+    return response.status(404).json({ error: 'Blog is not found' });
+  }
+
+  const targetComment = blog.comments.id(request.params.commentId);
+
+  if (!targetComment) {
+    return response.status(404).json({ error: 'Comment is not found' });
+  }
+
+  if (targetComment.user.toString() !== user._id.toString()) {
+    return response.status(401).json({ error: 'You can delete only your own comments' });
+  }
+
+  targetComment.deleteOne();
+  await blog.save();
+
+  const updatedBlog = await Blog.findById(blog._id)
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments.user', { username: 1, name: 1 });
+
+  response.json(updatedBlog);
 });
 
 module.exports = blogsRouter;

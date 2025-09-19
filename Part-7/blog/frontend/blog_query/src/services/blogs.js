@@ -31,4 +31,14 @@ const createComment = async ({ id, comment }) => {
   return response.data;
 };
 
-export default { getAll, getById, create, update, deleteBlog, createComment };
+const updateComment = async ({ blogId, commentId, comment }) => {
+  const response = await api.put(`${baseUrl}/${blogId}/comments/${commentId}`, { comment });
+  return response.data;
+};
+
+const deleteComment = async ({ blogId, commentId }) => {
+  const response = await api.delete(`${baseUrl}/${blogId}/comments/${commentId}`);
+  return response.data;
+};
+
+export default { getAll, getById, create, update, deleteBlog, createComment, updateComment, deleteComment };

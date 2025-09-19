@@ -1,6 +1,7 @@
 import { setToken, clearToken } from '../services/api';
 import { safeParseJSON } from './commonHelpers';
 import loginService from '../services/login';
+import userService from '../services/users';
 
 export const initializeUser = (dispatchUser) => {
   const userJSON = window.localStorage.getItem('user');
@@ -24,4 +25,12 @@ export const logoutUser = (dispatchUser) => {
   window.localStorage.removeItem('user');
   clearToken();
   dispatchUser({ type: 'LOGOUT_USER' });
+};
+
+export const registerUser = async (dispatchUser, { username, name, password }) => {
+  const userData = await userService.register({ username, name, password });
+  window.localStorage.setItem('user', JSON.stringify(userData));
+  dispatchUser({ type: 'SET_USER', payload: userData });
+  setToken(userData.token);
+  return userData;
 };

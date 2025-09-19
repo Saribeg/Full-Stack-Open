@@ -30,13 +30,21 @@ mongoose
 app.use(cors());
 app.use(helmet());
 app.use(express.static('dist'));
-app.use(express.json());
+app.use(middleware.jsonBodyLimit);
 app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
 
-app.use('/api/blogs', blogsRouter);
+const isCI = process.env.CI === 'true' || process.env.NODE_ENV === 'test';
+
+if (!isCI) {
+  app.use('/api/login', middleware.authLimiter, loginRouter);
+} else {
+  app.use('/api/login', loginRouter);
+}
+
+app.use('/api/blogs', middleware.writeLimiterMiddleware, blogsRouter);
 app.use('/api/users', usersRouter);
-app.use('/api/login', loginRouter);
+
 
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });

@@ -11,4 +11,9 @@ const getById = async (id) => {
   return response.data;
 };
 
-export default { getAll, getById };
+const register = async ({ username, name, password }) => {
+  const res = await api.post(baseUrl, { username, name, password });
+  return res.data;
+};
+
+export default { getAll, getById, register };

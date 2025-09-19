@@ -1,5 +1,12 @@
 import { addCases } from '../utils/addCases';
-import { fetchBlogById, likeBlog, createComment, deleteBlog } from './thunks';
+import {
+  fetchBlogById,
+  likeBlog,
+  createComment,
+  updateComment,
+  deleteComment,
+  deleteBlog
+} from './thunks';
 import { logout } from '../auth/thunks';
 
 const assignToBlogHandlers = {
@@ -13,6 +20,8 @@ export const extraReducers = (builder) => {
     .for(fetchBlogById, 'fetch', assignToBlogHandlers)
     .for(likeBlog, 'like', assignToBlogHandlers)
     .for(createComment, 'comment', assignToBlogHandlers)
+    .for(updateComment, 'updateComment', assignToBlogHandlers)
+    .for(deleteComment, 'deleteComment', assignToBlogHandlers)
     .for(deleteBlog, 'delete', {
       fulfilled: (state) => {
         state.blog = null;

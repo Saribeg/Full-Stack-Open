@@ -4,7 +4,7 @@ import Section from './Section';
 
 const ChallengesAndLessons = () => {
   return (
-    <Section icon={FaLightbulb} title="Challenges & Lessons Learned">
+    <Section icon={FaLightbulb} title="Implementation Highlights">
       <div className="space-y-6 text-cyan-100/80">
         <div>
           <h3 className="mb-2 text-xl font-semibold text-cyan-300">Deep Dive into Redux</h3>
@@ -142,19 +142,6 @@ const ChallengesAndLessons = () => {
               and so I did. 😄
             </li>
           </ul>
-        </div>
-
-        <div>
-          <h3 className="mb-2 text-xl font-semibold text-cyan-300">Final Thoughts</h3>
-          <p className="mb-2">
-            I genuinely enjoy architectural challenges and abstract problem solving. This project
-            gave me the opportunity to think deeply about maintainability, reusability, and
-            developer experience — not just “getting things to work,” but making them feel right.
-          </p>
-          <p>
-            Special thanks to the Full Stack Open team for creating a thoughtful curriculum with
-            practical and real-world tasks.
-          </p>
         </div>
       </div>
     </Section>

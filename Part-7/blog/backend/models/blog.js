@@ -26,6 +26,19 @@ const blogSchema = mongoose.Schema({
         type: String,
         required: true,
         minlength: 20
+      },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now
+      },
+      editedAt: {
+        type: Date,
+        default: null
       }
     }
   ]
@@ -42,10 +55,10 @@ blogSchema.set('toJSON', {
         const transformedComment = {
           ...comment,
           id: comment._id.toString(),
-          text: comment.text
         };
 
         delete transformedComment._id;
+        delete transformedComment.__v;
         return transformedComment;
       });
     }
