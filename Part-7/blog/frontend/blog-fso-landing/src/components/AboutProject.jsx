@@ -53,7 +53,8 @@ const AboutProject = () => {
         </p>
 
         <p className="mt-6 text-base leading-relaxed text-gray-700 md:text-lg">
-          I hope you enjoy exploring the app!
+          Hopefully this project can be useful for learning purposes — especially if you’re also
+          going through the Full Stack Open course.
         </p>
       </div>
     </section>

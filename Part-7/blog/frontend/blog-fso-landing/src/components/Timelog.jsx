@@ -95,9 +95,32 @@ const Timelog = () => {
             </tbody>
           </table>
         </div>
+
+        <div className="mt-12 space-y-4 text-left text-base leading-relaxed text-gray-700 md:text-lg">
+          <h3 className="text-xl font-bold text-[#004a55]">Beyond Part 7</h3>
+          <p>
+            After completing Part 7, I continued to expand and modernize the project with extra work
+            from later parts of the course:
+          </p>
+          <ul className="list-inside list-disc space-y-1">
+            <li>Implemented CI/CD pipelines in Part 11 using GitHub Actions.</li>
+            <li>Added containerization with Docker in Part 12 for dev and prod environments.</li>
+            <li>
+              Refined features and improved functionality beyond the original curriculum (added
+              registration, possibility to edit and delete comments in September 2025).
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
   );
 };
 
 export default Timelog;
+
+<a
+  href="https://fullstackopen.com/en/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="font-semibold text-[#004a55] underline underline-offset-2 hover:text-[#00788d]"
+></a>;
