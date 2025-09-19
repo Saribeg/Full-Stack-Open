@@ -37,7 +37,8 @@ const updateComment = async ({ blogId, commentId, comment }) => {
 };
 
 const deleteComment = async ({ blogId, commentId }) => {
-  await api.delete(`${baseUrl}/${blogId}/comments/${commentId}`);
+  const response = await api.delete(`${baseUrl}/${blogId}/comments/${commentId}`);
+  return response.data;
 };
 
 export default { getAll, getById, create, update, deleteBlog, createComment, updateComment, deleteComment };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -9,63 +9,99 @@ import {
   Box
 } from '@mui/material';
 
-import { useCreateComment } from '../../queries/blog';
+import { useCreateComment, useUpdateComment } from '../../queries/blog';
 
-const CommentForm = ({ id }) => {
-  const [comment, setComment] = useState('');
-  const { mutate, isPending } = useCreateComment();
+const CommentForm = forwardRef(
+  ({ id, commentId, initialValue = '', mode = 'create', onCancel, formId }, ref) => {
+    const [comment, setComment] = useState(initialValue);
 
-  const handleCommentCreation = (event) => {
-    event.preventDefault();
-    if (!comment.trim()) return;
+    const { mutate: createComment, isPending: isCreating } = useCreateComment();
+    const { mutate: updateComment } = useUpdateComment();
 
-    mutate(
-      { id, comment },
-      {
-        onSuccess: () => setComment(''),
+    useImperativeHandle(ref, () => ({
+      submit: () => handleSubmit(new Event('submit', { cancelable: true, bubbles: true }))
+    }));
+
+    const handleSubmit = (event) => {
+      if (event?.preventDefault) event.preventDefault();
+      if (!comment.trim()) return;
+
+      if (mode === 'edit' && comment === initialValue) {
+        onCancel?.();
+        return;
       }
-    );
-  };
 
-  return (
-    <Box sx={{ maxWidth: 600, my: 4 }}>
-      <Typography variant="h6" gutterBottom>
-        Add a Comment
-      </Typography>
+      if (mode === 'edit') {
+        updateComment(
+          { blogId: id, commentId, comment },
+          {
+            onSuccess: () => {
+              if (onCancel) onCancel();
+            }
+          }
+        );
+      } else {
+        createComment(
+          { id, comment },
+          {
+            onSuccess: () => setComment(''),
+          }
+        );
+      }
+    };
 
-      <Stack
-        spacing={2}
-        component="form"
-        onSubmit={handleCommentCreation}
-      >
-        <TextField
-          id="comment"
-          label="Your comment"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          required
-          multiline
-          minRows={4}
-          data-testid="comment"
-          fullWidth
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          id="createBlogComment"
-          data-testid="createBlogComment"
-          disabled={isPending}
+    return (
+      <Box sx={{ maxWidth: 600, my: 2 }}>
+        {mode === 'create' && (
+          <Typography variant="h6" gutterBottom>
+            Add a Comment
+          </Typography>
+        )}
+
+        <Stack
+          spacing={2}
+          component="form"
+          onSubmit={handleSubmit}
+          id={formId}
         >
-          {isPending ? 'Posting...' : 'Add Comment'}
-        </Button>
-      </Stack>
-    </Box>
-  );
-};
+          <TextField
+            id="comment"
+            label={mode === 'edit' ? 'Edit comment' : 'Your comment'}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            required
+            multiline
+            minRows={mode === 'edit' ? 2 : 4}
+            data-testid="comment"
+            fullWidth
+          />
+          {mode === 'create' && (
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              id="createBlogComment"
+              data-testid="createBlogComment"
+              disabled={isCreating}
+            >
+              {isCreating ? 'Posting...' : 'Add Comment'}
+            </Button>
+          )}
+        </Stack>
+      </Box>
+    );
+  }
+);
 
-export default CommentForm;
+CommentForm.displayName = 'CommentForm';
 
 CommentForm.propTypes = {
   id: PropTypes.string.isRequired,
+  commentId: PropTypes.string,
+  initialValue: PropTypes.string,
+  mode: PropTypes.oneOf(['create', 'edit']),
+  onCancel: PropTypes.func,
+  formId: PropTypes.string,
 };
+
+export default CommentForm;

@@ -102,7 +102,7 @@ const CommentItem = ({ comment, blogId }) => {
           formId={`edit-form-${comment.id}`}
         />
       ) : (
-        <div>{comment.text}</div>
+        <div className="whitespace-pre-line">{comment.text}</div>
       )}
     </li>
   );
