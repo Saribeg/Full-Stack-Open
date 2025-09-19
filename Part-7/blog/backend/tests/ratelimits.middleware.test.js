@@ -76,6 +76,8 @@ describe('rate/json middlewares (isolated app)', () => {
   describe('writeLimiterMiddleware', () => {
     test('GET passes, POST hits 429 after WRITE_RATE_MAX_PER_MIN', async () => {
       process.env.NODE_ENV = 'production';
+      const oldCI = process.env.CI;
+      process.env.CI = 'false';
 
       app.get('/things', (_req, res) => res.json({ ok: true }));
       app.post(
@@ -100,6 +102,7 @@ describe('rate/json middlewares (isolated app)', () => {
       });
 
       process.env.NODE_ENV = 'test';
+      process.env.CI = oldCI;
     });
   });
 });
