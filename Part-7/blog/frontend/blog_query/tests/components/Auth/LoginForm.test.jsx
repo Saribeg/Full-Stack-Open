@@ -1,3 +1,4 @@
+import { MemoryRouter } from 'react-router-dom';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LoginForm from '../../../src/components/Auth/LoginForm';
@@ -24,7 +25,7 @@ describe('LoginForm component', () => {
   });
 
   it('renders username, password fields and login button', () => {
-    renderWithContextUser(<LoginForm />, { dispatchUser });
+    renderWithContextUser(<MemoryRouter><LoginForm /></MemoryRouter>, { dispatchUser });
 
     expect(screen.getByTestId('username')).toBeInTheDocument();
     expect(screen.getByTestId('password')).toBeInTheDocument();
@@ -34,7 +35,7 @@ describe('LoginForm component', () => {
   it('submits form and shows success notification', async () => {
     loginUser.mockResolvedValueOnce({ name: 'Test User' });
 
-    renderWithContextUser(<LoginForm />, { dispatchUser });
+    renderWithContextUser(<MemoryRouter><LoginForm /></MemoryRouter>, { dispatchUser });
 
     await userEvent.type(screen.getByTestId('username'), 'testuser');
     await userEvent.type(screen.getByTestId('password'), 'password123');
@@ -60,7 +61,7 @@ describe('LoginForm component', () => {
       response: { data: { error: 'Invalid credentials' } },
     });
 
-    renderWithContextUser(<LoginForm />, { dispatchUser });
+    renderWithContextUser(<MemoryRouter><LoginForm /></MemoryRouter>, { dispatchUser });
 
     await userEvent.type(screen.getByTestId('username'), 'wrong');
     await userEvent.type(screen.getByTestId('password'), 'wrongpass');
