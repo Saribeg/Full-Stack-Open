@@ -28,9 +28,14 @@ const ProjectGoals = () => {
         </ul>
 
         <p className="mb-4">
-          I intentionally avoided adding extra features beyond the course requirements in order to
-          stay focused and finish within a reasonable timeframe — but I aimed to implement every
-          required feature with care and quality.
+          At first, I intentionally avoided adding extra features beyond the course requirements in
+          order to stay focused and finish within a reasonable timeframe — but I aimed to implement
+          every required feature with care and quality.
+        </p>
+
+        <p className="mb-4">
+          After completing the course, however, I extended this version further by adding user
+          registration and the ability for users to edit and delete their own comments.
         </p>
 
         <p className="mb-4">
