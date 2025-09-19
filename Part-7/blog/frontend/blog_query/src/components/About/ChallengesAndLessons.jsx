@@ -8,7 +8,7 @@ const ChallengesAndLessons = () => {
       <Stack direction="row" alignItems="center" gap={1} mb={2}>
         <LightbulbIcon color="primary" />
         <Typography variant="h5" fontWeight={600}>
-          Challenges & Lessons Learned
+          Implementation Highlights
         </Typography>
       </Stack>
 

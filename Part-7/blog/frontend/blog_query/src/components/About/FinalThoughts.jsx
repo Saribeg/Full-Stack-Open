@@ -16,15 +16,16 @@ const FinalThoughts = () => {
       </Typography>
 
       <Typography paragraph color="text.secondary">
-        One key takeaway: for smaller apps, Redux can easily become overkill. React Query handled all server-side state with less boilerplate, and I found myself writing fewer lines of code overall — faster implementation, cleaner logic.
+        A clear takeaway is that for smaller apps, Redux can introduce unnecessary overhead. React Query handled server-side state with less boilerplate, fewer moving parts, and a faster development cycle.
       </Typography>
 
       <Typography paragraph color="text.secondary">
-        I also appreciated how much time a component library like MUI can save. With ready-to-use UI primitives and advanced components out of the box, I didn’t have to spend time reinventing buttons, dialogs, or layouts.
+        This project confirmed my earlier experience: using MUI significantly reduces implementation time for common UI needs. With ready-to-use primitives and advanced components out of the box, I didn’t have to spend time reinventing buttons, dialogs, or layouts.
       </Typography>
 
+
       <Typography color="text.secondary">
-        All in all, this version was quicker and simpler to implement compared to the Redux + Tailwind version. I enjoyed working on both — they serve different goals and scales. The Redux version impressed me with its extensibility and architecture, while the React Query version won me over with its simplicity and speed.
+        All in all, this version was quicker and simpler to implement compared to the Redux + Tailwind version. I enjoyed working on both — they serve different goals and scales. The Redux version stood out for its extensibility and architectural depth, while the React Query version proved more efficient in terms of simplicity and development speed.
       </Typography>
     </Box>
   );
