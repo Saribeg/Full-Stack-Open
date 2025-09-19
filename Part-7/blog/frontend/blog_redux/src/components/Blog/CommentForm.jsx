@@ -19,7 +19,8 @@ const CommentForm = ({
   initialValue = '',
   mode = 'create',
   toggleForm,
-  onCancel
+  onCancel,
+  formId
 }) => {
   const [comment, setComment] = useState(initialValue);
   const dispatch = useDispatch();
@@ -45,32 +46,33 @@ const CommentForm = ({
 
   return (
     <div className="form-container mt-4">
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} id={formId}>
         <Textarea
+          type="text"
           id="comment"
           name="comment"
           placeholder="Write comment..."
           required
           value={comment}
           onChange={(e) => setComment(e.target.value)}
+          data-testid="comment"
+          className={mode === 'edit' ? 'min-h-[64px]' : ''}
+          compact={mode === 'edit'}
         />
-        <div className="flex gap-2">
-          <Button type="submit" disabled={loading}>
-            {loading
-              ? mode === 'create'
-                ? 'Adding...'
-                : 'Saving...'
-              : mode === 'create'
-                ? 'Add'
-                : 'Save'}
-          </Button>
-          {mode === 'edit' && (
-            <Button uiType="ghost" type="button" onClick={onCancel}>
-              Cancel
+
+        {mode === 'create' && (
+          <>
+            <Button
+              type="submit"
+              id="createBlogComment"
+              data-testid="createBlogComment"
+              disabled={loading}
+            >
+              {loading ? 'Adding Comment...' : 'Add Comment'}
             </Button>
-          )}
-        </div>
-        <InlineNotification placement="CommentForm" />
+            <InlineNotification placement="CommentForm" />
+          </>
+        )}
       </Form>
     </div>
   );
@@ -80,5 +82,10 @@ export default CommentForm;
 
 CommentForm.propTypes = {
   id: PropTypes.string.isRequired,
-  toggleForm: PropTypes.func
+  commentId: PropTypes.string,
+  initialValue: PropTypes.string,
+  mode: PropTypes.oneOf(['create', 'edit']),
+  toggleForm: PropTypes.func,
+  onCancel: PropTypes.func,
+  formId: PropTypes.string
 };

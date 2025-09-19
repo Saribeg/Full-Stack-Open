@@ -35,6 +35,10 @@ const blogSchema = mongoose.Schema({
       createdAt: {
         type: Date,
         default: Date.now
+      },
+      editedAt: {
+        type: Date,
+        default: null
       }
     }
   ]

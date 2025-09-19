@@ -137,6 +137,7 @@ blogsRouter.put('/:id/comments/:commentId', middleware.userExtractor, async (req
   }
 
   targetComment.text = comment;
+  targetComment.editedAt = new Date();
   await blog.save();
 
   const updatedBlog = await Blog.findById(blog._id)
