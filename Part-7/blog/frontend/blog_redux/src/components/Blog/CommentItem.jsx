@@ -1,13 +1,18 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { FaTrash, FaRegEdit } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux';
+import { FaTrash, FaRegEdit, FaCheck, FaTimes } from 'react-icons/fa';
+
 import TextLink from '../ui/TextLink';
-import { deleteComment } from '../../store/blogDetails/thunks';
 import CommentForm from './CommentForm';
 
-const CommentItem = ({ comment, authUser, blogId }) => {
+import { deleteComment } from '../../store/blogDetails/thunks';
+import { selectAuth } from '../../store/auth/selectors';
+
+const CommentItem = ({ comment, blogId }) => {
   const [isEditing, setIsEditing] = useState(false);
+
+  const authUser = useSelector(selectAuth);
   const dispatch = useDispatch();
 
   const handleDelete = () => {
@@ -17,7 +22,6 @@ const CommentItem = ({ comment, authUser, blogId }) => {
   return (
     <li className="relative rounded-2xl border border-cyan-800 bg-gradient-to-b from-[#0b1120] to-[#071625] p-4 text-lg leading-relaxed text-cyan-100/90 shadow-[0_0_6px_#0891b233]">
       <div className="mb-2 flex items-center justify-between text-sm text-cyan-400">
-        {/* user + date */}
         <span className="flex items-center gap-2">
           {comment.user ? (
             <TextLink to={`/users/${comment.user.id}`}>
@@ -28,22 +32,52 @@ const CommentItem = ({ comment, authUser, blogId }) => {
           )}
           <span className="text-cyan-500/60">·</span>
           <span className="text-gray-400">{new Date(comment.createdAt).toLocaleDateString()}</span>
+          {comment.editedAt && (
+            <>
+              <span className="text-cyan-500/60">·</span>
+              <span className="text-gray-400 italic">
+                (edited {new Date(comment.editedAt).toLocaleDateString()})
+              </span>
+            </>
+          )}
         </span>
 
-        {authUser?.id === comment.user?.id && !isEditing && (
+        {authUser?.id === comment.user?.id && (
           <div className="flex gap-3">
-            <button
-              className="cursor-pointer text-cyan-300 hover:text-cyan-100"
-              onClick={() => setIsEditing(true)}
-            >
-              <FaRegEdit className="h-5 w-5" />
-            </button>
-            <button
-              className="cursor-pointer text-gray-400 hover:text-gray-200"
-              onClick={handleDelete}
-            >
-              <FaTrash className="h-4 w-4" />
-            </button>
+            {isEditing ? (
+              <>
+                <button
+                  className="cursor-pointer text-cyan-300 hover:text-cyan-100"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById(`edit-form-${comment.id}`)?.requestSubmit();
+                  }}
+                >
+                  <FaCheck className="h-5 w-5" />
+                </button>
+                <button
+                  className="cursor-pointer text-gray-400 hover:text-gray-200"
+                  onClick={() => setIsEditing(false)}
+                >
+                  <FaTimes className="h-5 w-5" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="cursor-pointer text-cyan-300 hover:text-cyan-100"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <FaRegEdit className="h-5 w-5" />
+                </button>
+                <button
+                  className="cursor-pointer text-gray-400 hover:text-gray-200"
+                  onClick={handleDelete}
+                >
+                  <FaTrash className="h-4 w-4" />
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -55,6 +89,7 @@ const CommentItem = ({ comment, authUser, blogId }) => {
           initialValue={comment.text}
           mode="edit"
           onCancel={() => setIsEditing(false)}
+          formId={`edit-form-${comment.id}`}
         />
       ) : (
         <div>{comment.text}</div>
@@ -74,9 +109,7 @@ CommentItem.propTypes = {
       username: PropTypes.string
     })
   }).isRequired,
-  authUser: PropTypes.shape({
-    id: PropTypes.string
-  })
+  blogId: PropTypes.string.isRequired
 };
 
 export default CommentItem;
