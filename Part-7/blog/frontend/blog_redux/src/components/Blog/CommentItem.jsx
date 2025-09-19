@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaTrash, FaRegEdit, FaCheck, FaTimes } from 'react-icons/fa';
 
@@ -11,6 +11,7 @@ import { selectAuth } from '../../store/auth/selectors';
 
 const CommentItem = ({ comment, blogId }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const editFormRef = useRef(null);
 
   const authUser = useSelector(selectAuth);
   const dispatch = useDispatch();
@@ -50,14 +51,18 @@ const CommentItem = ({ comment, blogId }) => {
                   className="cursor-pointer text-cyan-300 hover:text-cyan-100"
                   onClick={(e) => {
                     e.preventDefault();
-                    document.getElementById(`edit-form-${comment.id}`)?.requestSubmit();
+                    editFormRef.current?.submit();
                   }}
+                  aria-label="Save comment"
+                  title="Save"
                 >
                   <FaCheck className="h-5 w-5" />
                 </button>
                 <button
                   className="cursor-pointer text-gray-400 hover:text-gray-200"
                   onClick={() => setIsEditing(false)}
+                  aria-label="Cancel edit"
+                  title="Cancel"
                 >
                   <FaTimes className="h-5 w-5" />
                 </button>
@@ -67,12 +72,16 @@ const CommentItem = ({ comment, blogId }) => {
                 <button
                   className="cursor-pointer text-cyan-300 hover:text-cyan-100"
                   onClick={() => setIsEditing(true)}
+                  aria-label="Edit comment"
+                  title="Edit"
                 >
                   <FaRegEdit className="h-5 w-5" />
                 </button>
                 <button
                   className="cursor-pointer text-gray-400 hover:text-gray-200"
                   onClick={handleDelete}
+                  aria-label="Delete comment"
+                  title="Delete"
                 >
                   <FaTrash className="h-4 w-4" />
                 </button>
@@ -84,6 +93,7 @@ const CommentItem = ({ comment, blogId }) => {
 
       {isEditing ? (
         <CommentForm
+          ref={editFormRef}
           id={blogId}
           commentId={comment.id}
           initialValue={comment.text}
@@ -103,6 +113,7 @@ CommentItem.propTypes = {
     id: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
+    editedAt: PropTypes.string,
     user: PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
