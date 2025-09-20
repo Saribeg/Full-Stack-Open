@@ -79,6 +79,8 @@ web_modules/
 .env.production.local
 .env.local
 .env.production
+dev.env
+prod.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -167,3 +169,7 @@ bundle-size-reports/
 
 # Logs and misc
 logs/
+
+#Other
+Part-12/todo-app/todo-backend/typescript
+Part-12/script-answers/
