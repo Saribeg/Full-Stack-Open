@@ -14,7 +14,7 @@ fly.toml
 Dockerfile
 docker-compose*.yml
 
-# Environment files (используешь env_file)
+# Environment files
 *.env
 *.env.*
 .envrc

@@ -31,8 +31,7 @@ export const notificationRules = {
       success: {
         isEnabled: true,
         popup: true,
-        getMessage: (result) =>
-          `Thanks, ${result.user.name}, for liking "${result.title}" by ${result.author}! ❤️`
+        getMessage: (result) => `Thanks for liking "${result.title}" by ${result.author}! ❤️`
       },
       error: { isEnabled: true }
     },

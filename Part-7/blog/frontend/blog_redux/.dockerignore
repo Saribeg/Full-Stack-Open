@@ -9,7 +9,7 @@ Dockerfile
 docker-compose*.yml
 .dockerignore
 
-# Environment files (используешь ARG/ENV/env_file)
+# Environment files
 *.env
 *.env.*
 .envrc
