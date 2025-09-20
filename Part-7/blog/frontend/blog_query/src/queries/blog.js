@@ -83,7 +83,7 @@ export const useLikeBlog = (options = {}) => {
       onSuccess: (data, variables, context) => {
         notify({
           type: 'success',
-          message: `Thanks, ${data.user.name}, for liking "${data.title}" by ${data.author}! ❤️`,
+          message: `Thanks for liking "${data.title}" by ${data.author}! ❤️`,
         });
         options?.onSuccess?.(data, variables, context);
       },
