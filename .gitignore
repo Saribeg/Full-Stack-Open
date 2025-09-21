@@ -173,3 +173,23 @@ logs/
 #Other
 Part-12/todo-app/todo-backend/typescript
 Part-12/script-answers/
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# macOS
+.DS_Store
+*.pem
